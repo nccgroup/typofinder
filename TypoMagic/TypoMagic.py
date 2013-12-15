@@ -18,6 +18,7 @@ import dns.resolver
 import urllib
 import typogen
 import hostinfo
+import re
 from os import curdir, sep
 
 HOST_NAME = ''      # leave like this for all
@@ -151,10 +152,11 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         #    print (key, value)
 
         strHost = str(post_data['host'])[2:-2]
-
+        if re.match('^[a-zA-Z0-9.]+$',strHost): 
+            handleHost(strHost,self,False,False); 
         #self.wfile.write(bytes(strHost + "<br/>",'utf-8'))   
 
-        handleHost(strHost,self,False,False);       
+              
         
         return
 
