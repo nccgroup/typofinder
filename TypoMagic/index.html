@@ -1,0 +1,36 @@
+<html>
+<head><title>NCC Typo Detector</title></head>
+
+<body>
+<center>
+
+<style type="text/css">
+body {font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;}
+form {font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;}
+input {font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;}
+</style>
+
+<!-- our form -->
+Supply the domain you wish to typo check and press enter
+<form id="typogulator" method="post" action="/typo.ncc">
+    <input name="host" type="text" /> <br />
+</form>
+
+<!-- events -->
+<script>
+    
+    form.onsubmit = function (e) {
+        
+    };
+
+    $('#typogulator input').keydown(function (e) {
+        if (e.keyCode == 13) {
+            $('#typogulator').submit();
+        }
+    });
+
+</script>
+
+</center>
+</body>
+</html>
