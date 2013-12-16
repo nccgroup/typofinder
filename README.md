@@ -11,6 +11,16 @@ https://github.com/nccgroup/typofinder
 
 Released under AGPL see LICENSE for more information
 
+Features
+-------------
+* Domain to IP
+* MX records
+* A and AAAA
+* www address records
+* webmail address records
+* m address records
+* A keyboard map template system (currently UK supplied)
+
 Usage
 -------------
 * Launch
