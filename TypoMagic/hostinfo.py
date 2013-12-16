@@ -88,34 +88,34 @@ class hostinfo(object):
         try:
             # Geo Location    
             gi = pygeoip.GeoIP('./GeoIP.dat')
-            print(gi.country_code_by_addr(sIP))
+            #print(gi.country_code_by_addr(sIP))
             return gi.country_code_by_addr(sIP)
         except Exception as e:
-            print("Error doing getGeoIP ")
+            #print("Error doing getGeoIP ")
             pass
 
     def getGeobyHostname(sHostname):
         try:
             # Geo Location    
             gi = pygeoip.GeoIP('./GeoIP.dat')
-            print(gi.country_code_by_name(sHostname))
+            #print(gi.country_code_by_name(sHostname))
             return gi.country_code_by_name(sHostname)
         except Exception as e:
-            print("Error doing getGeoHostname ")
+            #print("Error doing getGeoHostname ")
             pass
 
     def getGeoImagebyIP(sIP):
         try:
             return "<img src=\"/flags/flags-iso/shiny/16/"+ hostinfo.getGeobyIP(sIP)+".png\" alt=\"" + hostinfo.getGeobyIP(sIP) + "\">"
         except Exception as e:
-            print("Error doing getGeoImagebyIP ")
+            #print("Error doing getGeoImagebyIP ")
             return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
 
     def getGeoImagebyHostname(sHostname):
         try:
             return "<img src=\"/flags/flags-iso/shiny/16/"+ hostinfo.getGeobyHostname(sHostname)+".png\" alt=\"" + hostinfo.getGeobyHostname(sHostname) + "\">"
         except Exception as e:
-            print("Error doing getGeoImagebyHostname ")
+            #print("Error doing getGeoImagebyHostname ")
             return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
             
         

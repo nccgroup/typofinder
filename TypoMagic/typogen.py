@@ -15,6 +15,9 @@ class typogen(object):
 
     def loadkeyb(strCountry):
         keyDict = dict()
+
+        # obviously you can have other maps here
+        # I've only included this one
         filename = "./keyb" + strCountry + ".txt"
         mynumbers = []
         with open(filename) as f:

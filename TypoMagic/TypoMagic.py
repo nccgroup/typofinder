@@ -19,7 +19,9 @@ import urllib
 import typogen
 import hostinfo
 import re
+import threading
 from os import curdir, sep
+from socketserver import ThreadingMixIn
 
 HOST_NAME = ''      # leave like this for all
 PORT_NUMBER = 801   # this will be fine
@@ -140,11 +142,13 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
-        self.wfile.write(bytes("<html><head><title>Typo Results</title></head>",'utf-8'))
+        self.wfile.write(bytes("<html><head><title>NCC Typo Finder Results</title></head>",'utf-8'))
         self.wfile.write(bytes("<style type=\"text/css\">",'utf-8'))
         self.wfile.write(bytes("body {font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;}",'utf-8'))
         self.wfile.write(bytes("</style>",'utf-8'))
+        self.wfile.write(bytes("Released under AGPL by <a href=\"http://www.nccgroup.com/\">NCC Group</a> - source availible <a href=\"https://github.com/nccgroup/typofinder\">here</a><br/>",'utf-8'))
         
+
         length = int(self.headers['Content-Length'])
         post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
         
@@ -193,10 +197,14 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
         except IOError:
             self.send_error(404,'File Not Found: %s' % self.path)
+
+class MultiThreadedHTTPServer(ThreadingMixIn, http.server.HTTPServer):
+    pass
         
 if __name__ == '__main__':
     server_class = http.server.HTTPServer
-    httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
+    #httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
+    httpd = MultiThreadedHTTPServer((HOST_NAME, PORT_NUMBER), MyHandler)
     print (time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER))
     try:
         httpd.serve_forever()
