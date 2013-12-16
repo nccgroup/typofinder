@@ -1,4 +1,4 @@
-Domain typo findinder
+Domain typo finder
 ======================
 
 Typofinder for domain typo discovery
