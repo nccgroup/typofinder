@@ -59,7 +59,7 @@ def handleHost(sHostname, self, bMX, bTypo):
             #print(hostinfo.hostinfo.getGeoImagebyIP(hostData.address))
             #print(hostinfo.hostinfo.getGeoImagebyHostname(sHostname))
             strFlag = hostinfo.hostinfo.getGeoImagebyIP(hostData.address)
-            self.wfile.write(bytes(hostinfo.hostinfo.getGeoImagebyIP(hostData.address) + "<br/>",'utf-8'))
+            self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))
     
     if IPv6 != None:  
         for hostData in IPv6:  
@@ -69,7 +69,7 @@ def handleHost(sHostname, self, bMX, bTypo):
             #print(hostinfo.hostinfo.getGeoImagebyIP(hostData.address))
             #hostinfo.hostinfo.getGeoImagebyIP(hostData.address) 
             strFlag = hostinfo.hostinfo.getGeoImagebyIP(hostData.address)
-            self.wfile.write(bytes(hostinfo.hostinfo.getGeoImagebyIP(hostData.address) + "<br/>",'utf-8'))   
+            self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))   
 
     if bMX == False:
         try:
@@ -95,7 +95,7 @@ def handleHost(sHostname, self, bMX, bTypo):
             if(bMX == False):
                 self.wfile.write(bytes("--- [www.host IPv4] A: " +hostData.address + " from " + sHostname + " ",'utf-8')) 
                 strFlag = hostinfo.hostinfo.getGeoImagebyIP(hostData.address)
-                self.wfile.write(bytes(hostinfo.hostinfo.getGeoImagebyIP(hostData.address) + "<br/>",'utf-8'))   
+                self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))   
 
     try:
         IPWebMail= hostinfo.hostinfo.getWEBMail(sHostname)
@@ -107,7 +107,7 @@ def handleHost(sHostname, self, bMX, bTypo):
             if(bMX == False):
                 self.wfile.write(bytes("--- [webmail.host IPv4] A: " +hostData.address + " from " + sHostname + " ",'utf-8')) 
                 strFlag = hostinfo.hostinfo.getGeoImagebyIP(hostData.address)
-                self.wfile.write(bytes(hostinfo.hostinfo.getGeoImagebyIP(hostData.address) + "<br/>",'utf-8'))   
+                self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))   
 
     try:
         IPM= hostinfo.hostinfo.getM(sHostname)
