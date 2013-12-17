@@ -15,6 +15,7 @@ import time
 import http.server
 import whois
 import dns.resolver
+from dns.resolver import NoNameservers
 import urllib
 import typogen
 import hostinfo
@@ -71,7 +72,11 @@ def handleHost(sHostname, self, bMX, bTypo):
             self.wfile.write(bytes(hostinfo.hostinfo.getGeoImagebyIP(hostData.address) + "<br/>",'utf-8'))   
 
     if bMX == False:
-        IPMX = hostinfo.hostinfo.getMX(sHostname)
+        try:
+            IPMX = hostinfo.hostinfo.getMX(sHostname)
+        except NoNameservers:
+            IPMX = None
+        
         if IPMX != None:
             for hostData in IPMX:
                 #print(hostData.exchange)
