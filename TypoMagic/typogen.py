@@ -56,4 +56,4 @@ class typogen(object):
                         lstTypos.append(strTypo)
                     idx+=1
 
-        return lstTypos
+        return set(lstTypos)
