@@ -161,7 +161,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         #    print (key, value)
 
         strHost = str(post_data['host'])[2:-2]
-        if re.match('^[a-zA-Z0-9.]+$',strHost): 
+        if re.match('^[a-zA-Z0-9.-]+$',strHost): 
             handleHost(strHost,self,False,False); 
         #self.wfile.write(bytes(strHost + "<br/>",'utf-8'))   
 
