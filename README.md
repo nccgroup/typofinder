@@ -21,11 +21,11 @@ Features
 * m address records
 * A keyboard map template system (currently UK supplied)
 
-Usage
+Dependencies
 -------------
-whois (0.7)
-dnspython (1.11.1)
-pygeoip (0.3.0)
+* whois (0.7)
+* dnspython (1.11.1)
+* pygeoip (0.3.0)
 
 Usage
 -------------
