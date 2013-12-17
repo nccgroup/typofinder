@@ -119,7 +119,7 @@ def handleHost(sHostname, self, bMX, bTypo):
             if(bMX == False):
                 self.wfile.write(bytes("--- [m.host IPv4] A: " +hostData.address + " from " + sHostname + " ",'utf-8')) 
                 strFlag = hostinfo.hostinfo.getGeoImagebyIP(hostData.address)
-                self.wfile.write(bytes(hostinfo.hostinfo.getGeoImagebyIP(hostData.address) + "<br/>",'utf-8'))   
+                self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))   
 
     if bTypo == False and bMX == False:
         #self.wfile.write(bytes("--- [host typos] Generating typos for " + sHostname + "<br/>",'utf-8')) 
