@@ -151,7 +151,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(bytes("<style type=\"text/css\">",'utf-8'))
         self.wfile.write(bytes("body {font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;}",'utf-8'))
         self.wfile.write(bytes("</style>",'utf-8'))
-        self.wfile.write(bytes("Released under AGPL by <a href=\"http://www.nccgroup.com/\">NCC Group</a> - source availible <a href=\"https://github.com/nccgroup/typofinder\">here</a><br/>",'utf-8'))
+        self.wfile.write(bytes("Released under AGPL by <a href=\"http://www.nccgroup.com/\">NCC Group</a> - source available <a href=\"https://github.com/nccgroup/typofinder\">here</a><br/>",'utf-8'))
         
 
         length = int(self.headers['Content-Length'])
