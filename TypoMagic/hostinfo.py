@@ -111,16 +111,20 @@ class hostinfo(object):
 
     def getGeoImagebyIP(self, sIP):
         try:
-            return "<img src=\"/flags/flags-iso/shiny/16/"+ self.getGeobyIP(sIP)+".png\" alt=\"" + self.getGeobyIP(sIP) + "\">"
+            countrycode = self.getGeobyIP(sIP)
+            if countrycode:
+                return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
         except Exception as e:
-            #print("Error doing getGeoImagebyIP ")
-            return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
+            pass
+        return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
 
     def getGeoImagebyHostname(self, sHostname):
         try:
-            return "<img src=\"/flags/flags-iso/shiny/16/"+ self.getGeobyHostname(sHostname)+".png\" alt=\"" + self.getGeobyHostname(sHostname) + "\">"
+            countrycode = self.getGeobyHostname(sHostname)
+            if countrycode:
+                return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
         except Exception as e:
-            #print("Error doing getGeoImagebyHostname ")
-            return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
+            pass
+        return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
             
         
