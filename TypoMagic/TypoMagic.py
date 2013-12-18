@@ -10,19 +10,16 @@
 # Released under AGPL see LICENSE for more information#
 #
 
-from types import *
 import time
 import http.server
-import whois
-import dns.resolver
-from dns.resolver import NoNameservers
 import urllib
-import typogen
-import hostinfo
 import re
-import threading
 from os import curdir, sep
 from socketserver import ThreadingMixIn
+from dns.resolver import NoNameservers
+import typogen
+import hostinfo
+
 
 HOST_NAME = ''      # leave like this for all
 PORT_NUMBER = 801   # this will be fine
@@ -31,9 +28,9 @@ _hostinfo = hostinfo.hostinfo()
 
 def handleHost(sHostname, self, bMX, bTypo):
     
-    if(bMX == True):
+    if bMX == True:
         self.wfile.write(bytes("--- [host] MX Host ",'utf-8'))
-    elif(bTypo == True):
+    elif bTypo == True:
         self.wfile.write(bytes("[host] Typo Host ",'utf-8'))
     else:
         self.wfile.write(bytes("[host] Host ",'utf-8'))
@@ -50,12 +47,12 @@ def handleHost(sHostname, self, bMX, bTypo):
     except:
        IPv6 = None 
 
-    if IPv4 == None and IPv6 == None:
+    if IPv4 is None and IPv6 is None:
        self.wfile.write(bytes("--- [host] No IPv6 or IPv4 address<br/>",'utf-8'))
      
-    if IPv4 != None:
+    if IPv4 is not None:
         for hostData in IPv4:
-            if(bMX == True):
+            if bMX == True:
                 self.wfile.write(bytes("---",'utf-8'))
             self.wfile.write(bytes("--- [host IPv4] A: " + hostData.address + " from " + sHostname + " ",'utf-8'))
             #print(_hostinfo.getGeoImagebyIP(hostData.address))
@@ -63,9 +60,9 @@ def handleHost(sHostname, self, bMX, bTypo):
             strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
             self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))
     
-    if IPv6 != None:  
+    if IPv6 is not None:
         for hostData in IPv6:  
-            if(bMX == True):
+            if bMX == True:
                 self.wfile.write(bytes("---",'utf-8'))
             self.wfile.write(bytes("--- [host IPv6] AAAA: " +hostData.address + " from " + sHostname + " ",'utf-8')) 
             #print(_hostinfo.getGeoImagebyIP(hostData.address))
@@ -73,13 +70,13 @@ def handleHost(sHostname, self, bMX, bTypo):
             strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
             self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))   
 
-    if bMX == False:
+    if not bMX:
         try:
             IPMX = _hostinfo.getMX(sHostname)
         except NoNameservers:
             IPMX = None
         
-        if IPMX != None:
+        if IPMX is not None:
             for hostData in IPMX:
                 #print(hostData.exchange)
                 self.wfile.write(bytes("--- [host MX] for " + sHostname + " is " + str(hostData.exchange).strip(".") + "<br/>",'utf-8')) 
@@ -92,9 +89,9 @@ def handleHost(sHostname, self, bMX, bTypo):
     except:
         IPWWW = None
 
-    if IPWWW != None:  
+    if IPWWW is not None:
         for hostData in IPWWW:  
-            if(bMX == False):
+            if bMX == False:
                 self.wfile.write(bytes("--- [www.host IPv4] A: " +hostData.address + " from " + sHostname + " ",'utf-8')) 
                 strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
                 self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))   
@@ -104,9 +101,9 @@ def handleHost(sHostname, self, bMX, bTypo):
     except:
         IPWebMail = None
 
-    if IPWebMail != None:  
+    if IPWebMail is not None:
         for hostData in IPWebMail:
-            if(bMX == False):
+            if bMX == False:
                 self.wfile.write(bytes("--- [webmail.host IPv4] A: " +hostData.address + " from " + sHostname + " ",'utf-8')) 
                 strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
                 self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))   
@@ -116,9 +113,9 @@ def handleHost(sHostname, self, bMX, bTypo):
     except:
         IPM = None
     
-    if IPM != None:  
+    if IPM is not None:
         for hostData in IPM:  
-            if(bMX == False):
+            if bMX == False:
                 self.wfile.write(bytes("--- [m.host IPv4] A: " +hostData.address + " from " + sHostname + " ",'utf-8')) 
                 strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
                 self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))   
@@ -127,7 +124,7 @@ def handleHost(sHostname, self, bMX, bTypo):
         #self.wfile.write(bytes("--- [host typos] Generating typos for " + sHostname + "<br/>",'utf-8')) 
         lstTypos = typogen.typogen.generatetypos(sHostname,"GB")
         #self.wfile.write(bytes("--- [host typos] Generated typos for " + sHostname + " " + str(len(lstTypos)) + "<br/>",'utf-8')) 
-        if lstTypos != None:
+        if lstTypos is not None:
             for strTypoHost in lstTypos:
                 #self.wfile.write(bytes("--- [host typos] Checking typo " + strTypoHost + "<br/>",'utf-8')) 
                 handleHost(strTypoHost,self,False,True)
@@ -164,8 +161,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
         strHost = str(post_data['host'])[2:-2]
         if re.match('^[a-zA-Z0-9.-]+$',strHost): 
-            handleHost(strHost,self,False,False); 
-        #self.wfile.write(bytes(strHost + "<br/>",'utf-8'))   
+            handleHost(strHost,self,False,False)
+        #self.wfile.write(bytes(strHost + "<br/>",'utf-8'))
 
               
         

@@ -19,7 +19,6 @@ class typogen(object):
         # obviously you can have other maps here
         # I've only included this one
         filename = "./keyb" + strCountry + ".txt"
-        mynumbers = []
         with open(filename) as f:
             for line in f:
                 split = line.rstrip().split(',')
@@ -37,7 +36,7 @@ class typogen(object):
         idx = 0
 
         # missing characters
-        while(idx < len(strHost)):
+        while idx < len(strHost):
             strTypo = strHost[0:idx]+strHost[idx+1:]
             idx+=1
             lstTypos.append(strTypo)
@@ -48,7 +47,7 @@ class typogen(object):
         for key in keyDict:
             for value in keyDict[key]:
                 idx = 0
-                while(idx < len(strHost)):
+                while idx < len(strHost):
                     strHostList = list(strHost)
                     strHostList[idx] = strHostList[idx].replace(key, value)
                     strTypo = "".join(strHostList)
