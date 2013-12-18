@@ -28,9 +28,9 @@ _hostinfo = hostinfo.hostinfo()
 
 def handleHost(sHostname, self, bMX, bTypo):
     
-    if bMX == True:
+    if bMX:
         self.wfile.write(bytes("--- [host] MX Host ",'utf-8'))
-    elif bTypo == True:
+    elif bTypo:
         self.wfile.write(bytes("[host] Typo Host ",'utf-8'))
     else:
         self.wfile.write(bytes("[host] Host ",'utf-8'))
@@ -52,7 +52,7 @@ def handleHost(sHostname, self, bMX, bTypo):
      
     if IPv4 is not None:
         for hostData in IPv4:
-            if bMX == True:
+            if bMX:
                 self.wfile.write(bytes("---",'utf-8'))
             self.wfile.write(bytes("--- [host IPv4] A: " + hostData.address + " from " + sHostname + " ",'utf-8'))
             #print(_hostinfo.getGeoImagebyIP(hostData.address))
@@ -62,7 +62,7 @@ def handleHost(sHostname, self, bMX, bTypo):
     
     if IPv6 is not None:
         for hostData in IPv6:  
-            if bMX == True:
+            if bMX:
                 self.wfile.write(bytes("---",'utf-8'))
             self.wfile.write(bytes("--- [host IPv6] AAAA: " +hostData.address + " from " + sHostname + " ",'utf-8')) 
             #print(_hostinfo.getGeoImagebyIP(hostData.address))
@@ -91,7 +91,7 @@ def handleHost(sHostname, self, bMX, bTypo):
 
     if IPWWW is not None:
         for hostData in IPWWW:  
-            if bMX == False:
+            if not bMX:
                 self.wfile.write(bytes("--- [www.host IPv4] A: " +hostData.address + " from " + sHostname + " ",'utf-8')) 
                 strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
                 self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))   
@@ -103,7 +103,7 @@ def handleHost(sHostname, self, bMX, bTypo):
 
     if IPWebMail is not None:
         for hostData in IPWebMail:
-            if bMX == False:
+            if not bMX:
                 self.wfile.write(bytes("--- [webmail.host IPv4] A: " +hostData.address + " from " + sHostname + " ",'utf-8')) 
                 strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
                 self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))   
@@ -115,7 +115,7 @@ def handleHost(sHostname, self, bMX, bTypo):
     
     if IPM is not None:
         for hostData in IPM:  
-            if bMX == False:
+            if not bMX:
                 self.wfile.write(bytes("--- [m.host IPv4] A: " +hostData.address + " from " + sHostname + " ",'utf-8')) 
                 strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
                 self.wfile.write(bytes(strFlag + "<br/>",'utf-8'))   
