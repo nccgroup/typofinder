@@ -18,6 +18,9 @@ class hostinfo(object):
 
     def __init__(self):
         self._resolver = dns.resolver.Resolver()
+        self._resolver.Timeout = 2.0
+        self._resolver.lifetime = 2.0
+        self._resolver.cache = dns.resolver.LRUCache()
         self._gi = pygeoip.GeoIP('GeoIP.dat')
 
     def getWWW(self, sHostname):
