@@ -13,6 +13,7 @@
 class typogen(object):
     """generate typo"""
 
+    @staticmethod
     def loadkeyb(strCountry):
         keyDict = dict()
 
@@ -29,6 +30,7 @@ class typogen(object):
 
         return keyDict
 
+    @staticmethod
     def generatetypos(strHost,strCountry):
         """generate the typos"""
 
