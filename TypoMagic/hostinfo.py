@@ -22,6 +22,7 @@ class hostinfo(object):
         self._resolver.lifetime = 2.0
         self._resolver.cache = dns.resolver.LRUCache()
         self._gi = pygeoip.GeoIP('GeoIP.dat')
+        self._gi6 = pygeoip.GeoIP('GeoIPv6.dat')
 
     def getWWW(self, sHostname):
         # WWW
@@ -135,6 +136,15 @@ class hostinfo(object):
         except Exception as e:
             #print("Error doing getGeoIP ")
             pass
+    
+    def getGeobyIPv6(self, sIP):
+        try:
+            # Geo Location
+            #print(gi.country_code_by_addr(sIP))
+            return self._giv6.country_code_by_addr(sIP)
+        except Exception as e:
+            #print("Error doing getGeoIP ")
+            pass
 
     def getGeobyHostname(self, sHostname):
         try:
@@ -145,9 +155,27 @@ class hostinfo(object):
             #print("Error doing getGeoHostname ")
             pass
 
+    def getGeobyHostnamev6(self, sHostname):
+        try:
+            # Geo Location
+            #print(gi.country_code_by_name(sHostname))
+            return self._giv6.country_code_by_name(sHostname)
+        except Exception as e:
+            #print("Error doing getGeoHostname ")
+            pass
+
     def getGeoImagebyIP(self, sIP):
         try:
             countrycode = self.getGeobyIP(sIP)
+            if countrycode:
+                return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
+        except Exception as e:
+            pass
+        return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
+
+    def getGeoImagebyIPv6(self, sIP):
+        try:
+            countrycode = self.getGeobyIPv6(sIP)
             if countrycode:
                 return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
         except Exception as e:
@@ -163,4 +191,11 @@ class hostinfo(object):
             pass
         return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
             
-        
+    def getGeoImagebyHostnamev6(self, sHostname):
+        try:
+            countrycode = self.getGeobyHostnamev6(sHostname)
+            if countrycode:
+                return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
+        except Exception as e:
+            pass
+        return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"       

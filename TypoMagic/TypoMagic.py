@@ -67,7 +67,7 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
             http_handler.output("--- [host IPv6] AAAA: " +hostData.address + " from " + sHostname + " ")
             #print(_hostinfo.getGeoImagebyIP(hostData.address))
             #_hostinfo.getGeoImagebyIP(hostData.address) 
-            strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
+            strFlag = _hostinfo.getGeoImagebyIPv6(hostData.address)
             http_handler.output(strFlag + "<br/>")
 
     if not bMX:
@@ -107,7 +107,7 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
         for hostData in IPWWW:  
             if not bMX:
                 http_handler.output("--- [www. IPv6] A: " +hostData.address + " from " + sHostname + " ")
-                strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
+                strFlag = _hostinfo.getGeoImagebyIPv6(hostData.address)
                 http_handler.output(strFlag + "<br/>")
 
     # webmail v4
@@ -133,7 +133,7 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
         for hostData in IPWebMail:
             if not bMX:
                 http_handler.output("--- [webmail. IPv6] A: " +hostData.address + " from " + sHostname + " ")
-                strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
+                strFlag = _hostinfo.getGeoImagebyIPv6(hostData.address)
                 http_handler.output(strFlag + "<br/>")
 
     # m v4
@@ -159,7 +159,7 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
         for hostData in IPM:  
             if not bMX:
                 http_handler.output("--- [m. IPv6] A: " +hostData.address + " from " + sHostname + " ")
-                strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
+                strFlag = _hostinfo.getGeoImagebyIPv6(hostData.address)
                 http_handler.output(strFlag + "<br/>")
 
     # if we're not a typo (i.e. we're the base domain) then mutate
