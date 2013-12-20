@@ -50,7 +50,6 @@ class typogen(object):
             strHostList = list(strHost)
             strHostList.insert(idx,strHostList[idx])
             strTypo = "".join(strHostList)
-            print(strTypo+"\n")
             idx+=1
             lstTypos.append(strTypo)
 
