@@ -62,7 +62,7 @@ class typogen(object):
             for line in f:
                 gtld = line.rstrip()
                 newHost = strHost[:lastdot] + "." + gtld
-                print(newHost)
+                #print(newHost)
                 lstTypos.append(newHost) 
 
         # load keyboard mapping
