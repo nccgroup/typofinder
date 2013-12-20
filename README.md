@@ -32,6 +32,7 @@ What it does
 * remove characters from the supplied domain
 * duplicate characters in the suppled domain
 * replace characters with adjacent keyboard characters depending on keyboard map supplied
+* swap the global TLD for each of the current valid TLDs list at - http://data.iana.org/TLD/tlds-alpha-by-domain.txt
 
 Usage
 -------------
