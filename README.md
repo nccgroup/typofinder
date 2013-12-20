@@ -27,6 +27,12 @@ Dependencies
 * dnspython (1.11.1)
 * pygeoip (0.3.0)
 
+What it does
+-------------
+* remove characters from the supplied domain
+* duplicate characters in the suppled domain
+* replace characters with adjacent keyboard characters depending on keyboard map supplied
+
 Usage
 -------------
 * Launch in TypoMagic directory
