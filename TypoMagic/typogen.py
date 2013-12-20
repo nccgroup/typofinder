@@ -34,12 +34,23 @@ class typogen(object):
     def generatetypos(strHost,strCountry):
         """generate the typos"""
 
+        # result list of typos
         lstTypos = []
-        idx = 0
-
+        
         # missing characters
+        idx = 0
         while idx < len(strHost):
             strTypo = strHost[0:idx]+strHost[idx+1:]
+            idx+=1
+            lstTypos.append(strTypo)
+
+        # duplicate characters
+        idx = 0
+        while idx < len(strHost):
+            strHostList = list(strHost)
+            strHostList.insert(idx,strHostList[idx])
+            strTypo = "".join(strHostList)
+            print(strTypo+"\n")
             idx+=1
             lstTypos.append(strTypo)
 
