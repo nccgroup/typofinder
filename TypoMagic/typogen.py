@@ -55,9 +55,20 @@ class typogen(object):
             idx+=1
             
 
-        # load
+        # tld swap out
+        filename = "./tlds.txt"
+        with open(filename) as f:
+            lastdot = strHost.rfind(".")
+            for line in f:
+                gtld = line.rstrip()
+                newHost = strHost[:lastdot] + "." + gtld
+                print(newHost)
+                lstTypos.append(newHost) 
+
+        # load keyboard mapping
         keyDict = typogen.loadkeyb(strCountry)
 
+        # for the keyboard mapping
         for key in keyDict:
             for value in keyDict[key]:
                 idx = 0

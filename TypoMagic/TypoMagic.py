@@ -162,18 +162,18 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
                 strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
                 http_handler.output(strFlag + "<br/>")
 
+    # if we're not a typo (i.e. we're the base domain) then mutate
     if bTypo == False and bMX == False:
-        #self.output("--- [host typos] Generating typos for " + sHostname + "<br/>") 
+        # this could be a different country if you supplied the map
         lstTypos = typogen.typogen.generatetypos(sHostname,"GB")
-        #self.output("--- [host typos] Generated typos for " + sHostname + " " + str(len(lstTypos)) + "<br/>") 
         if lstTypos is not None:
             for strTypoHost in lstTypos:
-                #self.output("--- [host typos] Checking typo " + strTypoHost + "<br/>") 
                 handleHost(strTypoHost,http_handler,False,True)
                                    
-    # WHOIS
+    # WHOIS TODO
     #domain = whois.query('zemes.com')
     #print(domain)
+
     return
 
 class MyHandler(http.server.BaseHTTPRequestHandler):
