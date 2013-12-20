@@ -84,6 +84,7 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
         else:
             http_handler.output("--- [host] No MX records<br/>")
 
+    # www v4
     try:
         IPWWW = _hostinfo.getWWW(sHostname)
     except:
@@ -92,10 +93,24 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
     if IPWWW is not None:
         for hostData in IPWWW:  
             if not bMX:
-                http_handler.output("--- [www.host IPv4] A: " +hostData.address + " from " + sHostname + " ")
+                http_handler.output("--- [www. IPv4] A: " +hostData.address + " from " + sHostname + " ")
                 strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
                 http_handler.output(strFlag + "<br/>")
 
+    # www v6
+    try:
+        IPWWW = _hostinfo.getWWWv6(sHostname)
+    except:
+        IPWWW = None
+
+    if IPWWW is not None:
+        for hostData in IPWWW:  
+            if not bMX:
+                http_handler.output("--- [www. IPv6] A: " +hostData.address + " from " + sHostname + " ")
+                strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
+                http_handler.output(strFlag + "<br/>")
+
+    # webmail v4
     try:
         IPWebMail= _hostinfo.getWEBMail(sHostname)
     except:
@@ -104,10 +119,24 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
     if IPWebMail is not None:
         for hostData in IPWebMail:
             if not bMX:
-                http_handler.output("--- [webmail.host IPv4] A: " +hostData.address + " from " + sHostname + " ")
+                http_handler.output("--- [webmail. IPv4] A: " +hostData.address + " from " + sHostname + " ")
                 strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
                 http_handler.output(strFlag + "<br/>")
 
+    # webmail v6
+    try:
+        IPWebMail= _hostinfo.getWEBMailv6(sHostname)
+    except:
+        IPWebMail = None
+
+    if IPWebMail is not None:
+        for hostData in IPWebMail:
+            if not bMX:
+                http_handler.output("--- [webmail. IPv6] A: " +hostData.address + " from " + sHostname + " ")
+                strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
+                http_handler.output(strFlag + "<br/>")
+
+    # m v4
     try:
         IPM= _hostinfo.getM(sHostname)
     except:
@@ -116,7 +145,20 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
     if IPM is not None:
         for hostData in IPM:  
             if not bMX:
-                http_handler.output("--- [m.host IPv4] A: " +hostData.address + " from " + sHostname + " ")
+                http_handler.output("--- [m. IPv4] A: " +hostData.address + " from " + sHostname + " ")
+                strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
+                http_handler.output(strFlag + "<br/>")
+
+    # m v6
+    try:
+        IPM= _hostinfo.getMv6(sHostname)
+    except:
+        IPM = None
+    
+    if IPM is not None:
+        for hostData in IPM:  
+            if not bMX:
+                http_handler.output("--- [m. IPv6] A: " +hostData.address + " from " + sHostname + " ")
                 strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
                 http_handler.output(strFlag + "<br/>")
 
