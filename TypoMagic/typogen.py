@@ -48,10 +48,12 @@ class typogen(object):
         idx = 0
         while idx < len(strHost):
             strHostList = list(strHost)
-            strHostList.insert(idx,strHostList[idx])
-            strTypo = "".join(strHostList)
+            if strHostList[idx] != '.':
+                strHostList.insert(idx,strHostList[idx])
+                strTypo = "".join(strHostList)
+                lstTypos.append(strTypo)
             idx+=1
-            lstTypos.append(strTypo)
+            
 
         # load
         keyDict = typogen.loadkeyb(strCountry)
