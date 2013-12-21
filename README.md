@@ -23,7 +23,6 @@ Features
 
 Dependencies
 -------------
-* whois (0.7)
 * dnspython (1.11.1)
 * pygeoip (0.3.0)
 
