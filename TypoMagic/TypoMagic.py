@@ -48,6 +48,8 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
        IPv6 = None 
 
     if IPv4 is None and IPv6 is None:
+       if bMX:
+           http_handler.output("---")
        http_handler.output("--- [host] No IPv6 or IPv4 address<br/>")
      
     if IPv4 is not None:
