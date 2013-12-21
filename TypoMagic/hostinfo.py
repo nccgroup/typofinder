@@ -22,7 +22,7 @@ class hostinfo(object):
         self._resolver.lifetime = 2.0
         self._resolver.cache = dns.resolver.LRUCache()
         self._gi = pygeoip.GeoIP('GeoIP.dat')
-        self._gi6 = pygeoip.GeoIP('GeoIPv6.dat')
+        self._giv6 = pygeoip.GeoIP('GeoIPv6.dat')
 
     def getWWW(self, sHostname):
         # WWW
