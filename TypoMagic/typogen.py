@@ -60,10 +60,11 @@ class typogen(object):
         with open(filename) as f:
             lastdot = strHost.rfind(".")
             for line in f:
-                gtld = line.rstrip()
-                newHost = strHost[:lastdot] + "." + gtld
-                #print(newHost)
-                lstTypos.append(newHost) 
+                if not line.lstrip().startswith('#'):
+                    gtld = line.rstrip().lower()
+                    newHost = strHost[:lastdot] + "." + gtld
+                    #print(newHost)
+                    lstTypos.append(newHost)
 
         # load keyboard mapping
         keyDict = typogen.loadkeyb(strCountry)
@@ -80,4 +81,7 @@ class typogen(object):
                         lstTypos.append(strTypo)
                     idx+=1
 
-        return set(lstTypos)
+        uniqueTypos = set(lstTypos)
+        uniqueTypos.remove(strHost)
+
+        return uniqueTypos

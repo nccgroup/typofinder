@@ -19,6 +19,7 @@ from socketserver import ThreadingMixIn
 from dns.resolver import NoNameservers
 import typogen
 import hostinfo
+import safebrowsing
 
 
 HOST_NAME = ''      # leave like this for all
@@ -35,7 +36,7 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
     else:
         http_handler.output("[host] Host ")
     
-    http_handler.output(sHostname + "<br/>")
+    http_handler.output(sHostname)
 
     try:
         IPv4 = _hostinfo.getIPv4(sHostname)
@@ -47,7 +48,14 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
     except:
        IPv6 = None 
 
+    if (IPv4 is not None or IPv6 is not None) and not bMX:
+        http_handler.output(" " + safebrowsing.safebrowsingquery(sHostname))
+
+    http_handler.output("<br/>")
+
     if IPv4 is None and IPv6 is None:
+       if bMX:
+           http_handler.output("---")
        http_handler.output("--- [host] No IPv6 or IPv4 address<br/>")
      
     if IPv4 is not None:
