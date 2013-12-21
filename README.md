@@ -32,9 +32,14 @@ What it does
 * duplicate characters in the suppled domain
 * replace characters with adjacent keyboard characters depending on keyboard map supplied
 * swap the global TLD for each of the current valid TLDs list at - http://data.iana.org/TLD/tlds-alpha-by-domain.txt
+* checks web sites against Google's Safe Browsing API<sup>1</sup>
 
 Usage
 -------------
 * Launch in TypoMagic directory
 * Connect to http://127.0.0.1:801
 * Follow prompts
+
+<sup>1</sup> Google works to provide the most accurate and up-to-date phishing and malware information.
+However, it cannot guarantee that its information is comprehensive and error-free: some risky sites may not be
+identified, and some safe sites may be identified in error.
