@@ -81,4 +81,7 @@ class typogen(object):
                         lstTypos.append(strTypo)
                     idx+=1
 
-        return set(lstTypos)
+        uniqueTypos = set(lstTypos)
+        uniqueTypos.remove(strHost)
+
+        return uniqueTypos
