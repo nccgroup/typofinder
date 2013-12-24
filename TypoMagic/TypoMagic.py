@@ -10,7 +10,10 @@
 # Released under AGPL see LICENSE for more information#
 #
 
+import argparse
+import sys
 import time
+import socket
 import http.server
 import urllib
 import re
@@ -259,13 +262,36 @@ class MultiThreadedHTTPServer(ThreadingMixIn, http.server.HTTPServer):
     pass
         
 if __name__ == '__main__':
-    server_class = http.server.HTTPServer
-    #httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
-    httpd = MultiThreadedHTTPServer((HOST_NAME, PORT_NUMBER), MyHandler)
-    print (time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER))
+    
+    print ("[i] NCC Group domain typofinder - https://github.com/nccgroup")
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p','--port', help='Port to listen on',required=False)
+    parser.add_argument('-a','--address', help='hostname / IP address to bind to',required=False)
+    parser.add_argument('-k','--key',help='Google SafeBrowsing API key', required=False)
+    args = parser.parse_args()
+
+    if(args.port != None):
+        try:    
+            PORT_NUMBER = int(args.port)
+        except ValueError:
+            print("[!] Port number needs to be an integer - defaulting back to 801")
+            pass
+  
+    if(args.address != None):
+        HOST_NAME = args.address
+    
+    try:   
+        httpd = MultiThreadedHTTPServer((HOST_NAME, PORT_NUMBER), MyHandler)
+    except socket.gaierror:
+        print("[!] Supplied address invalid! exiting!")
+        sys.exit()
+
+    print ("[i]", time.asctime(), " Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER))
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
+    
     httpd.server_close()
-    print (time.asctime(), "Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER))
+    print ("[i]", time.asctime(), " Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER))
