@@ -202,10 +202,10 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
         self.end_headers()
-        self.output("<html><head><title>NCC Typo Finder Results</title></head>")
-        self.output("<style type=\"text/css\">")
-        self.output("body {font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;}")
-        self.output("</style>")
+        self.output("<html><head>")
+        self.output("<title>NCC Typo Finder Results</title>")
+        self.output("<link rel=\"stylesheet\" type=\"text/css\" href=\"/style.css\">")
+        self.output("</head>")
         self.output("Released under AGPL by <a href=\"http://www.nccgroup.com/\">NCC Group</a> - source available <a href=\"https://github.com/nccgroup/typofinder\">here</a><br/>")
         
 
@@ -242,6 +242,14 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.send_header('Content-type','text/html')
                 self.end_headers()
                 self.wfile.write(f.read())
+                f.close()
+                return
+            elif self.path.endswith(".css") and self.path.find("..") != 0:
+                f = open(curdir + sep + self.path) 
+                self.send_response(200)
+                self.send_header('Content-type','text/css')
+                self.end_headers()
+                self.wfile.write(bytes(f.read(), 'UTF-8'))
                 f.close()
                 return
             elif self.path.endswith(".png") and self.path.find("..") != 0:
