@@ -199,29 +199,30 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
     def do_POST(self):
 
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
-        self.output("<html><head>")
-        self.output("<title>NCC Typo Finder Results</title>")
-        self.output("<link rel=\"stylesheet\" type=\"text/css\" href=\"/style.css\">")
-        self.output("</head>")
-        self.output("Released under AGPL by <a href=\"http://www.nccgroup.com/\">NCC Group</a> - source available <a href=\"https://github.com/nccgroup/typofinder\">here</a><br/>")
+        try:
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.output("<html><head>")
+            self.output("<title>NCC Typo Finder Results</title>")
+            self.output("<link rel=\"stylesheet\" type=\"text/css\" href=\"/style.css\">")
+            self.output("</head>")
+            self.output("Released under AGPL by <a href=\"http://www.nccgroup.com/\">NCC Group</a> - source available <a href=\"https://github.com/nccgroup/typofinder\">here</a><br/>")
         
 
-        length = int(self.headers['Content-Length'])
-        post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
+            length = int(self.headers['Content-Length'])
+            post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
         
-        #for key, value in post_data.items() :
-        #    print (key, value)
+            #for key, value in post_data.items() :
+            #    print (key, value)
 
-        strHost = str(post_data['host'])[2:-2]
-        if re.match('^[a-zA-Z0-9.-]+$',strHost): 
-            handleHost(strHost,self,False,False)
-        #self.output(strHost + "<br/>")
-
+            strHost = str(post_data['host'])[2:-2]
+            if re.match('^[a-zA-Z0-9.-]+$',strHost): 
+                handleHost(strHost,self,False,False)
+            #self.output(strHost + "<br/>")
+        except:
+            pass
               
-        
         return
 
     def do_GET(self):
@@ -261,10 +262,13 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 f.close()
                 return
             else:
-               self.send_error(404,'File Not Found: %s' % self.path)
+               self.send_error(404,'[!] File Not Found: %s' % self.path)
 
         except IOError:
-            self.send_error(404,'File Not Found: %s' % self.path)
+            self.send_error(404,'[!] File Not Found: %s' % self.path)
+
+        except:
+            pass
 
 class MultiThreadedHTTPServer(ThreadingMixIn, http.server.HTTPServer):
     pass
