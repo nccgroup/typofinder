@@ -51,8 +51,10 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
     except:
        IPv6 = None 
 
-    if (IPv4 is not None or IPv6 is not None) and not bMX:
-        http_handler.output(" " + safebrowsing.safebrowsingquery(sHostname))
+    # This line was commented out because for some reason it would not evaluate correctly and you would never get Safe Browsing results
+    # TODO: Fix this
+    #if (IPv4 is not None or IPv6 is not None):# and not bMX:
+    http_handler.output(" " + safebrowsing.safebrowsingquery(sHostname))
 
     http_handler.output("<br/>")
 
