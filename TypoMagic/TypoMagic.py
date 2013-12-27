@@ -10,7 +10,10 @@
 # Released under AGPL see LICENSE for more information#
 #
 
+import argparse
+import sys
 import time
+import socket
 import http.server
 import urllib
 import re
@@ -198,29 +201,30 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
     def do_POST(self):
 
-        self.send_response(200)
-        self.send_header("Content-type", "text/html")
-        self.end_headers()
-        self.output("<html><head><title>NCC Typo Finder Results</title></head>")
-        self.output("<style type=\"text/css\">")
-        self.output("body {font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;}")
-        self.output("</style>")
-        self.output("Released under AGPL by <a href=\"http://www.nccgroup.com/\">NCC Group</a> - source available <a href=\"https://github.com/nccgroup/typofinder\">here</a><br/>")
+        try:
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.output("<html><head>")
+            self.output("<title>NCC Typo Finder Results</title>")
+            self.output("<link rel=\"stylesheet\" type=\"text/css\" href=\"/style.css\">")
+            self.output("</head>")
+            self.output("Released under AGPL by <a href=\"http://www.nccgroup.com/\">NCC Group</a> - source available <a href=\"https://github.com/nccgroup/typofinder\">here</a><br/>")
         
 
-        length = int(self.headers['Content-Length'])
-        post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
+            length = int(self.headers['Content-Length'])
+            post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
         
-        #for key, value in post_data.items() :
-        #    print (key, value)
+            #for key, value in post_data.items() :
+            #    print (key, value)
 
-        strHost = str(post_data['host'])[2:-2]
-        if re.match('^[a-zA-Z0-9.-]+$',strHost): 
-            handleHost(strHost,self,False,False)
-        #self.output(strHost + "<br/>")
-
+            strHost = str(post_data['host'])[2:-2]
+            if re.match('^[a-zA-Z0-9.-]+$',strHost): 
+                handleHost(strHost,self,False,False)
+            #self.output(strHost + "<br/>")
+        except:
+            pass
               
-        
         return
 
     def do_GET(self):
@@ -243,6 +247,14 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.wfile.write(f.read())
                 f.close()
                 return
+            elif self.path.endswith(".css") and self.path.find("..") != 0:
+                f = open(curdir + sep + self.path) 
+                self.send_response(200)
+                self.send_header('Content-type','text/css')
+                self.end_headers()
+                self.wfile.write(bytes(f.read(), 'UTF-8'))
+                f.close()
+                return
             elif self.path.endswith(".png") and self.path.find("..") != 0:
                 f = open(curdir + sep + self.path, "rb") 
                 self.send_response(200)
@@ -252,22 +264,48 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 f.close()
                 return
             else:
-               self.send_error(404,'File Not Found: %s' % self.path)
+               self.send_error(404,'[!] File Not Found: %s' % self.path)
 
         except IOError:
-            self.send_error(404,'File Not Found: %s' % self.path)
+            self.send_error(404,'[!] File Not Found: %s' % self.path)
+
+        except:
+            pass
 
 class MultiThreadedHTTPServer(ThreadingMixIn, http.server.HTTPServer):
     pass
         
 if __name__ == '__main__':
-    server_class = http.server.HTTPServer
-    #httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
-    httpd = MultiThreadedHTTPServer((HOST_NAME, PORT_NUMBER), MyHandler)
-    print (time.asctime(), "Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER))
+    
+    print ("[i] NCC Group domain typofinder - https://github.com/nccgroup")
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p','--port', help='Port to listen on',required=False)
+    parser.add_argument('-a','--address', help='hostname / IP address to bind to',required=False)
+    parser.add_argument('-k','--key',help='Google SafeBrowsing API key', required=False)
+    args = parser.parse_args()
+
+    if(args.port != None):
+        try:    
+            PORT_NUMBER = int(args.port)
+        except ValueError:
+            print("[!] Port number needs to be an integer - defaulting back to 801")
+            pass
+  
+    if(args.address != None):
+        HOST_NAME = args.address
+    
+    try:   
+        httpd = MultiThreadedHTTPServer((HOST_NAME, PORT_NUMBER), MyHandler)
+    except socket.gaierror:
+        print("[!] Supplied address invalid! exiting!")
+        sys.exit()
+
+    print ("[i]", time.asctime(), " Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER))
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
+    
     httpd.server_close()
-    print (time.asctime(), "Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER))
+    print ("[i]", time.asctime(), " Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER))

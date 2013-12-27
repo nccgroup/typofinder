@@ -1,18 +1,18 @@
 <html>
-<head><title>NCC Typo Detector</title></head>
+<head>
+    <title>NCC Typo Detector</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
 
 <body>
 <center>
 
-<style type="text/css">
-body {font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;}
-form {font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;}
-input {font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;}
-</style>
-
+<img src="NCCLogo.png" alt="NCC Logo" /><br /><br />
+ 
 <!-- our form -->
 Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source available <a href="https://github.com/nccgroup/typofinder">here</a><br/>
 Supply the domain you wish to typo check and press enter
+
 <form id="typogulator" method="post" action="/typo.ncc">
     <input name="host" type="text" /> <br />
 </form>
@@ -31,7 +31,8 @@ Supply the domain you wish to typo check and press enter
     });
 
 </script>
-
+This product includes GeoLite data created by MaxMind,<br />
+available from <a href="http://www.maxmind.com">http://www.maxmind.com</a>.
 </center>
 </body>
 </html>
