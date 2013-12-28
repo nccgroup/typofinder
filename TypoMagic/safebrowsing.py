@@ -25,10 +25,10 @@ def safebrowsingquery (query_hostname):
     if apikey == "":
         # Return an alert string if the Safe Browsing API key is missing.
         # This text may be annoying for some users but we need to break here otherwise it will fail on all the URl checks.
-        return ("Missing API Key")
+        return "Missing API Key"
 	
     connection = http.client.HTTPSConnection("sb-ssl.google.com")
-    connection.request("GET","/safebrowsing/api/lookup?client=NCCTypoFinder&apikey=" + apikey + "&appver=1.0&pver=3.0&url=" + query_url)
+    connection.request("GET","/safebrowsing/api/lookup?client=api&apikey=" + apikey + "&appver=1.0&pver=3.0&url=" + query_url)
     response = connection.getresponse()
 
     if response.getcode() == 200:
@@ -36,10 +36,10 @@ def safebrowsingquery (query_hostname):
         title = ""
 		
         if "phishing" in body:
-            title += ( "Warning- Suspected phishing page. This page may be a forgery or imitation of another website, designed to trick users into sharing personal or financial information. Entering any personal information on this page may result in identity theft or other abuse. You can find out more about phishing from www.antiphishing.org.")
+            title += "Warning- Suspected phishing page. This page may be a forgery or imitation of another website, designed to trick users into sharing personal or financial information. Entering any personal information on this page may result in identity theft or other abuse. You can find out more about phishing from www.antiphishing.org."
         elif "malware" in body:
-            title += ( "Warning- Visiting this web site may harm your computer. This page appears to contain malicious code that could be downloaded to your computer without your consent. You can learn more about harmful web content including viruses and other malicious code and how to protect your computer at StopBadware.org.")
+            title += "Warning- Visiting this web site may harm your computer. This page appears to contain malicious code that could be downloaded to your computer without your consent. You can learn more about harmful web content including viruses and other malicious code and how to protect your computer at StopBadware.org."
 
         return "<b style='color:red' title='" + title + "'>" + body + "</b>" 
     elif response.getcode() == 204:
-        return ("")
+        return ""
