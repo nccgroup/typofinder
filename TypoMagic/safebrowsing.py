@@ -25,9 +25,6 @@ def safebrowsingquery (query_hostname):
         elif "malware" in body:
             title += "Warning- Visiting this web site may harm your computer. This page appears to contain malicious code that could be downloaded to your computer without your consent. You can learn more about harmful web content including viruses and other malicious code and how to protect your computer at StopBadware.org."
 
-        return "<b style='color:red' title='" + title + "'>" + body + "</b>"
+        return "<b style='color:red' title='" + title + "'>" + body + "</b>" 
     elif response.getcode() == 204:
-        return ("")
-
-
-
+        return ""

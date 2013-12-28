@@ -24,10 +24,6 @@ import typogen
 import hostinfo
 import safebrowsing
 
-
-HOST_NAME = ''      # leave like this for all
-PORT_NUMBER = 801   # this will be fine
-
 _hostinfo = hostinfo.hostinfo()
 
 def handleHost(sHostname, http_handler, bMX, bTypo):
@@ -51,7 +47,8 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
     except:
        IPv6 = None 
 
-    if (IPv4 is not None or IPv6 is not None) and not bMX:
+    # Only display results about the domain's web site if it resolves and we aren't processing an MX record
+    if (IPv4 or IPv6) and not bMX:
         http_handler.output(" " + safebrowsing.safebrowsingquery(sHostname))
 
     http_handler.output("<br/>")
@@ -250,7 +247,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-type','text/css')
                 self.end_headers()
-                self.wfile.write(bytes(f.read(), 'UTF-8'))
+                self.output(f.read())
                 f.close()
                 return
             elif self.path.endswith(".png") and self.path.find("..") != 0:
@@ -272,38 +269,45 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
 class MultiThreadedHTTPServer(ThreadingMixIn, http.server.HTTPServer):
     pass
-        
+
+def tcpport(parameter):
+    """
+    Callable for converting valid TCP port number Strings into ints.
+
+    @param parameter: The string representation of the TCP port number.
+    @return: The int representation of the TCP port number if it's valid.
+    @raise argparse.ArgumentTypeError: If the given value is invalid.
+    """
+    try:
+        int_param = int(parameter)
+    except ValueError:
+        raise argparse.ArgumentTypeError("Port number needs to be an integer")
+    if not int_param in range(1, 65536):
+        raise argparse.ArgumentTypeError("Port number needs to be between 1 and 65535")
+    return int_param
+
 if __name__ == '__main__':
     
     print ("[i] NCC Group domain typofinder - https://github.com/nccgroup")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p','--port', help='Port to listen on',required=False)
-    parser.add_argument('-a','--address', help='hostname / IP address to bind to',required=False)
-    parser.add_argument('-k','--key',help='Google SafeBrowsing API key', required=False)
+    parser.add_argument('-p','--port', help='Port to listen on',required=False, type=tcpport, default=801)
+    parser.add_argument('-a','--address', help='hostname / IP address to bind to',required=False, type=str, default='')
+    #TODO: complete implementation...
+    #parser.add_argument('-k','--key',help='Google SafeBrowsing API key', required=False)
     args = parser.parse_args()
 
-    if(args.port != None):
-        try:    
-            PORT_NUMBER = int(args.port)
-        except ValueError:
-            print("[!] Port number needs to be an integer - defaulting back to 801")
-            pass
-  
-    if(args.address != None):
-        HOST_NAME = args.address
-    
     try:   
-        httpd = MultiThreadedHTTPServer((HOST_NAME, PORT_NUMBER), MyHandler)
+        httpd = MultiThreadedHTTPServer((args.address, args.port), MyHandler)
     except socket.gaierror:
         print("[!] Supplied address invalid! exiting!")
         sys.exit()
 
-    print ("[i]", time.asctime(), " Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER))
+    print ("[i]", time.asctime(), " Server Starts - %s:%s" % (args.address, args.port))
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
     
     httpd.server_close()
-    print ("[i]", time.asctime(), " Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER))
+    print ("[i]", time.asctime(), " Server Stops - %s:%s" % (args.address, args.port))
