@@ -29,7 +29,7 @@ Dependencies
 What it does
 -------------
 * remove characters from the supplied domain
-* duplicate characters in the suppled domain
+* duplicate characters in the supplied domain
 * replace characters with adjacent keyboard characters depending on keyboard map supplied
 * swap the global TLD for each of the current valid TLDs list at - http://data.iana.org/TLD/tlds-alpha-by-domain.txt
 * checks web sites against Google's Safe Browsing API<sup>1</sup>

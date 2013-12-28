@@ -247,7 +247,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-type','text/css')
                 self.end_headers()
-                self.wfile.write(bytes(f.read(), 'UTF-8'))
+                self.output(f.read())
                 f.close()
                 return
             elif self.path.endswith(".png") and self.path.find("..") != 0:
