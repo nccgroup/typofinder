@@ -40,12 +40,6 @@ Usage
 * Connect to http://127.0.0.1:801
 * Follow prompts
 
-If you would like to use the Google Safe Browsing check your must first request an API key and place this in "apikey" parameter in safebrowsing.py
-
-Obtain your API key here: https://developers.google.com/safe-browsing/key_signup
-
-You can find further information on Google Safe Browsing API here: https://developers.google.com/safe-browsing/
-
 <sup>1</sup> Google works to provide the most accurate and up-to-date phishing and malware information.
 However, it cannot guarantee that its information is comprehensive and error-free: some risky sites may not be
 identified, and some safe sites may be identified in error.
