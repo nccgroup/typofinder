@@ -303,11 +303,11 @@ if __name__ == '__main__':
         print("[!] Supplied address invalid! exiting!")
         sys.exit()
 
-    print ("[i]", time.asctime(), " Server Starts - %s:%s" % (HOST_NAME, PORT_NUMBER))
+    print ("[i]", time.asctime(), " Server Starts - %s:%s" % (args.address, args.port))
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
     
     httpd.server_close()
-    print ("[i]", time.asctime(), " Server Stops - %s:%s" % (HOST_NAME, PORT_NUMBER))
+    print ("[i]", time.asctime(), " Server Stops - %s:%s" % (args.address, args.port))
