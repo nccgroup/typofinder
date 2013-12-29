@@ -48,7 +48,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
     // this generate the accordian tag
     function generateTag(data) {
         var bVal = false;
-        var strTag = "(";
+        var strTag = "( ";
 
         // IPv4 Address
         if (data.IPv4Addresses.length > 0) {
@@ -131,6 +131,12 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             //}
         }
         strTag = strTag + ")";
+
+        // safe browsing
+        if (data.SafeBrowsing.length > 0) {
+            strTag = strTag + "SafeBrowsingAlert ";
+            bVal = true;
+        }
 
         if (bVal == true) return strTag;
         else return null;
@@ -265,13 +271,9 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 geoIPImageIPv4(data.wwwv4[intCount], li);
 
                 // Safebrowsing
-                //if (data.SafeBrowsing.length > 0) {
-                //    var ulinner = document.createElement('ul');
-                //    li.appendChild(ulinner);
-                //    var liinner = document.createElement('li');
-                //    ulinner.appendChild(liinner);
-                //    liinner.innerText = data.SafeBrowsing;
-                //}
+                if (data.SafeBrowsing.length > 0) {
+                    li.innerText = "www IPv4: " + data.wwwv6[intCount] + " - " + data.SafeBrowsing;
+                }
             }
         }
 
@@ -286,13 +288,9 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 geoIPImageIPv6(data.wwwv6[intCount], li);
 
                 // Safebrowsing
-                //if (data.SafeBrowsing.length > 0) {
-                //    var ulinner = document.createElement('ul');
-                //    li.appendChild(ulinner);
-                //    var liinner = document.createElement('li');
-                //    ulinner.appendChild(liinner);
-                //    liinner.innerText = data.SafeBrowsing;
-                //}
+                if (data.SafeBrowsing.length > 0) {
+                    li.innerText = "www IPv6: " + data.wwwv6[intCount]  + " - " + data.SafeBrowsing;
+                }
             }
         }
 
@@ -387,6 +385,8 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 document.getElementById("progressbar").style.display = "none";
                 // Shows the results
                 document.getElementById("results").style.display = "block";
+                // Shows the original form
+                document.getElementById("typogulator").style.display = "block";
             }
 
             //console.log("[debug] pbar val " + intPBarCount);
@@ -416,10 +416,14 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             value: 0
         });
 
+        // Hide the progressbar
+        document.getElementById("progressbar").style.display = "none";
 
         $("#typogulator").submit(function () {
             // Hide the form
             document.getElementById("typogulator").style.display = "none";
+            // Show the progress bar
+            document.getElementById("progressbar").style.display = "block";
 
             //Do the AJAX post
             $.post($("#typogulator").attr("action"), $("#typogulator").serialize(), function (data) {
@@ -457,10 +461,10 @@ available from <a href="http://www.maxmind.com">http://www.maxmind.com</a>.
 </center>
 
 <!-- Progressbar -->
-<div id="progressbar"></div>
+<div id="progressbar" class="progressbar"></div>
 
-<div id="results" class="results">
-</div>
+<!-- Results -->
+<div id="results" class="results"></div>
 
 </body>
 </html>

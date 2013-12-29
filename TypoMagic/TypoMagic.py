@@ -71,7 +71,7 @@ def handleHostAJAX(sDomain):
 
     # Safe Browsing
     try:
-        #typo.SafeBrowsing = safebrowsing.safebrowsingqueryv2("www." + sDomain);
+        typo.SafeBrowsing = safebrowsing.safebrowsingqueryv2("www." + sDomain);
         pass
     except:
         pass
@@ -321,15 +321,38 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
                 print("[i] " + str(post_data))
                 strHost = str(post_data['host'])[2:-2]
+
+                
+                try:
+                    str(post_data['tld'])
+                    bTLD = True;
+                except KeyError:
+                    bTLD = False;
+
+                try:
+                    str(post_data['typos'])
+                    bTypos = True;
+                except KeyError:
+                    bTypos = False;
+
+                if(bTypos == False and bTLD == False):
+                     print("[i] No typos to process for " + strHost + " due to user option")
+                     self.output("[!] No typos for " + strHost)  
+                     return    
+
                 if re.match('^[a-zA-Z0-9.-]+$',strHost):
                     print("[i] Processing typos for " + strHost) 
-                    lstTypos = typogen.typogen.generatetypos(strHost,"GB")
+                    lstTypos = typogen.typogen.generatetyposv2(strHost,"GB",bTLD,bTypos)
                     if lstTypos is not None:
                         self.output(json.dumps([strTypoHost for strTypoHost in lstTypos]))
                     else:
                         self.output("[!] No typos for " + strHost)   
                     print("[i] Processed typos for " + strHost)   
-
+                    return
+                else:
+                    self.output("[!] Invalid domain " + strHost)  
+                    print("[i] Invalid domain " + strHost)    
+                    return
             # v2 AJAX API - get basic information for a domain      
             elif self.path.endswith("entity.ncc"):
                 self.send_response(200)

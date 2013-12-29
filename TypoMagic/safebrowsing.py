@@ -52,9 +52,7 @@ def safebrowsingqueryv2 (query_hostname):
             title += "Warning- Suspected phishing page. This page may be a forgery or imitation of another website, designed to trick users into sharing personal or financial information. Entering any personal information on this page may result in identity theft or other abuse. You can find out more about phishing from www.antiphishing.org."
         elif "malware" in body:
             title += "Warning- Visiting this web site may harm your computer. This page appears to contain malicious code that could be downloaded to your computer without your consent. You can learn more about harmful web content including viruses and other malicious code and how to protect your computer at StopBadware.org."
-        else:
-            title += "Not suspicious"
 
         return title
     elif response.getcode() == 204:
-        return "Error"
+        return ""
