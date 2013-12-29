@@ -68,7 +68,15 @@ def handleHostAJAX(sDomain):
     except:
         pass
 
-    # WWWW
+
+    # Safe Browsing
+    try:
+        #typo.SafeBrowsing = safebrowsing.safebrowsingqueryv2("www." + sDomain);
+        pass
+    except:
+        pass
+
+    # WWW
     try:
         for hostData in _hostinfo.getWWW(sDomain):
             typo.wwwv4.append(hostData.address)

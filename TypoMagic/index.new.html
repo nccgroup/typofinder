@@ -263,6 +263,15 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 ul.appendChild(li);
                 li.innerText = "www IPv4: " + data.wwwv4[intCount];
                 geoIPImageIPv4(data.wwwv4[intCount], li);
+
+                // Safebrowsing
+                //if (data.SafeBrowsing.length > 0) {
+                //    var ulinner = document.createElement('ul');
+                //    li.appendChild(ulinner);
+                //    var liinner = document.createElement('li');
+                //    ulinner.appendChild(liinner);
+                //    liinner.innerText = data.SafeBrowsing;
+                //}
             }
         }
 
@@ -275,6 +284,15 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 ul.appendChild(li);
                 li.innerText = "www IPv6: " + data.wwwv6[intCount];
                 geoIPImageIPv6(data.wwwv6[intCount], li);
+
+                // Safebrowsing
+                //if (data.SafeBrowsing.length > 0) {
+                //    var ulinner = document.createElement('ul');
+                //    li.appendChild(ulinner);
+                //    var liinner = document.createElement('li');
+                //    ulinner.appendChild(liinner);
+                //    liinner.innerText = data.SafeBrowsing;
+                //}
             }
         }
 
