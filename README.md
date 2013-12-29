@@ -5,8 +5,9 @@ Typofinder for domain typo discovery
 
 Released as open source by NCC Group Plc - http://www.nccgroup.com/
 
-Developed by Ollie Whitehouse, ollie dot whitehouse at nccgroup dot com<br/>
-             Stephen Tomkinson, @neonbunny9 on twitter
+Developed by:
+* Ollie Whitehouse, ollie dot whitehouse at nccgroup dot com
+* Stephen Tomkinson, @neonbunny9 on twitter
 
 https://github.com/nccgroup/typofinder
 
