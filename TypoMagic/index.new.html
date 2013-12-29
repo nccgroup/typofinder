@@ -19,11 +19,12 @@
 </head>
 
 <body>
-<center>
 
 <link href="/css/ui-lightness/jquery-ui-1.10.3.custom.css" rel="stylesheet">
 <script src="/js/jquery-2.0.3.js"></script>
 <script src="/js/jquery-ui-1.10.3.custom.js"></script>
+
+<center>
 
 <img src="NCCLogo.png" alt="NCC Logo" /><br /><br />
  
@@ -48,6 +49,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
     function loadDetails(strDomain) {
         var URL = "/entity.ncc";
         var strTag = " ( ";
+        var intCount = 0;
 
         $.post(URL, { host: strDomain }, function (data) {
             //console.log(data)
@@ -55,7 +57,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             // IPv4 Address
             if (data.IPv4Addresses.length > 0) {
                 strTag = strTag + "IPv4 ";
-                for (var intCount = 0; intCount < data.IPv4Addresses.length; intCount++) {
+                for (intCount = 0; intCount < data.IPv4Addresses.length; intCount++) {
                     console.log(data.IPv4Addresses[intCount])
                 }
             }
@@ -63,7 +65,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             // IPv6 Address
             if (data.IPv6Addresses.length > 0) {
                 strTag = strTag + "IPv6 ";
-                for (var intCount = 0; intCount < data.IPv6Addresses.length; intCount++) {
+                for (intCount = 0; intCount < data.IPv6Addresses.length; intCount++) {
                     console.log(data.IP64Addresses[intCount])
                 }
             }
@@ -71,7 +73,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             // MX Records
             if (data.aMX.length > 0) {
                 strTag = strTag + "MX ";
-                for (var intCount = 0; intCount < data.aMX.length; intCount++) {
+                for (intCount = 0; intCount < data.aMX.length; intCount++) {
                     console.log(data.aMX[intCount])
                 }
             }
@@ -79,7 +81,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             // www IPv4 Address
             if (data.wwwv4.length > 0) {
                 strTag = strTag + "WWWv4 ";
-                for (var intCount = 0; intCount < data.wwwv4.length; intCount++) {
+                for (intCount = 0; intCount < data.wwwv4.length; intCount++) {
                     console.log(data.wwwv4[intCount])
                 }
             }
@@ -87,7 +89,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             // www IPv6 Address
             if (data.wwwv6.length > 0) {
                 strTag = strTag + "WWWv6 ";
-                for (var intCount = 0; intCount < data.wwwv6.length; intCount++) {
+                for (intCount = 0; intCount < data.wwwv6.length; intCount++) {
                     console.log(data.wwwv6[intCount])
                 }
             }
@@ -95,7 +97,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             // m IPv4 Address
             if (data.mv4.length > 0) {
                 strTag = strTag + "Mv4 ";
-                for (var intCount = 0; intCount < data.mv4.length; intCount++) {
+                for (intCount = 0; intCount < data.mv4.length; intCount++) {
                     console.log(data.mv4[intCount])
                 }
             }
@@ -103,7 +105,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             // m IPv6 Address
             if (data.mv6.length > 0) {
                 strTag = strTag + "Mv6 ";
-                for (var intCount = 0; intCount < data.mv6.length; intCount++) {
+                for (intCount = 0; intCount < data.mv6.length; intCount++) {
                     console.log(data.mv6[intCount])
                 }
             }
@@ -111,7 +113,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             // webmail IPv4 Address
             if (data.webmailv4.length > 0) {
                 strTag = strTag + "WebMailv4 ";
-                for (var intCount = 0; intCount < data.webmailv4.length; intCount++) {
+                for (intCount = 0; intCount < data.webmailv4.length; intCount++) {
                     console.log(data.webmailv4[intCount])
                 }
             }
@@ -119,7 +121,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             // webmail IPv6 Address
             if (data.webmailv6.length > 0) {
                 strTag = strTag + "WebMailv6 ";
-                for (var intCount = 0; intCount < data.webmailv6.length; intCount++) {
+                for (intCount = 0; intCount < data.webmailv6.length; intCount++) {
                     console.log(data.webmailv6[intCount])
                 }
             }
