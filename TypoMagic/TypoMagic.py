@@ -322,7 +322,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 print("[i] " + str(post_data))
                 strHost = str(post_data['host'])[2:-2]
 
-                
+                # option checking
                 try:
                     str(post_data['tld'])
                     bTLD = True;
@@ -335,21 +335,28 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 except KeyError:
                     bTypos = False;
 
+                # stupid user
                 if(bTypos == False and bTLD == False):
                      print("[i] No typos to process for " + strHost + " due to user option")
-                     self.output("[!] No typos for " + strHost)  
+                     # this will cause an error in the JavaScript client which is relied upon
+                     self.output("[!] No typos for " + strHost) 
                      return    
 
+                # domain name validation
                 if re.match('^[a-zA-Z0-9.-]+$',strHost):
                     print("[i] Processing typos for " + strHost) 
                     lstTypos = typogen.typogen.generatetyposv2(strHost,"GB",bTLD,bTypos)
                     if lstTypos is not None:
                         self.output(json.dumps([strTypoHost for strTypoHost in lstTypos]))
                     else:
-                        self.output("[!] No typos for " + strHost)   
+                        # this will cause an error in the JavaScript client which is relied upon
+                        self.output("[!] No typos for " + strHost) 
+                        print("[!] No typos for " + strHost)   
+
                     print("[i] Processed typos for " + strHost)   
                     return
                 else:
+                    # this will cause an error in the JavaScript client which is relied upon
                     self.output("[!] Invalid domain " + strHost)  
                     print("[i] Invalid domain " + strHost)    
                     return

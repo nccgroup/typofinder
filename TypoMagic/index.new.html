@@ -396,6 +396,9 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
         })
         .fail(function (xhr, textStatus, errorThrown) {
             //console.log(xhr.statusText);
+            //document.getElementById("progressbar").style.display = "none";
+            //document.getElementById("results").style.display = "none";
+            //document.getElementById("typogulator").style.display = "block";
             //console.log(textStatus);
             //console.log(errorThrown);
         })
@@ -447,7 +450,18 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                     loadDetails(data[key]);
                 }
 
-            });
+            })
+            .fail(function (xhr, textStatus, errorThrown) {
+                //console.log(xhr.statusText);
+                document.getElementById("progressbar").style.display = "none";
+                document.getElementById("results").style.display = "none";
+                document.getElementById("typogulator").style.display = "block";
+                //console.log(textStatus);
+                //console.log(errorThrown);
+            })
+            .always(function (data) {
+                //console.log(data)
+            }, 'json');
 
             //Important. Stop the normal POST
             return false;
