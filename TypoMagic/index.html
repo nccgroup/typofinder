@@ -14,7 +14,7 @@
 
 <html>
 <head>
-    <title>NCC Typo Detector</title>
+    <title>NCC Domain Typo Discovery Tool</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css" />
     <link href="/css/ui-lightness/jquery-ui-1.10.3.custom.css" rel="stylesheet" />
 </head>
@@ -60,7 +60,9 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
         $("#results").accordion("refresh");
     }
 
-    // this generate the accordian tag
+    // ---------------------------------
+    // this generates the accordian tag
+    // note: this needs to set bVal true for it to appear
     function generateTag(data) {
         var bVal = false;
         var strTag = "( ";
@@ -69,82 +71,56 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
         if (data.IPv4Addresses.length > 0) {
             strTag = strTag + "IPv4 ";
             bVal = true;
-            //for (intCount = 0; intCount < data.IPv4Addresses.length; intCount++) {
-            //    console.log(data.IPv4Addresses[intCount])
-            //}
         }
 
         // IPv6 Address
         if (data.IPv6Addresses.length > 0) {
             strTag = strTag + "IPv6 ";
             bVal = true;
-            //for (intCount = 0; intCount < data.IPv6Addresses.length; intCount++) {
-            //    console.log(data.IP64Addresses[intCount])
-            //}
         }
 
         // MX Records
         if (data.aMX.length > 0) {
             strTag = strTag + "MX ";
             bVal = true;
-            //for (intCount = 0; intCount < data.aMX.length; intCount++) {
-            //    console.log(data.aMX[intCount])
-            //}
         }
 
         // www IPv4 Address
         if (data.wwwv4.length > 0) {
             strTag = strTag + "WWWv4 ";
             bVal = true;
-            //for (intCount = 0; intCount < data.wwwv4.length; intCount++) {
-            //    console.log(data.wwwv4[intCount])
-            //}
         }
 
         // www IPv6 Address
         if (data.wwwv6.length > 0) {
             strTag = strTag + "WWWv6 ";
             bVal = true;
-            //for (intCount = 0; intCount < data.wwwv6.length; intCount++) {
-            //    console.log(data.wwwv6[intCount])
-            //}
         }
 
         // m IPv4 Address
         if (data.mv4.length > 0) {
             strTag = strTag + "Mv4 ";
             bVal = true;
-            //for (intCount = 0; intCount < data.mv4.length; intCount++) {
-            //    console.log(data.mv4[intCount])
-            //}
         }
 
         // m IPv6 Address
         if (data.mv6.length > 0) {
             strTag = strTag + "Mv6 ";
             bVal = true;
-            //for (intCount = 0; intCount < data.mv6.length; intCount++) {
-            //    console.log(data.mv6[intCount])
-            //}
         }
 
         // webmail IPv4 Address
         if (data.webmailv4.length > 0) {
             strTag = strTag + "WebMailv4 ";
             bVal = true;
-            //for (intCount = 0; intCount < data.webmailv4.length; intCount++) {
-            //    console.log(data.webmailv4[intCount])
-            //}
         }
 
         // webmail IPv6 Address
         if (data.webmailv6.length > 0) {
             strTag = strTag + "WebMailv6 ";
             bVal = true;
-            //for (intCount = 0; intCount < data.webmailv6.length; intCount++) {
-            //    console.log(data.webmailv6[intCount])
-            //}
         }
+
         strTag = strTag + ")";
 
         // safe browsing
@@ -217,7 +193,8 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
         }
     }
 
-    // this generates the div contents
+    // ---------------------------------
+    // this generates the results div contents for this domain
     // for a particular domain
     function fillDetails(domDiv, data) {
         var ul = null;
@@ -466,6 +443,8 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             intPBarCount = 0;
             $("#progressbar").progressbar("option", "value", 0);
             document.getElementById("progressbar").style.display = "block";
+            // Reset the list of domains which didn't yield results 
+            domainsNoResults = new Array();
 
             //Do the AJAX post
             $.post($("#typogulator").attr("action"), $("#typogulator").serialize(), function (data) {
@@ -514,7 +493,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
 <div class="ui-widget">
 <p>
 This product includes GeoLite data created by MaxMind,<br />
-available from <a href="http://www.maxmind.com">http://www.maxmind.com</a>.
+available from <a href="http://www.maxmind.com">www.maxmind.com</a>.
 </p>
 </div>
 </center>
