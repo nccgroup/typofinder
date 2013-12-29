@@ -1,0 +1,211 @@
+<html>
+<head>
+    <title>NCC Typo Detector</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+
+<body>
+<center>
+
+<link href="/css/ui-lightness/jquery-ui-1.10.3.custom.css" rel="stylesheet">
+<script src="/jquery-2.0.3.js"></script>
+<script src="/js/jquery-ui-1.10.3.custom.js"></script>
+
+<img src="NCCLogo.png" alt="NCC Logo" /><br /><br />
+ 
+<!-- our form -->
+Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source available <a href="https://github.com/nccgroup/typofinder">here</a><br/>
+
+<form id="typogulator" method="post" action="/typo.ncc">
+    Supply the domain you wish to typo check and press enter<br />
+    <input name="host" type="text" size="75" /> <br />
+    <input type="checkbox" name="typos" value="typos" checked />Generate typos 
+    <input type="checkbox" name="tld" value="tlds" checked />Swaps TLD with global TLDs<br />
+</form>
+
+<!-- events -->
+<script>
+
+    var intPBarMax = 0;
+    var intPBarCount = 0;
+
+    // this is called for each domain
+    // to parse the JSON results
+    function loadDetails(strDomain) {
+        var URL = "/entity.ncc";
+        var strTag = " ( ";
+
+        $.post(URL, { host: strDomain }, function (data) {
+            //console.log(data)
+
+            // IPv4 Address
+            if (data.IPv4Addresses.length > 0) {
+                strTag = strTag + "IPv4 ";
+                for (var intCount = 0; intCount < data.IPv4Addresses.length; intCount++) {
+                    console.log(data.IPv4Addresses[intCount])
+                }
+            }
+
+            // IPv6 Address
+            if (data.IPv6Addresses.length > 0) {
+                strTag = strTag + "IPv6 ";
+                for (var intCount = 0; intCount < data.IPv6Addresses.length; intCount++) {
+                    console.log(data.IP64Addresses[intCount])
+                }
+            }
+
+            // MX Records
+            if (data.aMX.length > 0) {
+                strTag = strTag + "MX ";
+                for (var intCount = 0; intCount < data.aMX.length; intCount++) {
+                    console.log(data.aMX[intCount])
+                }
+            }
+
+            // www IPv4 Address
+            if (data.wwwv4.length > 0) {
+                strTag = strTag + "WWWv4 ";
+                for (var intCount = 0; intCount < data.wwwv4.length; intCount++) {
+                    console.log(data.wwwv4[intCount])
+                }
+            }
+
+            // www IPv6 Address
+            if (data.wwwv6.length > 0) {
+                strTag = strTag + "WWWv6 ";
+                for (var intCount = 0; intCount < data.wwwv6.length; intCount++) {
+                    console.log(data.wwwv6[intCount])
+                }
+            }
+
+            // m IPv4 Address
+            if (data.mv4.length > 0) {
+                strTag = strTag + "Mv4 ";
+                for (var intCount = 0; intCount < data.mv4.length; intCount++) {
+                    console.log(data.mv4[intCount])
+                }
+            }
+
+            // m IPv6 Address
+            if (data.mv6.length > 0) {
+                strTag = strTag + "Mv6 ";
+                for (var intCount = 0; intCount < data.mv6.length; intCount++) {
+                    console.log(data.mv6[intCount])
+                }
+            }
+
+            // webmail IPv4 Address
+            if (data.webmailv4.length > 0) {
+                strTag = strTag + "WebMailv4 ";
+                for (var intCount = 0; intCount < data.webmailv4.length; intCount++) {
+                    console.log(data.webmailv4[intCount])
+                }
+            }
+
+            // webmail IPv6 Address
+            if (data.webmailv6.length > 0) {
+                strTag = strTag + "WebMailv6 ";
+                for (var intCount = 0; intCount < data.webmailv6.length; intCount++) {
+                    console.log(data.webmailv6[intCount])
+                }
+            }
+            strTag = strTag + ")";
+
+            // Header
+            var node = document.createElement("H3");
+            node.setAttribute("id", data.strDomain);
+
+            // Header value
+            var textnode = document.createTextNode(data.strDomain + strTag);
+            node.appendChild(textnode);
+            document.getElementById("results").appendChild(node);
+
+            // Div
+            var mydiv = document.createElement("div");
+            mydiv.innerText = "hi";
+            document.getElementById("results").appendChild(mydiv);
+
+            intPBarCount++
+            // Style
+            if (intPBarCount >= intPBarMax) {
+                $("#results").accordion("refresh");
+                // Hide the progress bar
+                document.getElementById("progressbar").style.display = "none";
+                // Shows the results
+                document.getElementById("results").style.display = "block";
+            }
+
+            //console.log("[debug] pbar val " + intPBarCount);
+            $("#progressbar").progressbar("option", "value", intPBarCount);
+
+            //$("#results").accordion("refresh");
+        })
+        .fail(function (xhr, textStatus, errorThrown) {
+            //console.log(xhr.statusText);
+            //console.log(textStatus);
+            //console.log(errorThrown);
+        })
+        .always(function (data) {
+            //console.log(data)
+        }, 'json');
+    }
+
+    // http://gilbert.pellegrom.me/html-forms-to-ajax-forms-the-easy-way/
+    $(document).ready(function () {
+
+        // init the accordion
+        $("#results").accordion();
+
+        // init the progressbar
+        $("#progressbar").progressbar({
+            value: 0
+        });
+
+
+        $("#typogulator").submit(function () {
+            // Hide the form
+            document.getElementById("typogulator").style.display = "none";
+
+            //Do the AJAX post
+            $.post($("#typogulator").attr("action"), $("#typogulator").serialize(), function (data) {
+                //$("#results").html(data);
+
+                intPBarMax = data.length;
+                $("#progressbar").progressbar("option", "max", data.length);
+                //console.log("[debug] pbar len " + data.length);
+
+                // add them to a list 
+                for (var key in data) {
+
+                }
+
+                // Style
+                //$("#results").accordion("refresh");
+
+                // now loop through and process them
+                for (key in data) {
+                    // the success function
+                    loadDetails(data[key]);
+                }
+
+            });
+
+            //Important. Stop the normal POST
+            return false;
+        });
+    });
+
+</script>
+
+This product includes GeoLite data created by MaxMind,<br />
+available from <a href="http://www.maxmind.com">http://www.maxmind.com</a>.
+</center>
+
+<!-- Progressbar -->
+<div id="progressbar"></div>
+
+<div id="results" class="results">
+</div>
+
+</body>
+</html>

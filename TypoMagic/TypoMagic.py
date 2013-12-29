@@ -16,16 +16,72 @@ import time
 import socket
 import http.server
 import urllib
+import traceback
 import re
+import dns.resolver
 from os import curdir, sep
 from socketserver import ThreadingMixIn
 from dns.resolver import NoNameservers
+import json
 import typogen
 import hostinfo
+from objtypo import objtypo
 import safebrowsing
 
 _hostinfo = hostinfo.hostinfo()
 
+# v2 AJAX API
+def handleHostAJAX(sDomain):
+    typo = objtypo()
+    
+    typo.strDomain = sDomain
+    
+    try:
+        for hostData in _hostinfo.getIPv4(sDomain):
+            typo.IPv4Address.append(hostData.address)
+    except:
+        pass
+
+    try:
+        for hostData in _hostinfo.getIPv6(sDomain):
+            typo.IPv6Address.append(hostData.address)
+    except:
+        pass
+
+    try:
+        for hostData in _hostinfo.getMX(sDomain):
+            typo.aMX.append(str(hostData.exchange).strip("."))
+    except:
+        pass
+
+    #try:
+    #    typo.IPv6Address = _hostinfo.getIPv6(sDomain)
+    #    print(typo.IPv6Address)
+    #except:
+    #    pass
+
+    #try:
+    #    typo.webmailv4 = _hostinfo.getWEBMail(sDomain)
+    #    print(typo.webmailv4 )
+    #except:
+    #    pass
+
+    #try:
+    #    typo.webmailv6 = _hostinfo.getWEBMailv6(sDomain)
+    #    print(typo.webmailv6)
+    #except:
+    #    pass
+
+    #try:
+    #    typo.aMX = _hostinfo.getMX(sDomain)
+    #    print(typo.aMX )
+    #except:
+    #    pass
+        
+    return typo
+
+
+# v1 non AJAX API
 def handleHost(sHostname, http_handler, bMX, bTypo):
     
     if bMX:
@@ -195,29 +251,64 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
 
     def do_POST(self):
+        """Respond to a POST request."""
 
         try:
-            self.send_response(200)
-            self.send_header("Content-type", "text/html")
-            self.end_headers()
-            self.output("<html><head>")
-            self.output("<title>NCC Typo Finder Results</title>")
-            self.output("<link rel=\"stylesheet\" type=\"text/css\" href=\"/style.css\">")
-            self.output("</head>")
-            self.output("Released under AGPL by <a href=\"http://www.nccgroup.com/\">NCC Group</a> - source available <a href=\"https://github.com/nccgroup/typofinder\">here</a><br/>")
+            # legacy API from v1
+            if self.path.endswith("typo.ncc"):
+                self.send_response(200)
+                self.send_header("Content-type", "text/html")
+                self.end_headers()
+                self.output("<html><head>")
+                self.output("<title>NCC Typo Finder Results</title>")
+                self.output("<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/oldstyle.css\">")
+                self.output("</head>")
+                self.output("Released under AGPL by <a href=\"http://www.nccgroup.com/\">NCC Group</a> - source available <a href=\"https://github.com/nccgroup/typofinder\">here</a><br/>")
         
 
-            length = int(self.headers['Content-Length'])
-            post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
+                length = int(self.headers['Content-Length'])
+                post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
         
-            #for key, value in post_data.items() :
-            #    print (key, value)
+                strHost = str(post_data['host'])[2:-2]
+                if re.match('^[a-zA-Z0-9.-]+$',strHost): 
+                    handleHost(strHost,self,False,False)
+            
+            # v2 AJAX API
+            elif self.path.endswith("typov2.ncc"):
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+       
+                length = int(self.headers['Content-Length'])
+                post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
+                print("[i] " + str(post_data))
+                strHost = str(post_data['host'])[2:-2]
+                if re.match('^[a-zA-Z0-9.-]+$',strHost):
+                    print("[i] Processing typos for " + strHost) 
+                    lstTypos = typogen.typogen.generatetypos(strHost,"GB")
+                    if lstTypos is not None:
+                        self.output(json.dumps([strTypoHost for strTypoHost in lstTypos]))
+                    else:
+                        self.output("[!] No typos for " + strHost)   
+                    print("[i] Processed typos for " + strHost)   
 
-            strHost = str(post_data['host'])[2:-2]
-            if re.match('^[a-zA-Z0-9.-]+$',strHost): 
-                handleHost(strHost,self,False,False)
-            #self.output(strHost + "<br/>")
+            # v2 AJAX API      
+            elif self.path.endswith("entity.ncc"):
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+                
+                length = int(self.headers['Content-Length'])
+                post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
+                strHost = str(post_data['host'])[2:-2]
+                try:
+                    objFoo = handleHostAJAX(strHost)
+                    self.output(json.dumps(objFoo.reprJSON()))
+                except dns.resolver.NXDOMAIN:
+                    pass
         except:
+            print(sys.exc_info())
+            traceback.print_exc(file=sys.stdout)
             pass
               
         return
@@ -239,7 +330,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-type','text/html')
                 self.end_headers()
-                self.wfile.write(f.read())
+                self.output(f.read())
                 f.close()
                 return
             elif self.path.endswith(".css") and self.path.find("..") != 0:
@@ -248,6 +339,14 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.send_header('Content-type','text/css')
                 self.end_headers()
                 self.output(f.read())
+                f.close()
+                return
+            elif self.path.endswith(".js") and self.path.find("..") != 0:
+                f = open(curdir + sep + self.path) 
+                self.send_response(200)
+                self.send_header('Content-type','application/javascript')
+                self.end_headers()
+                self.wfile.write(bytes(f.read(), 'UTF-8'))
                 f.close()
                 return
             elif self.path.endswith(".png") and self.path.find("..") != 0:
