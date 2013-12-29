@@ -136,6 +136,49 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
         else return null;
     }
 
+    // this returns an image DOM object
+    // for the flag for the geo of the 
+    // IPv4 address
+    function geoIPImageIPv4(sIP, domLI) {
+        var URL = "/geov4.ncc";
+
+        $.post(URL, { IP: sIP }, function (data) {
+            var img = document.createElement('img');
+            img.src = data;
+            domLI.appendChild(img);
+        })
+        .fail(function (xhr, textStatus, errorThrown) {
+            //console.log(xhr.statusText);
+            //console.log(textStatus);
+            //console.log(errorThrown);
+        })
+        .always(function (data) {
+            //console.log(data)
+        }, 'json');
+    }
+
+    // this returns an image DOM object
+    // for the flag for the geo of the 
+    // IPv6 address
+    function geoIPImageIPv6(sIP, domLI) {
+        var URL = "/geov6.ncc";
+
+        $.post(URL, { IP: sIP }, function (data) {
+            //console.log(data)
+            var img = document.createElement('img');
+            img.src = data;
+            domLI.appendChild(img);
+        })
+        .fail(function (xhr, textStatus, errorThrown) {
+            //console.log(xhr.statusText);
+            //console.log(textStatus);
+            //console.log(errorThrown);
+        })
+        .always(function (data) {
+            //console.log(data)
+        }, 'json');
+    }
+
     // this generates the div contents
     // for a particular domain
     function fillDetails(domDiv, data) {
@@ -150,6 +193,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "IPv4: " + data.IPv4Addresses[intCount];
+                geoIPImageIPv4(data.IPv4Addresses[intCount], li);
             }
         }
 
@@ -161,6 +205,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "IPv6: " + data.IPv6Addresses[intCount];
+                geoIPImageIPv6(data.IPv6Addresses[intCount], li);
             }
         }
 
@@ -185,6 +230,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                         var liinner = document.createElement('li');
                         ulinner.appendChild(liinner);
                         liinner.innerText = "MX IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP];
+                        geoIPImageIPv4(data.aMXIPv4[data.aMX[intCount]][IP], liinner);
                         //console.log("IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP]);                                   
                     }
                 }
@@ -200,6 +246,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                         var liinner = document.createElement('li');
                         ulinner.appendChild(liinner);
                         liinner.innerText = "MX IPv6: " + data.aMXIPv6[data.aMX[intCount]][IP];
+                        geoIPImageIPv6(data.aMXIPv6[data.aMX[intCount]][IP], liinner);
                         //console.log("IPv6: " + data.aMXIPv4[data.aMX[intCount]][IP]);                                   
                     }
                 }
@@ -215,6 +262,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "www IPv4: " + data.wwwv4[intCount];
+                geoIPImageIPv4(data.wwwv4[intCount], li);
             }
         }
 
@@ -226,6 +274,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "www IPv6: " + data.wwwv6[intCount];
+                geoIPImageIPv6(data.wwwv6[intCount], li);
             }
         }
 
@@ -237,6 +286,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "m IPv4: " + data.mv4[intCount];
+                geoIPImageIPv4(data.mv4[intCount], li);
             }
         }
 
@@ -248,6 +298,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "m IPv6: " + data.mv6[intCount];
+                geoIPImageIPv6(data.mv6[intCount], li);
             }
         }
 
@@ -259,6 +310,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "webmail IPv4: " + data.webmailv4[intCount];
+                geoIPImageIPv4(data.webmailv4[intCount], li);
             }
         }
 
@@ -270,6 +322,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "webmail IPv6: " + data.webmailv6[intCount];
+                geoIPImageIPv6(data.webmailv6[intCount], li);
             }
         }
 
