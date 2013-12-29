@@ -267,7 +267,7 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
     # if we're not a typo (i.e. we're the base domain) then mutate
     if bTypo == False and bMX == False:
         # this could be a different country if you supplied the map
-        lstTypos = typogen.typogen.generatetypos(sHostname,"GB")
+        lstTypos = typogen.typogen.generatetypos(sHostname,"gb")
         if lstTypos is not None:
             for strTypoHost in lstTypos:
                 handleHost(strTypoHost,http_handler,False,True)
