@@ -345,7 +345,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 # domain name validation
                 if re.match('^[a-zA-Z0-9.-]+$',strHost):
                     print("[i] Processing typos for " + strHost) 
-                    lstTypos = typogen.typogen.generatetyposv2(strHost,"GB",bTLD,bTypos)
+                    lstTypos = typogen.typogen.generatetyposv2(strHost,"gb",bTLD,bTypos)
                     if lstTypos is not None:
                         self.output(json.dumps([strTypoHost for strTypoHost in lstTypos]))
                     else:
