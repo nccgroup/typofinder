@@ -175,46 +175,35 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
 
                 
                 
-                //try {
-                    if (data.aMXIPv4[data.aMX[intCount]] != null) {
-                        //console.log("MX IPv4 " + data.aMX[intCount] + " - " + data.aMXIPv4[data.aMX[intCount]]);
+                if (data.aMXIPv4[data.aMX[intCount]] != null) {
+                    //console.log("MX IPv4 " + data.aMX[intCount] + " - " + data.aMXIPv4[data.aMX[intCount]]);
 
-                        var ulinner = document.createElement('ul');
-                        li.appendChild(ulinner);
+                    var ulinner = document.createElement('ul');
+                    li.appendChild(ulinner);
 
-                        for (IP in data.aMXIPv4[data.aMX[intCount]]) {  
-                            var liinner = document.createElement('li');
-                            ulinner.appendChild(liinner);
-                            liinner.innerText = "MX IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP];
-                            //console.log("IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP]);
-                                                        
-                        }
-
-                    }
-                //}
-                //catch (e) {
-
-                //}
-
-                try {
-                    if (data.aMXIPv6[data.aMX[intCount]] != null) {
-                        console.log("MX IPv6 " + data.aMX[intCount] + " - " + data.aMXIPv6[data.aMX[intCount]]);
-
-                        var IPv6array = data.aMXIPv6[data.aMX[intCount]].split(',')
-                        ulinner = document.createElement('ul');
-                        li.appendChild(ulinner);
-
-                        for (IP in IPv6array) {
-                            liinner = document.createElement('li');
-                            ulinner.appendChild(liinner);
-                            li.innerText = "IPv6: " + IP;
-                        }
+                    for (IP in data.aMXIPv4[data.aMX[intCount]]) {  
+                        var liinner = document.createElement('li');
+                        ulinner.appendChild(liinner);
+                        liinner.innerText = "MX IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP];
+                        //console.log("IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP]);                                   
                     }
                 }
-                catch (e) {
 
+
+                if (data.aMXIPv6[data.aMX[intCount]] != null) {
+                    //console.log("MX IPv6 " + data.aMX[intCount] + " - " + data.aMXIPv6[data.aMX[intCount]]);
+
+                    var ulinner = document.createElement('ul');
+                    li.appendChild(ulinner);
+
+                    for (IP in data.aMXIPv6[data.aMX[intCount]]) {
+                        var liinner = document.createElement('li');
+                        ulinner.appendChild(liinner);
+                        liinner.innerText = "MX IPv6: " + data.aMXIPv6[data.aMX[intCount]][IP];
+                        //console.log("IPv6: " + data.aMXIPv4[data.aMX[intCount]][IP]);                                   
+                    }
                 }
-
+        
             }
         }
 
