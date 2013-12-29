@@ -50,6 +50,14 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
     var intPBarMax = 0;
     var intPBarCount = 0;
 
+    // empty the results
+    function emptyresults() {
+        var myNode = document.getElementById("results");
+        while (myNode.firstChild) {
+            myNode.removeChild(myNode.firstChild);
+        }
+        $("#results").accordion("refresh");
+    }
 
     // this generate the accordian tag
     function generateTag(data) {
@@ -431,9 +439,12 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
         $("#typogulator").submit(function () {
             // Hide the form
             document.getElementById("typogulator").style.display = "none";
-            // Hide the form
+            // Hide and empty the results
             document.getElementById("results").style.display = "none";
-            // Show the progress bar
+            emptyresults();
+            // Reset and show the progress bar
+            intPBarCount = 0;
+            $("#progressbar").progressbar("option", "value", 0);
             document.getElementById("progressbar").style.display = "block";
 
             //Do the AJAX post
