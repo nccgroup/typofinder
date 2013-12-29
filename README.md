@@ -5,12 +5,17 @@ Typofinder for domain typo discovery
 
 Released as open source by NCC Group Plc - http://www.nccgroup.com/
 
-Developed by Ollie Whitehouse, ollie dot whitehouse at nccgroup dot com
+Developed by Ollie Whitehouse, ollie dot whitehouse at nccgroup dot com<br/>
              Stephen Tomkinson, @neonbunny9 on twitter
 
 https://github.com/nccgroup/typofinder
 
 Released under AGPL see LICENSE for more information
+
+Development Wiki
+-------------
+Some rough notes around the v2 architecture:
+* https://github.com/nccgroup/typofinder/wiki
 
 Features
 -------------
@@ -41,7 +46,7 @@ Usage
 -------------
 * Launch in TypoMagic directory
 * Connect to http://127.0.0.1:801/
-** for the old UI use http://127.0.0.1:801/index.old.html
+    * for the old UI use http://127.0.0.1:801/index.old.html
 * Follow prompts
 
 <sup>1</sup> Google works to provide the most accurate and up-to-date phishing and malware information.
