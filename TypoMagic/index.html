@@ -49,6 +49,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
 
     var intPBarMax = 0;
     var intPBarCount = 0;
+    var domainsNoResults = new Array();
 
     // empty the results
     function emptyresults() {
@@ -152,8 +153,12 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             bVal = true;
         }
 
+
         if (bVal == true) return strTag;
-        else return null;
+        else {
+            domainsNoResults.push(data.strDomain);
+            return null;
+        }
     }
 
     // this returns an image DOM object
@@ -197,6 +202,19 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
         .always(function (data) {
             //console.log(data)
         }, 'json');
+    }
+
+     // this generates the div contents
+    // for a particular domain
+    function fillNoResDetails(domDiv) {
+        domDiv.innerText = "The following domains yielded no results (i.e. likely not registered or potentially not valid)";
+        ul = document.createElement('ul');
+        domDiv.appendChild(ul);
+        for (var intCount = 0; intCount < domainsNoResults.length; intCount++) {
+            li = document.createElement('li');
+            ul.appendChild(li);
+            li.innerText = domainsNoResults[intCount];
+        }
     }
 
     // this generates the div contents
@@ -361,7 +379,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
 
     // this is called for each domain
     // to parse the JSON results
-    function loadDetails(strDomain) {
+    function loadDetails(strDomain, mynoresdiv) {
         var URL = "/entity.ncc";
         var strTag = " ( ";
         var intCount = 0;
@@ -394,6 +412,8 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             intPBarCount++
             // Style
             if (intPBarCount >= intPBarMax) {
+                // Fill the no results div
+                fillNoResDetails(mynoresdiv);
                 $("#results").accordion("refresh");
                 // Hide the progress bar
                 document.getElementById("progressbar").style.display = "none";
@@ -455,19 +475,21 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 $("#progressbar").progressbar("option", "max", data.length);
                 //console.log("[debug] pbar len " + data.length);
 
-                // add them to a list 
-                for (var key in data) {
-
-                }
-
-                // Style
-                //$("#results").accordion("refresh");
-
+                // Create a top entry in the results for domains with no findings
+                var node = document.createElement("H3");
+                node.setAttribute("id", "NoResults");
+                var textnode = document.createTextNode("Typos with no results");
+                node.appendChild(textnode);
+                document.getElementById("results").appendChild(node);
+                var mynoresdiv = document.createElement("div");
+                document.getElementById("results").appendChild(mynoresdiv);
+                
                 // now loop through and process them
                 for (key in data) {
                     // the success function
-                    loadDetails(data[key]);
+                    loadDetails(data[key], mynoresdiv);
                 }
+                
 
             })
             .fail(function (xhr, textStatus, errorThrown) {
