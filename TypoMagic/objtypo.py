@@ -27,6 +27,8 @@ class objtypo:
     webmailv4 = []
     webmailv6 = []
     aMX = []
+    aMXIPv4 = dict()
+    aMXIPv6 = dict()
 
     def __init__(self):
         self.strDomain = ""
@@ -43,7 +45,9 @@ class objtypo:
         self.webmailv4 = []
         self.webmailv6 = []
         self.aMX = []
+        self.aMXIPv4 = dict()
+        self.aMXIPv6 = dict()
 
     # http://stackoverflow.com/questions/5160077/encoding-nested-python-object-in-json
     def reprJSON(self):
-        return dict(strDomain=self.strDomain, strHost=self.strHost, bMX=self.bMX, bTypo=self.bTypo, IPv4Addresses=self.IPv4Address, IPv6Addresses=self.IPV6Address, SafeBrowsing = self.SafeBrowsing, wwwv4 = self.wwwv4, wwwv6 = self.wwwv6, mv4 = self.mv4, mv6 = self.mv6, webmailv4 = self.webmailv4, webmailv6 = self.webmailv6, aMX = self.aMX ) 
+        return dict(strDomain=self.strDomain, strHost=self.strHost, bMX=self.bMX, bTypo=self.bTypo, IPv4Addresses=self.IPv4Address, IPv6Addresses=self.IPV6Address, SafeBrowsing = self.SafeBrowsing, wwwv4 = self.wwwv4, wwwv6 = self.wwwv6, mv4 = self.mv4, mv6 = self.mv6, webmailv4 = self.webmailv4, webmailv6 = self.webmailv6, aMX = self.aMX, aMXIPv4 = self.aMXIPv4, aMXIPv6 = self.aMXIPv6 ) 

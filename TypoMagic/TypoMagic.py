@@ -53,6 +53,18 @@ def handleHostAJAX(sDomain):
     try:
         for hostData in _hostinfo.getMX(sDomain):
             typo.aMX.append(str(hostData.exchange).strip("."))
+
+            for hostDataInnerv4 in _hostinfo.getIPv4(str(hostData.exchange).strip(".")):
+                if str(hostData.exchange).strip(".") in typo.aMXIPv4:
+                    typo.aMXIPv4[str(hostData.exchange).strip(".")].append(hostDataInnerv4.address)
+                else:
+                    typo.aMXIPv4[str(hostData.exchange).strip(".")] = [hostDataInnerv4.address]
+
+            for hostDataInnerv6 in _hostinfo.getIPv6(str(hostData.exchange).strip(".")):
+                if str(hostData.exchange).strip(".") in typo.aMXIPv6:
+                    typo.aMXIPv6[str(hostData.exchange).strip(".")].append(hostDataInnerv6.address)
+                else:
+                    typo.aMXIPv6[str(hostData.exchange).strip(".")] = [hostDataInnerv6.address]
     except:
         pass
 
@@ -291,7 +303,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 if re.match('^[a-zA-Z0-9.-]+$',strHost): 
                     handleHost(strHost,self,False,False)
             
-            # v2 AJAX API
+            # v2 AJAX API generate typo domains
             elif self.path.endswith("typov2.ncc"):
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")
@@ -310,7 +322,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                         self.output("[!] No typos for " + strHost)   
                     print("[i] Processed typos for " + strHost)   
 
-            # v2 AJAX API      
+            # v2 AJAX API - get basic information for a domain      
             elif self.path.endswith("entity.ncc"):
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")
@@ -324,6 +336,28 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                     self.output(json.dumps(objFoo.reprJSON()))
                 except dns.resolver.NXDOMAIN:
                     pass
+
+            # v2 AJAX API - get geo for an IPv4
+            elif self.path.endswith("geov4.ncc"):
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+                
+                length = int(self.headers['Content-Length'])
+                post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
+                strHost = str(post_data['host'])[2:-2]
+
+
+            # v2 AJAX API - get geo for an IPv6
+            elif self.path.endswith("geov6.ncc"):
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+                
+                length = int(self.headers['Content-Length'])
+                post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
+                strHost = str(post_data['host'])[2:-2]
+
         except:
             print(sys.exc_info())
             traceback.print_exc(file=sys.stdout)
@@ -363,6 +397,14 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 f = open(curdir + sep + self.path) 
                 self.send_response(200)
                 self.send_header('Content-type','application/javascript')
+                self.end_headers()
+                self.wfile.write(bytes(f.read(), 'UTF-8'))
+                f.close()
+                return
+            elif self.path.endswith(".map") and self.path.find("..") != 0:
+                f = open(curdir + sep + self.path) 
+                self.send_response(200)
+                self.send_header('Content-type','application/json')
                 self.end_headers()
                 self.wfile.write(bytes(f.read(), 'UTF-8'))
                 f.close()
