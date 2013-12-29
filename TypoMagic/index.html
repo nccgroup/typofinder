@@ -40,7 +40,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
     Supply the domain you wish to typo check and press enter<br />
     <input name="host" type="text" size="75" /> <br />
     <input type="checkbox" name="typos" value="typos" checked />Generate typos 
-    <input type="checkbox" name="tld" value="tlds" checked />Swaps TLD with global TLDs<br />
+    <input type="checkbox" name="tld" value="tlds" />Swaps TLD with global TLDs<br />
 </form>
 </div>
 
@@ -195,7 +195,6 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
 
     // ---------------------------------
     // this generates the results div contents for this domain
-    // for a particular domain
     function fillDetails(domDiv, data) {
         var ul = null;
         var li = null;
