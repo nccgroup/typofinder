@@ -6,6 +6,7 @@ Typofinder for domain typo discovery
 Released as open source by NCC Group Plc - http://www.nccgroup.com/
 
 Developed by Ollie Whitehouse, ollie dot whitehouse at nccgroup dot com
+             Stephen Tomkinson, @neonbunny9 on twitter
 
 https://github.com/nccgroup/typofinder
 
@@ -20,6 +21,8 @@ Features
 * webmail address records
 * m address records
 * A keyboard map template system (currently UK supplied)
+* Geographic IP to flag
+* Google safe browsing integration
 
 Dependencies
 -------------
@@ -37,7 +40,8 @@ What it does
 Usage
 -------------
 * Launch in TypoMagic directory
-* Connect to http://127.0.0.1:801
+* Connect to http://127.0.0.1:801/
+** for the old UI use http://127.0.0.1:801/index.old.html
 * Follow prompts
 
 <sup>1</sup> Google works to provide the most accurate and up-to-date phishing and malware information.

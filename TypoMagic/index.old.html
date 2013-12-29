@@ -1,0 +1,52 @@
+<!--
+#
+# Typofinder for domain typo discovery
+# 
+# Released as open source by NCC Group Plc - http://www.nccgroup.com/
+# 
+# Developed by Ollie Whitehouse, ollie dot whitehouse at nccgroup dot com
+#
+# http://www.github.com/nccgroup/typofinder
+#
+# Released under AGPL see LICENSE for more information#
+#
+-->
+
+<html>
+<head>
+    <title>NCC Typo Detector</title>
+    <link rel="stylesheet" type="text/css" href="/css/oldstyle.css">
+</head>
+
+<body>
+<center>
+
+<img src="NCCLogo.png" alt="NCC Logo" /><br /><br />
+ 
+<!-- our form -->
+Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source available <a href="https://github.com/nccgroup/typofinder">here</a><br/>
+Supply the domain you wish to typo check and press enter
+
+<form id="typogulator" method="post" action="/typo.ncc">
+    <input name="host" type="text" /> <br />
+</form>
+
+<!-- events -->
+<script>
+    
+    form.onsubmit = function (e) {
+        
+    };
+
+    $('#typogulator input').keydown(function (e) {
+        if (e.keyCode == 13) {
+            $('#typogulator').submit();
+        }
+    });
+
+</script>
+This product includes GeoLite data created by MaxMind,<br />
+available from <a href="http://www.maxmind.com">http://www.maxmind.com</a>.
+</center>
+</body>
+</html>
