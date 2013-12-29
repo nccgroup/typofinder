@@ -199,3 +199,25 @@ class hostinfo(object):
         except Exception as e:
             pass
         return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"       
+
+    #
+    # these are used by the v2 AJAX API
+    #
+
+    def getGeoImagebyIPv4new(self, sIP):
+        try:
+            countrycode = self.getGeobyIP(sIP)
+            if countrycode:
+                return "/flags/flags-iso/shiny/16/"+ countrycode +".png"
+        except Exception as e:
+            pass
+        return "/flags/flags-iso/shiny/16/_unknown.png"
+
+    def getGeoImagebyIPv6new(self, sIP):
+        try:
+            countrycode = self.getGeobyIPv6(sIP)
+            if countrycode:
+                return "/flags/flags-iso/shiny/16/"+ countrycode +".png"
+        except Exception as e:
+            pass
+        return "/flags/flags-iso/shiny/16/_unknown.png"

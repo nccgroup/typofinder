@@ -37,6 +37,11 @@ class typogen(object):
         # result list of typos
         lstTypos = []
         
+        # debug
+        #uniqueTypos = set(lstTypos)
+        #uniqueTypos.add(strHost)
+        #return uniqueTypos
+
         # missing characters
         idx = 0
         while idx < len(strHost):

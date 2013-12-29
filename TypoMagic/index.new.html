@@ -54,86 +54,129 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
         if (data.IPv4Addresses.length > 0) {
             strTag = strTag + "IPv4 ";
             bVal = true;
-            for (intCount = 0; intCount < data.IPv4Addresses.length; intCount++) {
-                console.log(data.IPv4Addresses[intCount])
-            }
+            //for (intCount = 0; intCount < data.IPv4Addresses.length; intCount++) {
+            //    console.log(data.IPv4Addresses[intCount])
+            //}
         }
 
         // IPv6 Address
         if (data.IPv6Addresses.length > 0) {
             strTag = strTag + "IPv6 ";
             bVal = true;
-            for (intCount = 0; intCount < data.IPv6Addresses.length; intCount++) {
-                console.log(data.IP64Addresses[intCount])
-            }
+            //for (intCount = 0; intCount < data.IPv6Addresses.length; intCount++) {
+            //    console.log(data.IP64Addresses[intCount])
+            //}
         }
 
         // MX Records
         if (data.aMX.length > 0) {
             strTag = strTag + "MX ";
             bVal = true;
-            for (intCount = 0; intCount < data.aMX.length; intCount++) {
-                console.log(data.aMX[intCount])
-            }
+            //for (intCount = 0; intCount < data.aMX.length; intCount++) {
+            //    console.log(data.aMX[intCount])
+            //}
         }
 
         // www IPv4 Address
         if (data.wwwv4.length > 0) {
             strTag = strTag + "WWWv4 ";
             bVal = true;
-            for (intCount = 0; intCount < data.wwwv4.length; intCount++) {
-                console.log(data.wwwv4[intCount])
-            }
+            //for (intCount = 0; intCount < data.wwwv4.length; intCount++) {
+            //    console.log(data.wwwv4[intCount])
+            //}
         }
 
         // www IPv6 Address
         if (data.wwwv6.length > 0) {
             strTag = strTag + "WWWv6 ";
             bVal = true;
-            for (intCount = 0; intCount < data.wwwv6.length; intCount++) {
-                console.log(data.wwwv6[intCount])
-            }
+            //for (intCount = 0; intCount < data.wwwv6.length; intCount++) {
+            //    console.log(data.wwwv6[intCount])
+            //}
         }
 
         // m IPv4 Address
         if (data.mv4.length > 0) {
             strTag = strTag + "Mv4 ";
             bVal = true;
-            for (intCount = 0; intCount < data.mv4.length; intCount++) {
-                console.log(data.mv4[intCount])
-            }
+            //for (intCount = 0; intCount < data.mv4.length; intCount++) {
+            //    console.log(data.mv4[intCount])
+            //}
         }
 
         // m IPv6 Address
         if (data.mv6.length > 0) {
             strTag = strTag + "Mv6 ";
             bVal = true;
-            for (intCount = 0; intCount < data.mv6.length; intCount++) {
-                console.log(data.mv6[intCount])
-            }
+            //for (intCount = 0; intCount < data.mv6.length; intCount++) {
+            //    console.log(data.mv6[intCount])
+            //}
         }
 
         // webmail IPv4 Address
         if (data.webmailv4.length > 0) {
             strTag = strTag + "WebMailv4 ";
             bVal = true;
-            for (intCount = 0; intCount < data.webmailv4.length; intCount++) {
-                console.log(data.webmailv4[intCount])
-            }
+            //for (intCount = 0; intCount < data.webmailv4.length; intCount++) {
+            //    console.log(data.webmailv4[intCount])
+            //}
         }
 
         // webmail IPv6 Address
         if (data.webmailv6.length > 0) {
             strTag = strTag + "WebMailv6 ";
             bVal = true;
-            for (intCount = 0; intCount < data.webmailv6.length; intCount++) {
-                console.log(data.webmailv6[intCount])
-            }
+            //for (intCount = 0; intCount < data.webmailv6.length; intCount++) {
+            //    console.log(data.webmailv6[intCount])
+            //}
         }
         strTag = strTag + ")";
 
         if (bVal == true) return strTag;
         else return null;
+    }
+
+    // this returns an image DOM object
+    // for the flag for the geo of the 
+    // IPv4 address
+    function geoIPImageIPv4(sIP, domLI) {
+        var URL = "/geov4.ncc";
+
+        $.post(URL, { IP: sIP }, function (data) {
+            var img = document.createElement('img');
+            img.src = data;
+            domLI.appendChild(img);
+        })
+        .fail(function (xhr, textStatus, errorThrown) {
+            //console.log(xhr.statusText);
+            //console.log(textStatus);
+            //console.log(errorThrown);
+        })
+        .always(function (data) {
+            //console.log(data)
+        }, 'json');
+    }
+
+    // this returns an image DOM object
+    // for the flag for the geo of the 
+    // IPv6 address
+    function geoIPImageIPv6(sIP, domLI) {
+        var URL = "/geov6.ncc";
+
+        $.post(URL, { IP: sIP }, function (data) {
+            //console.log(data)
+            var img = document.createElement('img');
+            img.src = data;
+            domLI.appendChild(img);
+        })
+        .fail(function (xhr, textStatus, errorThrown) {
+            //console.log(xhr.statusText);
+            //console.log(textStatus);
+            //console.log(errorThrown);
+        })
+        .always(function (data) {
+            //console.log(data)
+        }, 'json');
     }
 
     // this generates the div contents
@@ -150,6 +193,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "IPv4: " + data.IPv4Addresses[intCount];
+                geoIPImageIPv4(data.IPv4Addresses[intCount], li);
             }
         }
 
@@ -161,6 +205,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "IPv6: " + data.IPv6Addresses[intCount];
+                geoIPImageIPv6(data.IPv6Addresses[intCount], li);
             }
         }
 
@@ -172,6 +217,40 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "MX: " + data.aMX[intCount];
+
+                
+                
+                if (data.aMXIPv4[data.aMX[intCount]] != null) {
+                    //console.log("MX IPv4 " + data.aMX[intCount] + " - " + data.aMXIPv4[data.aMX[intCount]]);
+
+                    var ulinner = document.createElement('ul');
+                    li.appendChild(ulinner);
+
+                    for (IP in data.aMXIPv4[data.aMX[intCount]]) {  
+                        var liinner = document.createElement('li');
+                        ulinner.appendChild(liinner);
+                        liinner.innerText = "MX IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP];
+                        geoIPImageIPv4(data.aMXIPv4[data.aMX[intCount]][IP], liinner);
+                        //console.log("IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP]);                                   
+                    }
+                }
+
+
+                if (data.aMXIPv6[data.aMX[intCount]] != null) {
+                    //console.log("MX IPv6 " + data.aMX[intCount] + " - " + data.aMXIPv6[data.aMX[intCount]]);
+
+                    var ulinner = document.createElement('ul');
+                    li.appendChild(ulinner);
+
+                    for (IP in data.aMXIPv6[data.aMX[intCount]]) {
+                        var liinner = document.createElement('li');
+                        ulinner.appendChild(liinner);
+                        liinner.innerText = "MX IPv6: " + data.aMXIPv6[data.aMX[intCount]][IP];
+                        geoIPImageIPv6(data.aMXIPv6[data.aMX[intCount]][IP], liinner);
+                        //console.log("IPv6: " + data.aMXIPv4[data.aMX[intCount]][IP]);                                   
+                    }
+                }
+        
             }
         }
 
@@ -183,6 +262,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "www IPv4: " + data.wwwv4[intCount];
+                geoIPImageIPv4(data.wwwv4[intCount], li);
             }
         }
 
@@ -194,6 +274,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "www IPv6: " + data.wwwv6[intCount];
+                geoIPImageIPv6(data.wwwv6[intCount], li);
             }
         }
 
@@ -205,6 +286,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "m IPv4: " + data.mv4[intCount];
+                geoIPImageIPv4(data.mv4[intCount], li);
             }
         }
 
@@ -216,6 +298,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "m IPv6: " + data.mv6[intCount];
+                geoIPImageIPv6(data.mv6[intCount], li);
             }
         }
 
@@ -227,6 +310,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "webmail IPv4: " + data.webmailv4[intCount];
+                geoIPImageIPv4(data.webmailv4[intCount], li);
             }
         }
 
@@ -238,6 +322,7 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "webmail IPv6: " + data.webmailv6[intCount];
+                geoIPImageIPv6(data.webmailv6[intCount], li);
             }
         }
 

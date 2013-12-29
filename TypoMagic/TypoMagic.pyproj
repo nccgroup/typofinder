@@ -23,11 +23,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="hostinfo.py" />
+    <Compile Include="objtypo.py" />
+    <Compile Include="safebrowsing.py" />
     <Compile Include="typogen.py" />
     <Compile Include="TypoMagic.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
+    <Content Include="index.new.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
 </Project>

@@ -345,8 +345,9 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 
                 length = int(self.headers['Content-Length'])
                 post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
-                strHost = str(post_data['host'])[2:-2]
-
+                strIP = str(post_data['IP'])[2:-2]
+                strIMG = _hostinfo.getGeoImagebyIPv4new(strIP)
+                self.output(json.dumps(strIMG))
 
             # v2 AJAX API - get geo for an IPv6
             elif self.path.endswith("geov6.ncc"):
@@ -356,7 +357,9 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 
                 length = int(self.headers['Content-Length'])
                 post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
-                strHost = str(post_data['host'])[2:-2]
+                strIP = str(post_data['IP'])[2:-2]
+                strIMG = _hostinfo.getGeoImagebyIPv6new(strIP)
+                self.output(json.dumps(strIMG))
 
         except:
             print(sys.exc_info())
