@@ -54,81 +54,81 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
         if (data.IPv4Addresses.length > 0) {
             strTag = strTag + "IPv4 ";
             bVal = true;
-            for (intCount = 0; intCount < data.IPv4Addresses.length; intCount++) {
-                console.log(data.IPv4Addresses[intCount])
-            }
+            //for (intCount = 0; intCount < data.IPv4Addresses.length; intCount++) {
+            //    console.log(data.IPv4Addresses[intCount])
+            //}
         }
 
         // IPv6 Address
         if (data.IPv6Addresses.length > 0) {
             strTag = strTag + "IPv6 ";
             bVal = true;
-            for (intCount = 0; intCount < data.IPv6Addresses.length; intCount++) {
-                console.log(data.IP64Addresses[intCount])
-            }
+            //for (intCount = 0; intCount < data.IPv6Addresses.length; intCount++) {
+            //    console.log(data.IP64Addresses[intCount])
+            //}
         }
 
         // MX Records
         if (data.aMX.length > 0) {
             strTag = strTag + "MX ";
             bVal = true;
-            for (intCount = 0; intCount < data.aMX.length; intCount++) {
-                console.log(data.aMX[intCount])
-            }
+            //for (intCount = 0; intCount < data.aMX.length; intCount++) {
+            //    console.log(data.aMX[intCount])
+            //}
         }
 
         // www IPv4 Address
         if (data.wwwv4.length > 0) {
             strTag = strTag + "WWWv4 ";
             bVal = true;
-            for (intCount = 0; intCount < data.wwwv4.length; intCount++) {
-                console.log(data.wwwv4[intCount])
-            }
+            //for (intCount = 0; intCount < data.wwwv4.length; intCount++) {
+            //    console.log(data.wwwv4[intCount])
+            //}
         }
 
         // www IPv6 Address
         if (data.wwwv6.length > 0) {
             strTag = strTag + "WWWv6 ";
             bVal = true;
-            for (intCount = 0; intCount < data.wwwv6.length; intCount++) {
-                console.log(data.wwwv6[intCount])
-            }
+            //for (intCount = 0; intCount < data.wwwv6.length; intCount++) {
+            //    console.log(data.wwwv6[intCount])
+            //}
         }
 
         // m IPv4 Address
         if (data.mv4.length > 0) {
             strTag = strTag + "Mv4 ";
             bVal = true;
-            for (intCount = 0; intCount < data.mv4.length; intCount++) {
-                console.log(data.mv4[intCount])
-            }
+            //for (intCount = 0; intCount < data.mv4.length; intCount++) {
+            //    console.log(data.mv4[intCount])
+            //}
         }
 
         // m IPv6 Address
         if (data.mv6.length > 0) {
             strTag = strTag + "Mv6 ";
             bVal = true;
-            for (intCount = 0; intCount < data.mv6.length; intCount++) {
-                console.log(data.mv6[intCount])
-            }
+            //for (intCount = 0; intCount < data.mv6.length; intCount++) {
+            //    console.log(data.mv6[intCount])
+            //}
         }
 
         // webmail IPv4 Address
         if (data.webmailv4.length > 0) {
             strTag = strTag + "WebMailv4 ";
             bVal = true;
-            for (intCount = 0; intCount < data.webmailv4.length; intCount++) {
-                console.log(data.webmailv4[intCount])
-            }
+            //for (intCount = 0; intCount < data.webmailv4.length; intCount++) {
+            //    console.log(data.webmailv4[intCount])
+            //}
         }
 
         // webmail IPv6 Address
         if (data.webmailv6.length > 0) {
             strTag = strTag + "WebMailv6 ";
             bVal = true;
-            for (intCount = 0; intCount < data.webmailv6.length; intCount++) {
-                console.log(data.webmailv6[intCount])
-            }
+            //for (intCount = 0; intCount < data.webmailv6.length; intCount++) {
+            //    console.log(data.webmailv6[intCount])
+            //}
         }
         strTag = strTag + ")";
 
@@ -172,6 +172,49 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "MX: " + data.aMX[intCount];
+
+                
+                
+                //try {
+                    if (data.aMXIPv4[data.aMX[intCount]] != null) {
+                        //console.log("MX IPv4 " + data.aMX[intCount] + " - " + data.aMXIPv4[data.aMX[intCount]]);
+
+                        var ulinner = document.createElement('ul');
+                        li.appendChild(ulinner);
+
+                        for (IP in data.aMXIPv4[data.aMX[intCount]]) {  
+                            var liinner = document.createElement('li');
+                            ulinner.appendChild(liinner);
+                            liinner.innerText = "MX IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP];
+                            //console.log("IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP]);
+                                                        
+                        }
+
+                    }
+                //}
+                //catch (e) {
+
+                //}
+
+                try {
+                    if (data.aMXIPv6[data.aMX[intCount]] != null) {
+                        console.log("MX IPv6 " + data.aMX[intCount] + " - " + data.aMXIPv6[data.aMX[intCount]]);
+
+                        var IPv6array = data.aMXIPv6[data.aMX[intCount]].split(',')
+                        ulinner = document.createElement('ul');
+                        li.appendChild(ulinner);
+
+                        for (IP in IPv6array) {
+                            liinner = document.createElement('li');
+                            ulinner.appendChild(liinner);
+                            li.innerText = "IPv6: " + IP;
+                        }
+                    }
+                }
+                catch (e) {
+
+                }
+
             }
         }
 
