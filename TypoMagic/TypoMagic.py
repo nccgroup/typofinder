@@ -36,6 +36,7 @@ def handleHostAJAX(sDomain):
     
     typo.strDomain = sDomain
     
+    # IP address for domain
     try:
         for hostData in _hostinfo.getIPv4(sDomain):
             typo.IPv4Address.append(hostData.address)
@@ -48,35 +49,52 @@ def handleHostAJAX(sDomain):
     except:
         pass
 
+    # MX
     try:
         for hostData in _hostinfo.getMX(sDomain):
             typo.aMX.append(str(hostData.exchange).strip("."))
     except:
         pass
 
-    #try:
-    #    typo.IPv6Address = _hostinfo.getIPv6(sDomain)
-    #    print(typo.IPv6Address)
-    #except:
-    #    pass
+    # WWWW
+    try:
+        for hostData in _hostinfo.getWWW(sDomain):
+            typo.wwwv4.append(hostData.address)
+    except:
+        pass
 
-    #try:
-    #    typo.webmailv4 = _hostinfo.getWEBMail(sDomain)
-    #    print(typo.webmailv4 )
-    #except:
-    #    pass
+    try:
+        for hostData in _hostinfo.getWEBMailv6(sDomain):
+            typo.wwwv6 .append(hostData.address)
+    except:
+        pass
 
-    #try:
-    #    typo.webmailv6 = _hostinfo.getWEBMailv6(sDomain)
-    #    print(typo.webmailv6)
-    #except:
-    #    pass
+    # WebMail
+    try:
+        for hostData in _hostinfo.getWEBMail(sDomain):
+            typo.webmailv4.append(hostData.address)
+    except:
+        pass
 
-    #try:
-    #    typo.aMX = _hostinfo.getMX(sDomain)
-    #    print(typo.aMX )
-    #except:
-    #    pass
+    try:
+        for hostData in _hostinfo.getWEBMailv6(sDomain):
+            typo.webmailv6.append(hostData.address)
+    except:
+        pass
+    
+    # M
+    try:
+        for hostData in _hostinfo.getM(sDomain):
+            typo.mv4.append(hostData.address)
+    except:
+        pass
+
+    try:
+        for hostData in _hostinfo.getMv6(sDomain):
+            typo.mv6.append(hostData.address)
+    except:
+        pass
+    
         
     return typo
 
