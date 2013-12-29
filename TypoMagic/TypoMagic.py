@@ -27,6 +27,8 @@ import safebrowsing
 
 HOST_NAME = ''      # leave like this for all
 PORT_NUMBER = 801   # this will be fine
+DEBUG = 0
+KEY = ''
 
 _hostinfo = hostinfo.hostinfo()
 
@@ -54,8 +56,7 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
     # This line was commented out because for some reason it would not evaluate correctly and you would never get Safe Browsing results
     # TODO: Fix this
     #if (IPv4 is not None or IPv6 is not None):# and not bMX:
-    http_handler.output(" " + safebrowsing.safebrowsingquery(sHostname))
-
+    http_handler.output(" " + safebrowsing.safebrowsingquery(sHostname, KEY))
     http_handler.output("<br/>")
 
     if IPv4 is None and IPv6 is None:
@@ -276,7 +277,6 @@ class MultiThreadedHTTPServer(ThreadingMixIn, http.server.HTTPServer):
     pass
         
 if __name__ == '__main__':
-    
     print ("[i] NCC Group domain typofinder - https://github.com/nccgroup")
 
     parser = argparse.ArgumentParser()
@@ -285,6 +285,10 @@ if __name__ == '__main__':
     parser.add_argument('-k','--key',help='Google SafeBrowsing API key', required=False)
     args = parser.parse_args()
 
+    if(args.key != None):
+        KEY = args.key
+        print(KEY)
+		
     if(args.port != None):
         try:    
             PORT_NUMBER = int(args.port)
