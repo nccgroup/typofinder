@@ -151,7 +151,7 @@
 }
 .ui-widget-content {
 	border: 1px solid #aaaaaa;
-	background: #ffffff url(images/ui-bg_flat_75_ffffff_40x100.png) 50% 50% repeat-x;
+	background: #ffffff;
 	color: #222222;
 }
 .ui-widget-content a {
@@ -159,7 +159,7 @@
 }
 .ui-widget-header {
 	border: 1px solid #aaaaaa;
-	background: #a7062a url(images/ui-bg_highlight-soft_100_a7062a_1x100.png) 50% 50% repeat-x;
+	background: #a7062a;
 	color: #222222;
 	font-weight: bold;
 }
@@ -173,7 +173,7 @@
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
 	border: 1px solid #d3d3d3;
-	background: #a7062a url(images/ui-bg_glass_100_a7062a_1x400.png) 50% 50% repeat-x;
+	background: #a7062a;
 	font-weight: normal;
 	color: #ffffff;
 }
