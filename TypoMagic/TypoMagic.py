@@ -11,6 +11,7 @@
 #
 
 import argparse
+from datetime import timedelta, datetime, date
 import sys
 import time
 import socket
@@ -375,30 +376,6 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 except dns.resolver.NXDOMAIN:
                     pass
 
-            # v2 AJAX API - get geo for an IPv4
-            elif self.path.endswith("geov4.ncc"):
-                self.send_response(200)
-                self.send_header("Content-type", "application/json")
-                self.end_headers()
-                
-                length = int(self.headers['Content-Length'])
-                post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
-                strIP = str(post_data['IP'])[2:-2]
-                strIMG = _hostinfo.getGeoImagebyIPv4new(strIP)
-                self.output(json.dumps(strIMG))
-
-            # v2 AJAX API - get geo for an IPv6
-            elif self.path.endswith("geov6.ncc"):
-                self.send_response(200)
-                self.send_header("Content-type", "application/json")
-                self.end_headers()
-                
-                length = int(self.headers['Content-Length'])
-                post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
-                strIP = str(post_data['IP'])[2:-2]
-                strIMG = _hostinfo.getGeoImagebyIPv6new(strIP)
-                self.output(json.dumps(strIMG))
-
         except:
             print(sys.exc_info())
             traceback.print_exc(file=sys.stdout)
@@ -453,11 +430,35 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             elif self.path.endswith(".png") and self.path.find("..") != 0:
                 f = open(curdir + sep + self.path, "rb") 
                 self.send_response(200)
+
+                year = timedelta(days=30)
+                futuredate = date.today() + year
+                self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
                 self.send_header('Content-type','image/png')
                 self.end_headers()
                 self.wfile.write(f.read())
                 f.close()
                 return
+            # v2 REST API - get geo for an IPv4
+            elif "geov4.ncc" in self.path:
+                lastSlash = self.path.rfind("/")
+                strIP = self.path[lastSlash + 1:]
+                strIMG = _hostinfo.getGeoImagebyIPv4new(strIP)
+
+                self.send_response(301)
+                self.send_header("Location", strIMG)
+                self.end_headers()
+                self.output("")
+            # v2 REST API - get geo for an IPv6
+            elif "geov6.ncc" in self.path:
+                lastSlash = self.path.rfind("/")
+                strIP = self.path[lastSlash + 1:]
+                strIMG = _hostinfo.getGeoImagebyIPv6new(strIP)
+
+                self.send_response(301)
+                self.send_header("Location", strIMG)
+                self.end_headers()
+                self.output("")
             else:
                self.send_error(404,'[!] File Not Found: %s' % self.path)
 
