@@ -113,6 +113,9 @@ class typogen(object):
         # hostnames can't start or end with a -
         elif ".-" in domain or "-." in domain or domain.startswith("-"):
             return False
+        #Ensure the location of dots are sane
+        elif ".." in domain or domain.startswith("."):
+            return False
         else:
             return True
 
