@@ -107,14 +107,14 @@ class typogen(object):
         if bTypos:
             # missing characters
             idx = 0
-            while idx < len(strHost):
+            while idx < strHost.rfind('.'):
                 strTypo = strHost[0:idx]+strHost[idx+1:]
                 idx+=1
                 lstTypos.append(strTypo)
 
             # duplicate characters
             idx = 0
-            while idx < len(strHost):
+            while idx < strHost.rfind('.'):
                 strHostList = list(strHost)
                 if strHostList[idx] != '.':
                     strHostList.insert(idx,strHostList[idx])
@@ -129,12 +129,11 @@ class typogen(object):
             for key in keyDict:
                 for value in keyDict[key]:
                     idx = 0
-                    while idx < len(strHost):
+                    while idx < strHost.rfind('.'):
                         strHostList = list(strHost)
                         strHostList[idx] = strHostList[idx].replace(key, value)
                         strTypo = "".join(strHostList)
-                        if strTypo != strHost:
-                            lstTypos.append(strTypo)
+                        lstTypos.append(strTypo)
                         idx+=1
                         
         if bTLDS:
