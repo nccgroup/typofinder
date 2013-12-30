@@ -104,7 +104,7 @@ class typogen(object):
         #uniqueTypos.add(strHost)
         #return uniqueTypos
 
-        if bTypos == True:
+        if bTypos:
             # missing characters
             idx = 0
             while idx < len(strHost):
@@ -133,21 +133,30 @@ class typogen(object):
                         strHostList = list(strHost)
                         strHostList[idx] = strHostList[idx].replace(key, value)
                         strTypo = "".join(strHostList)
-                        if strTypo != strHost:
-                            lstTypos.append(strTypo)
+                        lstTypos.append(strTypo)
                         idx+=1
-                        
-        if bTLDS == True:
+
+        #Load up the list of TLDs
+        lstTlds = list()
+        filename = "./tlds.txt"
+        with open(filename) as f:
+            for line in f:
+                if not line.lstrip().startswith('#'):
+                    lstTlds.append(line.rstrip().lower())
+
+        #Remove any typos with a TLD not in the official list
+        for typo in lstTypos[:]:
+            lastdot = typo.rfind(".")
+            if typo[lastdot + 1:] not in lstTlds:
+                lstTypos.remove(typo)
+
+        if bTLDS:
+            lastdot = strHost.rfind(".")
             # tld swap out
-            filename = "./tlds.txt"
-            with open(filename) as f:
-                lastdot = strHost.rfind(".")
-                for line in f:
-                    if not line.lstrip().startswith('#'):
-                        gtld = line.rstrip().lower()
-                        newHost = strHost[:lastdot] + "." + gtld
-                        #print(newHost)
-                        lstTypos.append(newHost)
+            for gtld in lstTlds:
+                newHost = strHost[:lastdot] + "." + gtld
+                #print(newHost)
+                lstTypos.append(newHost)
 
         uniqueTypos = set(lstTypos)
 

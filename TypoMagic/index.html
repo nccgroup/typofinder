@@ -141,43 +141,20 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
     // for the flag for the geo of the 
     // IPv4 address
     function geoIPImageIPv4(sIP, domLI) {
-        var URL = "/geov4.ncc";
-
-        $.post(URL, { IP: sIP }, function (data) {
-            var img = document.createElement('img');
-            img.src = data;
-            domLI.appendChild(img);
-        })
-        .fail(function (xhr, textStatus, errorThrown) {
-            //console.log(xhr.statusText);
-            //console.log(textStatus);
-            //console.log(errorThrown);
-        })
-        .always(function (data) {
-            //console.log(data)
-        }, 'json');
+        var URL = "/geov4.ncc/" + sIP;
+        var img = document.createElement('img');
+        img.src = URL;
+        domLI.appendChild(img);
     }
 
     // this returns an image DOM object
     // for the flag for the geo of the 
     // IPv6 address
     function geoIPImageIPv6(sIP, domLI) {
-        var URL = "/geov6.ncc";
-
-        $.post(URL, { IP: sIP }, function (data) {
-            //console.log(data)
-            var img = document.createElement('img');
-            img.src = data;
-            domLI.appendChild(img);
-        })
-        .fail(function (xhr, textStatus, errorThrown) {
-            //console.log(xhr.statusText);
-            //console.log(textStatus);
-            //console.log(errorThrown);
-        })
-        .always(function (data) {
-            //console.log(data)
-        }, 'json');
+        var URL = "/geov6.ncc/" + sIP;
+        var img = document.createElement('img');
+        img.src = URL;
+        domLI.appendChild(img);
     }
 
      // this generates the div contents
