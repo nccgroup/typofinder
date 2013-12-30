@@ -107,14 +107,14 @@ class typogen(object):
         if bTypos:
             # missing characters
             idx = 0
-            while idx < strHost.rfind('.'):
+            while idx < len(strHost):
                 strTypo = strHost[0:idx]+strHost[idx+1:]
                 idx+=1
                 lstTypos.append(strTypo)
 
             # duplicate characters
             idx = 0
-            while idx < strHost.rfind('.'):
+            while idx < len(strHost):
                 strHostList = list(strHost)
                 if strHostList[idx] != '.':
                     strHostList.insert(idx,strHostList[idx])
@@ -129,24 +129,34 @@ class typogen(object):
             for key in keyDict:
                 for value in keyDict[key]:
                     idx = 0
-                    while idx < strHost.rfind('.'):
+                    while idx < len(strHost):
                         strHostList = list(strHost)
                         strHostList[idx] = strHostList[idx].replace(key, value)
                         strTypo = "".join(strHostList)
                         lstTypos.append(strTypo)
                         idx+=1
-                        
+
+        #Load up the list of TLDs
+        lstTlds = list()
+        filename = "./tlds.txt"
+        with open(filename) as f:
+            for line in f:
+                if not line.lstrip().startswith('#'):
+                    lstTlds.append(line.rstrip().lower())
+
+        #Remove any typos with a TLD not in the official list
+        for typo in lstTypos[:]:
+            lastdot = typo.rfind(".")
+            if typo[lastdot + 1:] not in lstTlds:
+                lstTypos.remove(typo)
+
         if bTLDS:
+            lastdot = strHost.rfind(".")
             # tld swap out
-            filename = "./tlds.txt"
-            with open(filename) as f:
-                lastdot = strHost.rfind(".")
-                for line in f:
-                    if not line.lstrip().startswith('#'):
-                        gtld = line.rstrip().lower()
-                        newHost = strHost[:lastdot] + "." + gtld
-                        #print(newHost)
-                        lstTypos.append(newHost)
+            for gtld in lstTlds:
+                newHost = strHost[:lastdot] + "." + gtld
+                #print(newHost)
+                lstTypos.append(newHost)
 
         uniqueTypos = set(lstTypos)
 
