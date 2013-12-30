@@ -104,7 +104,7 @@ class typogen(object):
         #uniqueTypos.add(strHost)
         #return uniqueTypos
 
-        if bTypos == True:
+        if bTypos:
             # missing characters
             idx = 0
             while idx < len(strHost):
@@ -137,7 +137,7 @@ class typogen(object):
                             lstTypos.append(strTypo)
                         idx+=1
                         
-        if bTLDS == True:
+        if bTLDS:
             # tld swap out
             filename = "./tlds.txt"
             with open(filename) as f:

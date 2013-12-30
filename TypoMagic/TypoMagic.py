@@ -71,7 +71,7 @@ def handleHostAJAX(sDomain):
 
     # Safe Browsing
     try:
-        typo.SafeBrowsing = safebrowsing.safebrowsingqueryv2("www." + sDomain);
+        typo.SafeBrowsing = safebrowsing.safebrowsingqueryv2("www." + sDomain)
         pass
     except:
         pass
@@ -325,15 +325,15 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 # option checking
                 try:
                     str(post_data['tld'])
-                    bTLD = True;
+                    bTLD = True
                 except KeyError:
-                    bTLD = False;
+                    bTLD = False
 
                 try:
                     str(post_data['typos'])
-                    bTypos = True;
+                    bTypos = True
                 except KeyError:
-                    bTypos = False;
+                    bTypos = False
 
                 # stupid user
                 if(bTypos == False and bTLD == False):
@@ -439,7 +439,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-type','application/javascript')
                 self.end_headers()
-                self.wfile.write(bytes(f.read(), 'UTF-8'))
+                self.output(f.read())
                 f.close()
                 return
             elif self.path.endswith(".map") and self.path.find("..") != 0:
@@ -447,7 +447,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-type','application/json')
                 self.end_headers()
-                self.wfile.write(bytes(f.read(), 'UTF-8'))
+                self.output(f.read())
                 f.close()
                 return
             elif self.path.endswith(".png") and self.path.find("..") != 0:
