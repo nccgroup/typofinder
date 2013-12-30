@@ -1,5 +1,4 @@
-body{
-		font: 62.5% "Trebuchet MS", sans-serif;
-		margin: 50px;
-}
+A:link {text-decoration: none; color: #a7062a; }
+A:visited {text-decoration: none; color: #a7062a;}
+A:active {text-decoration: none; color: #a7062a;}
 #results {display:none;}
