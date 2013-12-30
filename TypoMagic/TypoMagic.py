@@ -45,7 +45,7 @@ def handleHostAJAX(sDomain):
 
     try:
         for hostData in _hostinfo.getIPv6(sDomain):
-            typo.IPv6Address.append(hostData.address)
+            typo.IPV6Address.append(hostData.address)
     except:
         pass
 
