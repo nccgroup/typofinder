@@ -270,9 +270,10 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
 
         // www IPv4 Address
         if (data.wwwv4.length > 0) {
+            ul = document.createElement('ul');
+            domDiv.appendChild(ul);
+              
             for (intCount = 0; intCount < data.wwwv4.length; intCount++) {
-                ul = document.createElement('ul');
-                domDiv.appendChild(ul);
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "www IPv4: " + data.wwwv4[intCount];
@@ -283,13 +284,22 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                     li.innerText = "www IPv4: " + data.wwwv6[intCount] + " - " + data.SafeBrowsing;
                 }
             }
+
+            // URL
+            lilink = document.createElement('li');
+            aLink = document.createElement('a');
+            aLink.href = "javascript:window.open('http://www." + data.strDomain + "')";
+            aLink.innerHTML = "link (danger!) www." + data.strDomain;
+            lilink.appendChild(aLink);
+            ul.appendChild(lilink);
         }
 
         // www IPv6 Address
         if (data.wwwv6.length > 0) {
+            ul = document.createElement('ul');
+            domDiv.appendChild(ul);
+
             for (intCount = 0; intCount < data.wwwv6.length; intCount++) {
-                ul = document.createElement('ul');
-                domDiv.appendChild(ul);
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "www IPv6: " + data.wwwv6[intCount];
@@ -299,55 +309,100 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
                 if (data.SafeBrowsing.length > 0) {
                     li.innerText = "www IPv6: " + data.wwwv6[intCount]  + " - " + data.SafeBrowsing;
                 }
+
             }
+        
+            // URL
+            lilink = document.createElement('li');
+            aLink = document.createElement('a');
+            aLink.href = "javascript:window.open('http://www." + data.strDomain + "')";
+            aLink.innerHTML = "link (danger!) www." + data.strDomain;
+            lilink.appendChild(aLink);
+            ul.appendChild(lilink);        
         }
 
         // m IPv4 Address
         if (data.mv4.length > 0) {
+            ul = document.createElement('ul');
+            domDiv.appendChild(ul);
+
             for (intCount = 0; intCount < data.mv4.length; intCount++) {
-                ul = document.createElement('ul');
-                domDiv.appendChild(ul);
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "m IPv4: " + data.mv4[intCount];
                 geoIPImageIPv4(data.mv4[intCount], li);
             }
+
+            // URL
+            lilink = document.createElement('li');
+            aLink = document.createElement('a');
+            aLink.href = "javascript:window.open('http://m." + data.strDomain + "')";
+            aLink.innerHTML = "link (danger!) m." + data.strDomain;
+            lilink.appendChild(aLink);
+            ul.appendChild(lilink);        
         }
 
         // m IPv6 Address
         if (data.mv6.length > 0) {
+            ul = document.createElement('ul');
+            domDiv.appendChild(ul);
+
             for (intCount = 0; intCount < data.mv6.length; intCount++) {
-                ul = document.createElement('ul');
-                domDiv.appendChild(ul);
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "m IPv6: " + data.mv6[intCount];
                 geoIPImageIPv6(data.mv6[intCount], li);
             }
+
+            // URL
+            lilink = document.createElement('li');
+            aLink = document.createElement('a');
+            aLink.href = "javascript:window.open('http://m." + data.strDomain + "')";
+            aLink.innerHTML = "link (danger!) m." + data.strDomain;
+            lilink.appendChild(aLink);
+            ul.appendChild(lilink);        
         }
 
         // webmail IPv4 Address
         if (data.webmailv4.length > 0) {
+            ul = document.createElement('ul');
+            domDiv.appendChild(ul);
+
             for (intCount = 0; intCount < data.webmailv4.length; intCount++) {
-                ul = document.createElement('ul');
-                domDiv.appendChild(ul);
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "webmail IPv4: " + data.webmailv4[intCount];
                 geoIPImageIPv4(data.webmailv4[intCount], li);
             }
+
+            // URL
+            lilink = document.createElement('li');
+            aLink = document.createElement('a');
+            aLink.href = "javascript:window.open('http://webmail." + data.strDomain + "')";
+            aLink.innerHTML = "link (danger!) webmail." + data.strDomain;
+            lilink.appendChild(aLink);
+            ul.appendChild(lilink);        
         }
 
         // webmail IPv6 Address
         if (data.webmailv6.length > 0) {
+            ul = document.createElement('ul');
+            domDiv.appendChild(ul);
+
             for (intCount = 0; intCount < data.webmailv6.length; intCount++) {
-                ul = document.createElement('ul');
-                domDiv.appendChild(ul);
                 li = document.createElement('li');
                 ul.appendChild(li);
                 li.innerText = "webmail IPv6: " + data.webmailv6[intCount];
                 geoIPImageIPv6(data.webmailv6[intCount], li);
             }
+
+            // URL
+            lilink = document.createElement('li');
+            aLink = document.createElement('a');
+            aLink.href = "javascript:window.open('http://webmail." + data.strDomain + "')";
+            aLink.innerHTML = "link (danger!) webmail." + data.strDomain;
+            lilink.appendChild(aLink);
+            ul.appendChild(lilink);       
         }
 
 
