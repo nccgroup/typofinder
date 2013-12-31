@@ -13,6 +13,11 @@ https://github.com/nccgroup/typofinder
 
 Released under AGPL see LICENSE for more information
 
+Want to give it a go?
+-------------
+A sample deployment can be found here:
+* http://www.zemes.com:8002/
+
 Development Wiki
 -------------
 Some rough notes around the v2 architecture:
