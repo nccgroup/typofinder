@@ -30,6 +30,7 @@ from objtypo import objtypo
 import safebrowsing
 
 _hostinfo = hostinfo.hostinfo()
+_typogen = typogen.typogen()
 
 # v2 AJAX API
 def handleHostAJAX(sDomain):
@@ -268,7 +269,7 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
     # if we're not a typo (i.e. we're the base domain) then mutate
     if bTypo == False and bMX == False:
         # this could be a different country if you supplied the map
-        lstTypos = typogen.typogen.generatetypos(sHostname,"gb")
+        lstTypos = _typogen.generatetypos(sHostname,"gb")
         if lstTypos is not None:
             for strTypoHost in lstTypos:
                 handleHost(strTypoHost,http_handler,False,True)
@@ -336,17 +337,23 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 except KeyError:
                     bTypos = False
 
+                try:
+                    str(post_data['bitflip'])
+                    bBitFlip = True
+                except KeyError:
+                    bBitFlip = False
+
                 # stupid user
-                if(bTypos == False and bTLD == False):
+                if(bTypos == False and bTLD == False and bBitFlip == False):
                      print("[i] No typos to process for " + strHost + " due to user option")
                      # this will cause an error in the JavaScript client which is relied upon
                      self.output("[!] No typos for " + strHost) 
                      return    
 
                 # domain name validation
-                if re.match('^[a-zA-Z0-9.-]+$',strHost):
+                if _typogen.is_domain_valid(strHost):
                     print("[i] Processing typos for " + strHost) 
-                    lstTypos = typogen.typogen.generatetyposv2(strHost,"gb",bTLD,bTypos)
+                    lstTypos = _typogen.generatetyposv2(strHost,"gb",bTLD,bTypos,bBitFlip)
                     if lstTypos is not None:
                         self.output(json.dumps([strTypoHost for strTypoHost in lstTypos]))
                     else:

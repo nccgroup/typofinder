@@ -10,8 +10,20 @@
 # Released under AGPL see LICENSE for more information#
 #
 
+import re
+import copy
+
 class typogen(object):
     """generate typo"""
+
+    def __init__(self):
+        #Load up the list of TLDs
+        self.lstTlds = list()
+        filename = "./tlds.txt"
+        with open(filename) as f:
+            for line in f:
+                if not line.lstrip().startswith('#'):
+                    self.lstTlds.append(line.rstrip().lower())
 
     @staticmethod
     def loadkeyb(strCountry):
@@ -31,7 +43,7 @@ class typogen(object):
         return keyDict
 
     @staticmethod
-    def generatetypos(strHost,strCountry):
+    def generatetypos(self, strHost, strCountry):
         """generate the typos"""
 
         # result list of typos
@@ -91,18 +103,57 @@ class typogen(object):
 
         return uniqueTypos
 
-    # v2 API with two new options
+    def is_domain_valid(self, domain):
+        #Ensure its in the correct character set
+        if not re.match('^[a-z0-9.-]+$', domain):
+            return False
+        #Ensure the TLD is sane
+        elif domain[domain.rfind(".") + 1:] not in self.lstTlds:
+            return False
+        # hostnames can't start or end with a -
+        elif ".-" in domain or "-." in domain or domain.startswith("-"):
+            return False
+        #Ensure the location of dots are sane
+        elif ".." in domain or domain.startswith("."):
+            return False
+        else:
+            return True
+
     @staticmethod
-    def generatetyposv2(strHost,strCountry,bTLDS,bTypos):
+    def bitflipbyte(inputbyte):
+        result = list()
+        mask = 1
+        #As we know we're flipping ASCII, only do the lowest 7 bits
+        for i in range(1,8):
+            result.append(inputbyte ^ mask)
+            mask <<= 1
+        return result
+
+    @staticmethod
+    def bitflipstring(strInput):
+        result = list()
+        i = 0
+        for character in strInput:
+            flippedchars = typogen.bitflipbyte(character.encode("UTF-8")[0])
+            for flippedchar in flippedchars:
+                result.append(strInput[:i] + chr(flippedchar) + strInput[i + 1:])
+            i+=1
+        return result
+
+    # v2 API with two new options
+    def generatetyposv2(self, strHost,strCountry,bTLDS,bTypos,bBitFlip):
         """generate the typos"""
 
         # result list of typos
         lstTypos = []
-        
+
         # debug
         #uniqueTypos = set(lstTypos)
         #uniqueTypos.add(strHost)
         #return uniqueTypos
+
+        if bBitFlip:
+            lstTypos += self.bitflipstring(strHost)
 
         if bTypos:
             # missing characters
@@ -121,7 +172,7 @@ class typogen(object):
                     strTypo = "".join(strHostList)
                     lstTypos.append(strTypo)
                 idx+=1
-        
+
             # load keyboard mapping
             keyDict = typogen.loadkeyb(strCountry)
 
@@ -136,24 +187,10 @@ class typogen(object):
                         lstTypos.append(strTypo)
                         idx+=1
 
-        #Load up the list of TLDs
-        lstTlds = list()
-        filename = "./tlds.txt"
-        with open(filename) as f:
-            for line in f:
-                if not line.lstrip().startswith('#'):
-                    lstTlds.append(line.rstrip().lower())
-
-        #Remove any typos with a TLD not in the official list
-        for typo in lstTypos[:]:
-            lastdot = typo.rfind(".")
-            if typo[lastdot + 1:] not in lstTlds:
-                lstTypos.remove(typo)
-
         if bTLDS:
             lastdot = strHost.rfind(".")
             # tld swap out
-            for gtld in lstTlds:
+            for gtld in self.lstTlds:
                 newHost = strHost[:lastdot] + "." + gtld
                 #print(newHost)
                 lstTypos.append(newHost)
@@ -164,5 +201,10 @@ class typogen(object):
             uniqueTypos.remove(strHost)
         except KeyError:
             pass
+
+        #Remove any invalid typos
+        for typo in copy.copy(uniqueTypos):
+            if not self.is_domain_valid(typo):
+                uniqueTypos.remove(typo)
 
         return uniqueTypos
