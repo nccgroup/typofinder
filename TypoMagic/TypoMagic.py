@@ -31,6 +31,7 @@ import safebrowsing
 
 _hostinfo = hostinfo.hostinfo()
 _typogen = typogen.typogen()
+KEY = ''
 
 # v2 AJAX API
 def handleHostAJAX(sDomain):
@@ -73,7 +74,7 @@ def handleHostAJAX(sDomain):
 
     # Safe Browsing
     try:
-        typo.SafeBrowsing = safebrowsing.safebrowsingqueryv2("www." + sDomain)
+        typo.SafeBrowsing = safebrowsing.safebrowsingqueryv2("www." + sDomain, KEY)
         pass
     except:
         pass
@@ -145,7 +146,7 @@ def handleHost(sHostname, http_handler, bMX, bTypo):
 
     # Only display results about the domain's web site if it resolves and we aren't processing an MX record
     if (IPv4 or IPv6) and not bMX:
-        http_handler.output(" " + safebrowsing.safebrowsingquery(sHostname))
+       http_handler.output(" " + safebrowsing.safebrowsingquery(sHostname),KEY)
 
     http_handler.output("<br/>")
 
@@ -501,10 +502,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-p','--port', help='Port to listen on',required=False, type=tcpport, default=801)
     parser.add_argument('-a','--address', help='hostname / IP address to bind to',required=False, type=str, default='')
-    #TODO: complete implementation...
-    #parser.add_argument('-k','--key',help='Google SafeBrowsing API key', required=False)
+    parser.add_argument('-k','--key',help='Google SafeBrowsing API key', required=False)
     args = parser.parse_args()
 
+    if(args.key != None):
+        KEY = args.key	
+	
     try:   
         httpd = MultiThreadedHTTPServer((args.address, args.port), MyHandler)
     except socket.gaierror:
