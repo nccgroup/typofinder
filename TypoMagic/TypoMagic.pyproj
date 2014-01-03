@@ -27,6 +27,7 @@
     <Compile Include="safebrowsing.py" />
     <Compile Include="typogen.py" />
     <Compile Include="TypoMagic.py" />
+    <Compile Include="whois.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
