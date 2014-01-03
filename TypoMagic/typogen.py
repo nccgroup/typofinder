@@ -42,7 +42,6 @@ class typogen(object):
 
         return keyDict
 
-    @staticmethod
     def generatetypos(self, strHost, strCountry):
         """generate the typos"""
 
@@ -121,16 +120,28 @@ class typogen(object):
 
     @staticmethod
     def bitflipbyte(inputbyte):
+        """
+        Flips the lowest 7 bits in the given input byte/int to build a list of mutated values.
+
+        @param inputbyte: The byte/int to bit flip
+        @return: A list of the mutated values.
+        """
         result = list()
         mask = 1
         #As we know we're flipping ASCII, only do the lowest 7 bits
-        for i in range(1,8):
+        for i in range(0,7):
             result.append(inputbyte ^ mask)
             mask <<= 1
         return result
 
     @staticmethod
     def bitflipstring(strInput):
+        """
+        Flips the lowest 7 bits in each character of the given string to build a list of mutated values.
+
+        @param strInput: The string to bit flip
+        @return: A list of the mutated values.
+        """
         result = list()
         i = 0
         for character in strInput:
