@@ -1,9 +1,21 @@
 #
+# Typofinder for domain typo discovery
+# 
+# Released as open source by NCC Group Plc - http://www.nccgroup.com/
+# 
+#
 # Simple whois query function
 # 
 # Based on RFC3912
 # 
 # Developed by Matt Summers, matt dot summers at nccgroup dot com
+#
+# http://www.github.com/nccgroup/typofinder
+#
+# Released under AGPL see LICENSE for more information#
+#
+
+
 
 import socket
 import sys
