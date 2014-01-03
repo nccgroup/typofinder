@@ -28,6 +28,7 @@ import typogen
 import hostinfo
 from objtypo import objtypo
 import safebrowsing
+from whois import ourwhois 
 
 _hostinfo = hostinfo.hostinfo()
 _typogen = typogen.typogen()
@@ -383,7 +384,6 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                     self.output(json.dumps(objFoo.reprJSON()))
                 except dns.resolver.NXDOMAIN:
                     pass
-
         except:
             print(sys.exc_info())
             traceback.print_exc(file=sys.stdout)
@@ -467,6 +467,16 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.send_header("Location", strIMG)
                 self.end_headers()
                 self.output("")
+            # v2 REST API - get whois for domain
+            elif "whois.ncc" in self.path:
+                lastSlash = self.path.rfind("/")
+                strDomain = self.path[lastSlash + 1:]
+                
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+                self.output(ourwhois(strDomain));
+                
             else:
                self.send_error(404,'[!] File Not Found: %s' % self.path)
 

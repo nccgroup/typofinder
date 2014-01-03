@@ -19,7 +19,7 @@
 import socket
 import sys
 
-def whois(sDomain):
+def ourwhois(sDomain):
 	# TODO, add more whois servers for other TLDs
 	server = 'whois.internic.net'
 	tld = sDomain[-4:]
