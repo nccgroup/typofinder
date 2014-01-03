@@ -8,6 +8,7 @@ Released as open source by NCC Group Plc - http://www.nccgroup.com/
 Developed by:
 * Ollie Whitehouse, ollie dot whitehouse at nccgroup dot com
 * Stephen Tomkinson, @neonbunny9 on twitter
+* Matt Summers, matt dot summers at nccgroup dot com
 
 https://github.com/nccgroup/typofinder
 
@@ -35,6 +36,7 @@ Features
 * Geographic IP to flag
 * Google safe browsing integration
 * Bit flipping / squatting - http://dinaburg.org/bitsquatting.html
+* Whois
  
 Dependencies
 -------------
