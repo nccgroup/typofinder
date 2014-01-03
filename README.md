@@ -57,6 +57,19 @@ Usage
     * for the old UI use http://127.0.0.1:801/index.old.html
 * Follow prompts
 
+Google Safe Browsing API Key
+-------------
+To use the Google Safe Browsing API you must register for an API key.
+Obtain your API key here: https://developers.google.com/safe-browsing/key_signup
+	
+You can find further information on Google Safe Browsing API here:
+https://developers.google.com/safe-browsing/
+
+If you have a Google Safe Browsing API you can enter this at the command line e.g.
+python TypoMagic.py -k <API>
+
+Alternately you can place you API in the KEY parameter in TypoMagic.py.
+
 <sup>1</sup> Google works to provide the most accurate and up-to-date phishing and malware information.
 However, it cannot guarantee that its information is comprehensive and error-free: some risky sites may not be
 identified, and some safe sites may be identified in error.
