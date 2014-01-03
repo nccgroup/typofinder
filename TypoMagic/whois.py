@@ -3,7 +3,6 @@
 # 
 # Released as open source by NCC Group Plc - http://www.nccgroup.com/
 # 
-#
 # Simple whois query function
 # 
 # Based on RFC3912
