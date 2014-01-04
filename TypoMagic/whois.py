@@ -17,7 +17,7 @@
 
 
 import socket
-import sys
+
 
 def ourwhois(sDomain):
 	# TODO, add more whois servers for other TLDs
@@ -34,6 +34,6 @@ def ourwhois(sDomain):
 			if block == '':
 				break
 			response = response + block
-		s.shutdown
-		s.close
+		s.shutdown()
+		s.close()
 		return response
