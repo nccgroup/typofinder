@@ -539,6 +539,8 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
             document.getElementById("progressbar").style.display = "block";
             // Reset the list of domains which didn't yield results 
             domainsNoResults = new Array();
+            // Reset the table
+            $('#resultstabletable').dataTable()._fnClearTable();
 
             //Do the AJAX post
             $.post($("#typogulator").attr("action"), $("#typogulator").serialize(), function (data) {
