@@ -132,28 +132,28 @@ class hostinfo(object):
         try:
             # Geo Location
             return self._gi.country_code_by_addr(sIP)
-        except Exception as e:
+        except Exception:
             pass
     
     def getGeobyIPv6(self, sIP):
         try:
             # Geo Location
             return self._giv6.country_code_by_addr(sIP)
-        except Exception as e:
+        except Exception:
             pass
 
     def getGeobyHostname(self, sHostname):
         try:
             # Geo Location
             return self._gi.country_code_by_name(sHostname)
-        except Exception as e:
+        except Exception:
             pass
 
     def getGeobyHostnamev6(self, sHostname):
         try:
             # Geo Location
             return self._giv6.country_code_by_name(sHostname)
-        except Exception as e:
+        except Exception:
             pass
 
     def getGeoImagebyIP(self, sIP):
@@ -161,7 +161,7 @@ class hostinfo(object):
             countrycode = self.getGeobyIP(sIP)
             if countrycode:
                 return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
-        except Exception as e:
+        except Exception:
             pass
         return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
 
@@ -170,7 +170,7 @@ class hostinfo(object):
             countrycode = self.getGeobyIPv6(sIP)
             if countrycode:
                 return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
-        except Exception as e:
+        except Exception:
             pass
         return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
 
@@ -179,7 +179,7 @@ class hostinfo(object):
             countrycode = self.getGeobyHostname(sHostname)
             if countrycode:
                 return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
-        except Exception as e:
+        except Exception:
             pass
         return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
             
@@ -188,7 +188,7 @@ class hostinfo(object):
             countrycode = self.getGeobyHostnamev6(sHostname)
             if countrycode:
                 return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
-        except Exception as e:
+        except Exception:
             pass
         return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"       
 
@@ -201,7 +201,7 @@ class hostinfo(object):
             countrycode = self.getGeobyIP(sIP)
             if countrycode:
                 return "/flags/flags-iso/shiny/32/"+ countrycode +".png"
-        except Exception as e:
+        except Exception:
             pass
         return "/flags/flags-iso/shiny/32/_unknown.png"
 
@@ -210,6 +210,6 @@ class hostinfo(object):
             countrycode = self.getGeobyIPv6(sIP)
             if countrycode:
                 return "/flags/flags-iso/shiny/32/"+ countrycode +".png"
-        except Exception as e:
+        except Exception:
             pass
         return "/flags/flags-iso/shiny/32/_unknown.png"

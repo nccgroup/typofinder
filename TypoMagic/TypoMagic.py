@@ -11,24 +11,24 @@
 #
 
 import argparse
-from datetime import timedelta, datetime, date
+from datetime import timedelta, date
 import sys
 import time
 import socket
 import http.server
 import urllib
 import traceback
-import re
-import dns.resolver
 from os import curdir, sep
 from socketserver import ThreadingMixIn
-from dns.resolver import NoNameservers
 import json
+
+import dns.resolver
+
 import typogen
 import hostinfo
 from objtypo import objtypo
 import safebrowsing
-from whois import ourwhois 
+from whois import ourwhois
 
 _hostinfo = hostinfo.hostinfo()
 _typogen = typogen.typogen()

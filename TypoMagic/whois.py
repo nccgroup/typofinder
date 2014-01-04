@@ -17,7 +17,7 @@
 
 
 import socket
-import sys
+
 
 def ourwhois(sDomain):
 	# TODO, add more whois servers for other TLDs
