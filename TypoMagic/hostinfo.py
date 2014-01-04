@@ -200,16 +200,16 @@ class hostinfo(object):
         try:
             countrycode = self.getGeobyIP(sIP)
             if countrycode:
-                return "/flags/flags-iso/shiny/32/"+ countrycode +".png"
+                return "/flags/flags-iso/shiny/16/"+ countrycode +".png"
         except Exception:
             pass
-        return "/flags/flags-iso/shiny/32/_unknown.png"
+        return "/flags/flags-iso/shiny/16/_unknown.png"
 
     def getGeoImagebyIPv6new(self, sIP):
         try:
             countrycode = self.getGeobyIPv6(sIP)
             if countrycode:
-                return "/flags/flags-iso/shiny/32/"+ countrycode +".png"
+                return "/flags/flags-iso/shiny/16/"+ countrycode +".png"
         except Exception:
             pass
-        return "/flags/flags-iso/shiny/32/_unknown.png"
+        return "/flags/flags-iso/shiny/16/_unknown.png"
