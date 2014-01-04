@@ -54,26 +54,24 @@ def safebrowsingqueryv2 (query_hostname, key):
         # Return the same as a positive response string if the Safe Browsing API key is missing.
         return ("")
 
-	# Make sure the Google Safe Browsing API is not abused
-	try:
-		f = open('api_count.txt', 'r+')
-		line = f.readline()
-		print(line)
-		value = int(line)
-		if value < 10000:
-			print("less than")
-			value += 1
-			f = open('api_count.txt', 'w')
-			f.write(str(value))		
-		else:
-			# API limit reached, don't make any more calls
-			return ("")
-		f.close()
-	except:
-		# Safe browsing count does not exist, set the value to one and continue
-		f = open('api_count.txt', 'w')
-		f.write("1")
-		f.close()
+    # Make sure the Google Safe Browsing API is not abused
+    try:
+        f = open('api_count.txt', 'r+')
+        line = f.readline()
+        value = int(line)
+        if value < 10000:
+            value += 1
+            f = open('api_count.txt', 'w')
+            f.write(str(value))		
+        else:
+            # API limit reached, don't make any more calls
+            return ("")
+        f.close()
+    except:
+        # Safe browsing count does not exist, set the value to one and continue
+        f = open('api_count.txt', 'w')
+        f.write("1")
+        f.close()
 		
     query_url = parse.quote("http://" + query_hostname, safe='')
 
