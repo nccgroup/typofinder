@@ -147,23 +147,9 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 strHost = str(post_data['host'])[2:-2]
 
                 # option checking
-                try:
-                    str(post_data['tld'])
-                    bTLD = True
-                except KeyError:
-                    bTLD = False
-
-                try:
-                    str(post_data['typos'])
-                    bTypos = True
-                except KeyError:
-                    bTypos = False
-
-                try:
-                    str(post_data['bitflip'])
-                    bBitFlip = True
-                except KeyError:
-                    bBitFlip = False
+                bTLD = 'tld' in post_data
+                bTypos = 'typos' in post_data
+                bBitFlip = 'bitflip' in post_data
 
                 # stupid user
                 if(bTypos == False and bTLD == False and bBitFlip == False):
@@ -211,49 +197,41 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
               
         return
 
+    def output_file(self, path, mime_type):
+        """
+        Sends the contents of the given file with the given "Content-type" header.
+
+        @param path: The path to the file to send.
+        @param mime_type: The content type.
+        @raise IOError: If a path traversal is attempted.
+        """
+        if '..' in path:
+            raise IOError
+        else:
+            with open(path) as f:
+                self.send_response(200)
+                self.send_header('Content-type',mime_type)
+                self.end_headers()
+                self.output(f.read())
+
     def do_GET(self):
         """Respond to a GET request."""
 
         try:
             if self.path.endswith("/"):
-                f = open(curdir + sep + "index.html") 
-                self.send_response(200)
-                self.send_header('Content-type','text/html')
-                self.end_headers()
-                self.output(f.read())
-                f.close()
+                self.output_file(curdir + sep + "index.html", 'text/html')
                 return
-            elif self.path.endswith(".html") and self.path.find("..") != 0:
-                f = open(curdir + sep + self.path) 
-                self.send_response(200)
-                self.send_header('Content-type','text/html')
-                self.end_headers()
-                self.output(f.read())
-                f.close()
+            elif self.path.endswith(".html"):
+                self.output_file(curdir + sep + self.path, 'text/html')
                 return
-            elif self.path.endswith(".css") and self.path.find("..") != 0:
-                f = open(curdir + sep + self.path) 
-                self.send_response(200)
-                self.send_header('Content-type','text/css')
-                self.end_headers()
-                self.output(f.read())
-                f.close()
+            elif self.path.endswith(".css"):
+                self.output_file(curdir + sep + self.path, 'text/css')
                 return
-            elif self.path.endswith(".js") and self.path.find("..") != 0:
-                f = open(curdir + sep + self.path) 
-                self.send_response(200)
-                self.send_header('Content-type','application/javascript')
-                self.end_headers()
-                self.output(f.read())
-                f.close()
+            elif self.path.endswith(".js"):
+                self.output_file(curdir + sep + self.path, 'application/javascript')
                 return
-            elif self.path.endswith(".map") and self.path.find("..") != 0:
-                f = open(curdir + sep + self.path) 
-                self.send_response(200)
-                self.send_header('Content-type','application/json')
-                self.end_headers()
-                self.output(f.read())
-                f.close()
+            elif self.path.endswith(".map"):
+                self.output_file(curdir + sep + self.path, 'application/json')
                 return
             elif self.path.endswith(".png") and self.path.find("..") != 0:
                 f = open(curdir + sep + self.path, "rb") 
