@@ -44,7 +44,13 @@ def ourwhois(sDomain):
    
     if tld == ".com" or tld == '.org' or tld == ".net":
         sServer = 'whois.internic.net'
+        try:
+            for sLine in dowhois(sServer,sDomain).split('\n'):
+                if "Whois Server: " in sLine:
+                    sServer = sLine.lstrip(' ')[14:]
+        except:
+            pass
+
         return dowhois(sServer,sDomain)
-        
     else:
         return "Nowt"
