@@ -56,7 +56,6 @@ Usage
 -------------
 * Launch in TypoMagic directory
 * Connect to http://127.0.0.1:801/
-    * for the old UI use http://127.0.0.1:801/index.old.html
 * Follow prompts
 
 Google Safe Browsing API Key

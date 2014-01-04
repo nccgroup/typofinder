@@ -31,7 +31,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="index.html" />
-    <Content Include="index.old.html" />
     <Content Include="oldstyle.css" />
     <Content Include="style.css" />
   </ItemGroup>

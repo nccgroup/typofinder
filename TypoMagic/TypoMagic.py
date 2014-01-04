@@ -118,169 +118,8 @@ def handleHostAJAX(sDomain):
             typo.mv6.append(hostData.address)
     except:
         pass
-    
-        
+
     return typo
-
-
-# v1 non AJAX API
-def handleHost(sHostname, http_handler, bMX, bTypo):
-    
-    if bMX:
-        http_handler.output("--- [host] MX Host ")
-    elif bTypo:
-        http_handler.output("[host] Typo Host ")
-    else:
-        http_handler.output("[host] Host ")
-    
-    http_handler.output(sHostname)
-
-    try:
-        IPv4 = _hostinfo.getIPv4(sHostname)
-    except:
-        IPv4 = None
-
-    try:
-       IPv6 = _hostinfo.getIPv6(sHostname)
-    except:
-       IPv6 = None 
-
-    # Only display results about the domain's web site if it resolves and we aren't processing an MX record
-    if (IPv4 or IPv6) and not bMX:
-       http_handler.output(" " + safebrowsing.safebrowsingquery(sHostname),KEY)
-
-    http_handler.output("<br/>")
-
-    if IPv4 is None and IPv6 is None:
-       if bMX:
-           http_handler.output("---")
-       http_handler.output("--- [host] No IPv6 or IPv4 address<br/>")
-     
-    if IPv4 is not None:
-        for hostData in IPv4:
-            if bMX:
-                http_handler.output("---")
-            http_handler.output("--- [host IPv4] A: " + hostData.address + " from " + sHostname + " ")
-            #print(_hostinfo.getGeoImagebyIP(hostData.address))
-            #print(_hostinfo.getGeoImagebyHostname(sHostname))
-            strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
-            http_handler.output(strFlag + "<br/>")
-    
-    if IPv6 is not None:
-        for hostData in IPv6:  
-            if bMX:
-                http_handler.output("---")
-            http_handler.output("--- [host IPv6] AAAA: " +hostData.address + " from " + sHostname + " ")
-            #print(_hostinfo.getGeoImagebyIP(hostData.address))
-            #_hostinfo.getGeoImagebyIP(hostData.address) 
-            strFlag = _hostinfo.getGeoImagebyIPv6(hostData.address)
-            http_handler.output(strFlag + "<br/>")
-
-    if not bMX:
-        try:
-            IPMX = _hostinfo.getMX(sHostname)
-        except NoNameservers:
-            IPMX = None
-        
-        if IPMX is not None:
-            for hostData in IPMX:
-                #print(hostData.exchange)
-                http_handler.output("--- [host MX] for " + sHostname + " is " + str(hostData.exchange).strip(".") + "<br/>")
-                handleHost(str(hostData.exchange).strip("."),http_handler,True, bTypo)
-        else:
-            http_handler.output("--- [host] No MX records<br/>")
-
-    # www v4
-    try:
-        IPWWW = _hostinfo.getWWW(sHostname)
-    except:
-        IPWWW = None
-
-    if IPWWW is not None:
-        for hostData in IPWWW:  
-            if not bMX:
-                http_handler.output("--- [www. IPv4] A: " +hostData.address + " from " + sHostname + " ")
-                strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
-                http_handler.output(strFlag + "<br/>")
-
-    # www v6
-    try:
-        IPWWW = _hostinfo.getWWWv6(sHostname)
-    except:
-        IPWWW = None
-
-    if IPWWW is not None:
-        for hostData in IPWWW:  
-            if not bMX:
-                http_handler.output("--- [www. IPv6] A: " +hostData.address + " from " + sHostname + " ")
-                strFlag = _hostinfo.getGeoImagebyIPv6(hostData.address)
-                http_handler.output(strFlag + "<br/>")
-
-    # webmail v4
-    try:
-        IPWebMail= _hostinfo.getWEBMail(sHostname)
-    except:
-        IPWebMail = None
-
-    if IPWebMail is not None:
-        for hostData in IPWebMail:
-            if not bMX:
-                http_handler.output("--- [webmail. IPv4] A: " +hostData.address + " from " + sHostname + " ")
-                strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
-                http_handler.output(strFlag + "<br/>")
-
-    # webmail v6
-    try:
-        IPWebMail= _hostinfo.getWEBMailv6(sHostname)
-    except:
-        IPWebMail = None
-
-    if IPWebMail is not None:
-        for hostData in IPWebMail:
-            if not bMX:
-                http_handler.output("--- [webmail. IPv6] A: " +hostData.address + " from " + sHostname + " ")
-                strFlag = _hostinfo.getGeoImagebyIPv6(hostData.address)
-                http_handler.output(strFlag + "<br/>")
-
-    # m v4
-    try:
-        IPM= _hostinfo.getM(sHostname)
-    except:
-        IPM = None
-    
-    if IPM is not None:
-        for hostData in IPM:  
-            if not bMX:
-                http_handler.output("--- [m. IPv4] A: " +hostData.address + " from " + sHostname + " ")
-                strFlag = _hostinfo.getGeoImagebyIP(hostData.address)
-                http_handler.output(strFlag + "<br/>")
-
-    # m v6
-    try:
-        IPM= _hostinfo.getMv6(sHostname)
-    except:
-        IPM = None
-    
-    if IPM is not None:
-        for hostData in IPM:  
-            if not bMX:
-                http_handler.output("--- [m. IPv6] A: " +hostData.address + " from " + sHostname + " ")
-                strFlag = _hostinfo.getGeoImagebyIPv6(hostData.address)
-                http_handler.output(strFlag + "<br/>")
-
-    # if we're not a typo (i.e. we're the base domain) then mutate
-    if bTypo == False and bMX == False:
-        # this could be a different country if you supplied the map
-        lstTypos = _typogen.generatetypos(sHostname,"gb")
-        if lstTypos is not None:
-            for strTypoHost in lstTypos:
-                handleHost(strTypoHost,http_handler,False,True)
-                                   
-    # WHOIS TODO
-    #domain = whois.query('zemes.com')
-    #print(domain)
-
-    return
 
 class MyHandler(http.server.BaseHTTPRequestHandler):
 
@@ -296,27 +135,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         """Respond to a POST request."""
 
         try:
-            # legacy API from v1
-            if self.path.endswith("typo.ncc"):
-                self.send_response(200)
-                self.send_header("Content-type", "text/html")
-                self.end_headers()
-                self.output("<html><head>")
-                self.output("<title>NCC Typo Finder Results</title>")
-                self.output("<link rel=\"stylesheet\" type=\"text/css\" href=\"/css/oldstyle.css\">")
-                self.output("</head>")
-                self.output("Released under AGPL by <a href=\"http://www.nccgroup.com/\">NCC Group</a> - source available <a href=\"https://github.com/nccgroup/typofinder\">here</a><br/>")
-        
-
-                length = int(self.headers['Content-Length'])
-                post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
-        
-                strHost = str(post_data['host'])[2:-2]
-                if re.match('^[a-zA-Z0-9.-]+$',strHost): 
-                    handleHost(strHost,self,False,False)
-            
             # v2 AJAX API generate typo domains
-            elif self.path.endswith("typov2.ncc"):
+            if self.path.endswith("typov2.ncc"):
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")
                 self.end_headers()
@@ -475,7 +295,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")
                 self.end_headers()
-                self.output(ourwhois(strDomain));
+                self.output(ourwhois(strDomain))
                 
             else:
                self.send_error(404,'[!] File Not Found: %s' % self.path)
@@ -515,9 +335,9 @@ if __name__ == '__main__':
     parser.add_argument('-k','--key',help='Google SafeBrowsing API key', required=False)
     args = parser.parse_args()
 
-    if(args.key != None):
+    if args.key:
         KEY = args.key	
-	
+
     try:   
         httpd = MultiThreadedHTTPServer((args.address, args.port), MyHandler)
     except socket.gaierror:

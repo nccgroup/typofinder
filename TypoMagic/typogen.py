@@ -42,66 +42,6 @@ class typogen(object):
 
         return keyDict
 
-    def generatetypos(self, strHost, strCountry):
-        """generate the typos"""
-
-        # result list of typos
-        lstTypos = []
-        
-        # debug
-        #uniqueTypos = set(lstTypos)
-        #uniqueTypos.add(strHost)
-        #return uniqueTypos
-
-        # missing characters
-        idx = 0
-        while idx < len(strHost):
-            strTypo = strHost[0:idx]+strHost[idx+1:]
-            idx+=1
-            lstTypos.append(strTypo)
-
-        # duplicate characters
-        idx = 0
-        while idx < len(strHost):
-            strHostList = list(strHost)
-            if strHostList[idx] != '.':
-                strHostList.insert(idx,strHostList[idx])
-                strTypo = "".join(strHostList)
-                lstTypos.append(strTypo)
-            idx+=1
-            
-
-        # tld swap out
-        filename = "./tlds.txt"
-        with open(filename) as f:
-            lastdot = strHost.rfind(".")
-            for line in f:
-                if not line.lstrip().startswith('#'):
-                    gtld = line.rstrip().lower()
-                    newHost = strHost[:lastdot] + "." + gtld
-                    #print(newHost)
-                    lstTypos.append(newHost)
-
-        # load keyboard mapping
-        keyDict = typogen.loadkeyb(strCountry)
-
-        # for the keyboard mapping
-        for key in keyDict:
-            for value in keyDict[key]:
-                idx = 0
-                while idx < len(strHost):
-                    strHostList = list(strHost)
-                    strHostList[idx] = strHostList[idx].replace(key, value)
-                    strTypo = "".join(strHostList)
-                    if strTypo != strHost:
-                        lstTypos.append(strTypo)
-                    idx+=1
-
-        uniqueTypos = set(lstTypos)
-        uniqueTypos.remove(strHost)
-
-        return uniqueTypos
-
     def is_domain_valid(self, domain):
         #Ensure its in the correct character set
         if not re.match('^[a-z0-9.-]+$', domain):
@@ -157,11 +97,6 @@ class typogen(object):
 
         # result list of typos
         lstTypos = []
-
-        # debug
-        #uniqueTypos = set(lstTypos)
-        #uniqueTypos.add(strHost)
-        #return uniqueTypos
 
         if bBitFlip:
             lstTypos += self.bitflipstring(strHost)

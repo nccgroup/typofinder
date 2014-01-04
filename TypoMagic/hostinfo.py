@@ -131,37 +131,29 @@ class hostinfo(object):
     def getGeobyIP(self, sIP):
         try:
             # Geo Location
-            #print(gi.country_code_by_addr(sIP))
             return self._gi.country_code_by_addr(sIP)
         except Exception as e:
-            #print("Error doing getGeoIP ")
             pass
     
     def getGeobyIPv6(self, sIP):
         try:
             # Geo Location
-            #print(gi.country_code_by_addr(sIP))
             return self._giv6.country_code_by_addr(sIP)
         except Exception as e:
-            #print("Error doing getGeoIP ")
             pass
 
     def getGeobyHostname(self, sHostname):
         try:
             # Geo Location
-            #print(gi.country_code_by_name(sHostname))
             return self._gi.country_code_by_name(sHostname)
         except Exception as e:
-            #print("Error doing getGeoHostname ")
             pass
 
     def getGeobyHostnamev6(self, sHostname):
         try:
             # Geo Location
-            #print(gi.country_code_by_name(sHostname))
             return self._giv6.country_code_by_name(sHostname)
         except Exception as e:
-            #print("Error doing getGeoHostname ")
             pass
 
     def getGeoImagebyIP(self, sIP):
