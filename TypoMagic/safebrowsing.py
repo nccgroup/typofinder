@@ -20,7 +20,7 @@ def safebrowsingqueryv2 (query_hostname, key):
     if key == "":
         # Return the same as a positive response string if the Safe Browsing API key is missing.
         return ("")
-		
+
     query_url = parse.quote("http://" + query_hostname, safe='')
 
     connection = http.client.HTTPSConnection("sb-ssl.google.com")

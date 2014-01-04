@@ -143,12 +143,13 @@ class typogen(object):
 
         uniqueTypos = set(lstTypos)
 
+        # Add the original domain 
         try:
-            uniqueTypos.remove(strHost)
+            uniqueTypos.add(strHost)
         except KeyError:
             pass
 
-        #Remove any invalid typos
+        # Remove any invalid typos
         for typo in copy.copy(uniqueTypos):
             if not self.is_domain_valid(typo):
                 uniqueTypos.remove(typo)
