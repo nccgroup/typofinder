@@ -34,6 +34,6 @@ def ourwhois(sDomain):
 			if block == '':
 				break
 			response = response + block
-		s.shutdown
-		s.close
+		s.shutdown()
+		s.close()
 		return response
