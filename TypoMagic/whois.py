@@ -40,17 +40,27 @@ def dowhois(sServer, sDomain):
 
 def ourwhois(sDomain):
     # TODO, add more whois servers for other TLDs
-    tld = sDomain[-4:] # this will need to be changed to rfind
-   
+
+    sLDot = sDomain.rfind(".")
+    tld = sDomain[sLDot:]
+
+    sServer = ''
+
     if tld == ".com" or tld == '.org' or tld == ".net":
         sServer = 'whois.internic.net'
-        try:
-            for sLine in dowhois(sServer,sDomain).split('\n'):
-                if "Whois Server: " in sLine:
-                    sServer = sLine.lstrip(' ')[14:]
-        except:
-            pass
-
-        return dowhois(sServer,sDomain)
+    elif tld ==".uk":
+        sServer = 'whois.nic.uk'
+    elif tld ==".de":
+        sServer = 'whois.denic.de'
     else:
         return "Nowt"
+
+    try:
+        for sLine in dowhois(sServer,sDomain).split('\n'):
+            if "Whois Server: " in sLine:
+                sServer = sLine.lstrip(' ')[14:]
+    except:
+        pass
+
+    return dowhois(sServer,sDomain)
+    
