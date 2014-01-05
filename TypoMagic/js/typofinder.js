@@ -11,7 +11,7 @@
 //
 
 // -------------------------------------
-// globals
+// Globals
 // -------------------------------------
 var intPBarMax = 0;
 var intPBarCount = 0;
@@ -29,7 +29,9 @@ function emptyresults() {
     $("#results").accordion("refresh");
 }
 
-//
+// -------------------------------------
+// Get the original domains data
+// -------------------------------------
 function getMasterData() {
     var URL = "/entity.ncc";
     var strTag = " ( ";
