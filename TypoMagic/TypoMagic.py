@@ -208,11 +208,11 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         if '..' in path:
             raise IOError
         else:
-            with open(path) as f:
+            with open(path, "rb") as f:
                 self.send_response(200)
                 self.send_header('Content-type',mime_type)
                 self.end_headers()
-                self.output(f.read())
+                self.wfile.write(f.read())
 
     def do_GET(self):
         """Respond to a GET request."""
@@ -232,6 +232,9 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 return
             elif self.path.endswith(".map"):
                 self.output_file(curdir + sep + self.path, 'application/json')
+                return
+            elif self.path.endswith(".ico"):
+                self.output_file(curdir + sep + self.path, 'image/x-icon')
                 return
             elif self.path.endswith(".png") and self.path.find("..") != 0:
                 f = open(curdir + sep + self.path, "rb") 
