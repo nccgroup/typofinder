@@ -16,9 +16,10 @@
 var intPBarMax = 0;
 var intPBarCount = 0;
 var domainsNoResults = new Array();
+var masterData = null;
 
 // -------------------------------------
-// empty the results
+// Empty the results
 // -------------------------------------
 function emptyresults() {
     var myNode = document.getElementById("results");
@@ -28,8 +29,29 @@ function emptyresults() {
     $("#results").accordion("refresh");
 }
 
+//
+function getMasterData() {
+    var URL = "/entity.ncc";
+    var strTag = " ( ";
+    var intCount = 0;
+
+    $.post(URL, { host: document.getElementById("host").value }, function (data) {
+
+            masterData = data;
+        })
+        .fail(function (xhr, textStatus, errorThrown) {
+    
+        })
+        .always(function (data) {
+    
+        }, 'json');
+
+    intPBarCount++;
+    $("#progressbar").progressbar("option", "value", intPBarCount);
+}
+
 // -------------------------------------
-// this generates the accordian tag
+// This generates the accordian tag for a domain
 // note: this needs to set bVal true for it to appear
 // -------------------------------------
 function generateTag(data) {
@@ -419,62 +441,56 @@ function loadDetails(strDomain, mynoresdiv) {
     var intCount = 0;
 
     $.post(URL, { host: strDomain }, function (data) {
-        //console.log(data)
+            //console.log(data)
 
-        // Header
-        var node = document.createElement("H3");
-        node.setAttribute("id", data.strDomain);
+            // Header
+            var node = document.createElement("H3");
+            node.setAttribute("id", data.strDomain);
 
 
-        var strTag = generateTag(data);
-        if (strTag != null) {
+            var strTag = generateTag(data);
+            if (strTag != null) {
 
-            // Results header value
-            var textnode = document.createTextNode(data.strDomain + " " + strTag);
-            node.appendChild(textnode);
-            document.getElementById("results").appendChild(node);
+                // Results header value
+                var textnode = document.createTextNode(data.strDomain + " " + strTag);
+                node.appendChild(textnode);
+                document.getElementById("results").appendChild(node);
 
-            // Results div
-            var mydiv = document.createElement("div");
-            fillDetails(mydiv, data);
-            document.getElementById("results").appendChild(mydiv);
+                // Results div
+                var mydiv = document.createElement("div");
+                fillDetails(mydiv, data);
+                document.getElementById("results").appendChild(mydiv);
 
-        } else {
-            // Don't both creating those with nothing interesting
-            // var textnode = document.createTextNode(data.strDomain);
-        }
+            } else {
+                // Don't both creating those with nothing interesting
+                // var textnode = document.createTextNode(data.strDomain);
+            }
 
-        intPBarCount++
-        // Style
-        if (intPBarCount >= intPBarMax) {
-            // Fill the no results div
-            fillNoResDetails(mynoresdiv);
-            $("#results").accordion("refresh");
-            // Hide the progress bar
-            document.getElementById("progressbar").style.display = "none";
-            // Shows the results
-            document.getElementById("results").style.display = "block";
-            // Shows the original form
-            document.getElementById("typogulator").style.display = "block";
-            // Shows the results table
-            document.getElementById("resultstable").style.display = "block";
-        }
+            intPBarCount++
+            // Style
+            if (intPBarCount >= intPBarMax) {
+                // Fill the no results div
+                fillNoResDetails(mynoresdiv);
+                $("#results").accordion("refresh");
+                // Hide the progress bar
+                document.getElementById("progressbar").style.display = "none";
+                // Shows the results
+                document.getElementById("results").style.display = "block";
+                // Shows the original form
+                document.getElementById("typogulator").style.display = "block";
+                // Shows the results table
+                document.getElementById("resultstable").style.display = "block";
+            }
 
-        //console.log("[debug] pbar val " + intPBarCount);
-        $("#progressbar").progressbar("option", "value", intPBarCount);
+            $("#progressbar").progressbar("option", "value", intPBarCount);
 
-        //$("#results").accordion("refresh");
-    })
+            //$("#results").accordion("refresh");
+        })
         .fail(function (xhr, textStatus, errorThrown) {
-            //console.log(xhr.statusText);
-            //document.getElementById("progressbar").style.display = "none";
-            //document.getElementById("results").style.display = "none";
-            //document.getElementById("typogulator").style.display = "block";
-            //console.log(textStatus);
-            //console.log(errorThrown);
+    
         })
         .always(function (data) {
-            //console.log(data)
+    
         }, 'json');
 }
 
@@ -522,9 +538,11 @@ $(document).ready(function () {
         $.post($("#typogulator").attr("action"), $("#typogulator").serialize(), function (data) {
             //$("#results").html(data);
 
-            intPBarMax = data.length;
+            // max for the progress bar
+            intPBarMax = data.length + 1; // we add one to factor in the first request
+
+            // set the max on the progress bar
             $("#progressbar").progressbar("option", "max", data.length);
-            //console.log("[debug] pbar len " + data.length);
 
             // Create a top entry in the results for domains with no findings
             var node = document.createElement("H3");
@@ -534,6 +552,9 @@ $(document).ready(function () {
             document.getElementById("results").appendChild(node);
             var mynoresdiv = document.createElement("div");
             document.getElementById("results").appendChild(mynoresdiv);
+
+            // Get the original domains data
+            getMasterData();
 
             // now loop through and process them
             for (key in data) {
