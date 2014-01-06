@@ -154,4 +154,4 @@ class typogen(object):
             if not self.is_domain_valid(typo):
                 uniqueTypos.remove(typo)
 
-        return uniqueTypos
+        return sorted(uniqueTypos)
