@@ -502,6 +502,30 @@ function loadDetails(strDomain, mynoresdiv) {
 // -------------------------------------
 $(document).ready(function () {
 
+    // init the slider
+    $( "#slider" ).slider({
+      value: 0,
+      min: 0,
+      max: 99,  //Ideally this would max at 100%, but the current number/size of steps only adds up to 99%, leaving 100% an additional discrete option.
+      step: 33,
+      slide: function( event, ui ) {
+        $("#typoamount").val(ui.value);
+        if (ui.value < 33) {
+            $( "#typoamountdesc" ).val( "Quick" );
+        }
+        else if (ui.value < 66) {
+            $( "#typoamountdesc" ).val( "Balanced" );
+        }
+        else if (ui.value < 99) {
+            $( "#typoamountdesc" ).val( "Deep" );
+        }
+        else {
+            $( "#typoamountdesc" ).val( "Insane" );
+        }
+      }
+    });
+    $( "#typoamountdesc" ).val( "Quick" );
+
     // init the accordion
     $("#results").accordion();
     $("#results").accordion("option", "heightStyle", "content");
@@ -518,6 +542,9 @@ $(document).ready(function () {
 
     // Hide the progressbar
     document.getElementById("progressbar").style.display = "none";
+
+    //Autofocus the search box
+    $("#host").focus();
 
     $("#typogulator").submit(function () {
         // Hide the form
