@@ -504,7 +504,7 @@ $(document).ready(function () {
 
     // init the slider
     $( "#slider" ).slider({
-      value: 0,
+      value: 33,
       min: 0,
       max: 99,  //Ideally this would max at 100%, but the current number/size of steps only adds up to 99%, leaving 100% an additional discrete option.
       step: 33,
@@ -524,7 +524,7 @@ $(document).ready(function () {
         }
       }
     });
-    $( "#typoamountdesc" ).val( "Quick" );
+    $( "#typoamountdesc" ).val( "Balanced" );
 
     // init the accordion
     $("#results").accordion();
