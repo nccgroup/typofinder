@@ -92,8 +92,71 @@ class typogen(object):
         return result
 
     # v2 API with two new options
-    def generatetyposv2(self, strHost,strCountry,bTLDS,bTypos,bBitFlip):
-        """generate the typos"""
+
+    @staticmethod
+    def generate_missing_character_typos(strHost):
+        # missing characters
+
+        result = list()
+        idx = 0
+        while idx < len(strHost):
+            strTypo = strHost[0:idx] + strHost[idx + 1:]
+            idx += 1
+            result.append(strTypo)
+        return result
+
+    @staticmethod
+    def generate_duplicate_character_typos(strHost):
+        # duplicate characters
+
+        result = list()
+        idx = 0
+        while idx < len(strHost):
+            strHostList = list(strHost)
+            if strHostList[idx] != '.':
+                strHostList.insert(idx, strHostList[idx])
+                strTypo = "".join(strHostList)
+                result.append(strTypo)
+            idx += 1
+        return result
+
+    @staticmethod
+    def generate_miskeyed_typos(strHost, strCountry):
+        # surrounding keys for each character
+
+        result = list()
+        # load keyboard mapping
+        keyDict = typogen.loadkeyb(strCountry)
+        # for the keyboard mapping
+        for key in keyDict:
+            for value in keyDict[key]:
+                idx = 0
+                while idx < len(strHost):
+                    strHostList = list(strHost)
+                    strHostList[idx] = strHostList[idx].replace(key, value)
+                    strTypo = "".join(strHostList)
+                    result.append(strTypo)
+                    idx += 1
+        return result
+
+    @staticmethod
+    def generate_transposed_character_typos(strHost):
+        result = list()
+        for idx in range(0, len(strHost) - 1):
+            result.append(strHost[:idx] + strHost[idx+1:idx+2] + strHost[idx:idx+1] + strHost[idx+2:])
+        return result
+
+    def generatetyposv2(self, strHost, strCountry, bTypos, iTypoIntensity, bTLDS, bBitFlip):
+        """
+        generate the typos
+
+        @param strHost The hostname to generate typos for
+        @param strCountry The country code of the keyboard to use when generating miskeyed typos
+        @param bTypos Flag to indicate that typos should be generated
+        @param iTypoIntensity A percentage of how intense the typo generation should be.
+        @param bTLDS Flag to indicate that the TLDs should be swapped
+        @param bBitFlip Flag to indicate that the hostname should be bitflipped
+        """
 
         # result list of typos
         lstTypos = []
@@ -102,36 +165,19 @@ class typogen(object):
             lstTypos += self.bitflipstring(strHost)
 
         if bTypos:
-            # missing characters
-            idx = 0
-            while idx < len(strHost):
-                strTypo = strHost[0:idx]+strHost[idx+1:]
-                idx+=1
-                lstTypos.append(strTypo)
-
-            # duplicate characters
-            idx = 0
-            while idx < len(strHost):
-                strHostList = list(strHost)
-                if strHostList[idx] != '.':
-                    strHostList.insert(idx,strHostList[idx])
-                    strTypo = "".join(strHostList)
-                    lstTypos.append(strTypo)
-                idx+=1
-
-            # load keyboard mapping
-            keyDict = typogen.loadkeyb(strCountry)
-
-            # for the keyboard mapping
-            for key in keyDict:
-                for value in keyDict[key]:
-                    idx = 0
-                    while idx < len(strHost):
-                        strHostList = list(strHost)
-                        strHostList[idx] = strHostList[idx].replace(key, value)
-                        strTypo = "".join(strHostList)
-                        lstTypos.append(strTypo)
-                        idx+=1
+            #Quick:
+            lstTypos += self.generate_missing_character_typos(strHost)
+            lstTypos += self.generate_duplicate_character_typos(strHost)
+            #Balanced:
+            if iTypoIntensity > 0:
+                lstTypos += self.generate_miskeyed_typos(strHost, strCountry)
+            #Deep:
+            if iTypoIntensity > 33:
+                lstTypos += self.generate_transposed_character_typos(strHost)
+            #Insane:
+            if iTypoIntensity > 66:
+                #Nothing is currently classified as "Insane"
+                pass
 
         if bTLDS:
             lastdot = strHost.rfind(".")

@@ -149,6 +149,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 # option checking
                 bTLD = 'tld' in post_data
                 bTypos = 'typos' in post_data
+                iTypoIntensity = int(post_data['typoamount'][0])
                 bBitFlip = 'bitflip' in post_data
 
                 # stupid user
@@ -161,7 +162,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 # domain name validation
                 if _typogen.is_domain_valid(strHost):
                     print("[i] Processing typos for " + strHost) 
-                    lstTypos = _typogen.generatetyposv2(strHost,"gb",bTLD,bTypos,bBitFlip)
+                    lstTypos = _typogen.generatetyposv2(strHost, "gb", bTypos, iTypoIntensity, bTLD, bBitFlip)
                     if lstTypos is not None:
                         self.output(json.dumps([strTypoHost for strTypoHost in lstTypos]))
                     else:
