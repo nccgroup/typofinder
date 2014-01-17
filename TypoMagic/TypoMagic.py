@@ -254,20 +254,45 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 strIP = self.path[lastSlash + 1:]
                 strIMG = _hostinfo.getGeoImagebyIPv4new(strIP)
 
-                self.send_response(301)
-                self.send_header("Location", strIMG)
+                f = open(curdir + sep + strIMG, "rb") 
+                self.send_response(200)
+
+                year = timedelta(days=30)
+                futuredate = date.today() + year
+                self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
+                self.send_header('Content-type','image/png')
                 self.end_headers()
-                self.output("")
+                self.wfile.write(f.read())
+                f.close()
+
+
+                #print("[-" + args.base + "/" + strIMG)
+
+                #self.send_response(301)
+                #self.send_header("Location", strIMG)
+                #self.end_headers()
+                #self.output("")
             # v2 REST API - get geo for an IPv6
             elif "geov6.ncc" in self.path:
                 lastSlash = self.path.rfind("/")
                 strIP = self.path[lastSlash + 1:]
                 strIMG = _hostinfo.getGeoImagebyIPv6new(strIP)
 
-                self.send_response(301)
-                self.send_header("Location", strIMG)
+                f = open(curdir + sep + strIMG, "rb") 
+                self.send_response(200)
+
+                year = timedelta(days=30)
+                futuredate = date.today() + year
+                self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
+                self.send_header('Content-type','image/png')
                 self.end_headers()
-                self.output("")
+                self.wfile.write(f.read())
+                f.close()
+
+                #self.send_response(301)
+                #self.send_header("Location", strIMG)
+                #self.end_headers()
+                #self.output("")
             # v2 REST API - get whois for domain
             elif "whois.ncc" in self.path:
                 lastSlash = self.path.rfind("/")
