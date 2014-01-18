@@ -126,17 +126,40 @@ class typogen(object):
 
         result = list()
         # load keyboard mapping
-        keyDict = typogen.loadkeyb(strCountry)
-        # for the keyboard mapping
-        for key in keyDict:
-            for value in keyDict[key]:
-                idx = 0
-                while idx < len(strHost):
-                    strHostList = list(strHost)
-                    strHostList[idx] = strHostList[idx].replace(key, value)
-                    strTypo = "".join(strHostList)
-                    result.append(strTypo)
-                    idx += 1
+        typoDict = typogen.loadkeyb(strCountry)
+
+        for idx, char in enumerate(strHost):
+            if char in typoDict:
+                for replacement_char in typoDict[char]:
+                    result.append(strHost[:idx] + replacement_char + strHost[idx + 1:])
+        return result
+
+    @staticmethod
+    def generate_miskeyed_sequence_typos(strHost, strCountry):
+        # repeated surrounding keys for any character sequences in the string
+
+        result = list()
+        # load keyboard mapping
+        typoDict = typogen.loadkeyb(strCountry)
+
+        idx = 0
+        while idx < len(strHost):
+            char = strHost[idx]
+            #Loop through sequences of the same character, counting the sequence length
+            sequence_len = 1
+            while idx+1 < len(strHost) and strHost[idx+1] == char:
+                sequence_len += 1
+                idx+=1
+
+            #Increment the index at this point to make the maths easier if we found a sequence
+            idx += 1
+
+            #Replace the whole sequence
+            if sequence_len > 1:
+                if char in typoDict:
+                    for replacement_char in typoDict[char]:
+                        result.append(strHost[:idx - sequence_len] + (replacement_char * sequence_len) + strHost[idx:])
+
         return result
 
     @staticmethod
@@ -171,9 +194,10 @@ class typogen(object):
             #Balanced:
             if iTypoIntensity > 0:
                 lstTypos += self.generate_miskeyed_typos(strHost, strCountry)
-            #Deep:
+            #Rigorous:
             if iTypoIntensity > 50:
                 lstTypos += self.generate_transposed_character_typos(strHost)
+                lstTypos += self.generate_miskeyed_sequence_typos(strHost, strCountry)
 
         if bTLDS:
             lastdot = strHost.rfind(".")
