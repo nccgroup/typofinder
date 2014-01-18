@@ -122,7 +122,7 @@ class typogen(object):
 
     @staticmethod
     def generate_miskeyed_typos(strHost, strCountry):
-        # surrounding keys for each character
+        # swap to a surrounding key for each character
 
         result = list()
         # load keyboard mapping
@@ -132,6 +132,21 @@ class typogen(object):
             if char in typoDict:
                 for replacement_char in typoDict[char]:
                     result.append(strHost[:idx] + replacement_char + strHost[idx + 1:])
+        return result
+
+    @staticmethod
+    def generate_miskeyed_addition_typos(strHost, strCountry):
+        # add a surrounding key either side of each character
+
+        result = list()
+        # load keyboard mapping
+        typoDict = typogen.loadkeyb(strCountry)
+
+        for idx, char in enumerate(strHost):
+            if char in typoDict:
+                for replacement_char in typoDict[char]:
+                    result.append(strHost[:idx + 1] + replacement_char + strHost[idx + 1:])
+                    result.append(strHost[:idx] + replacement_char + strHost[idx:])
         return result
 
     @staticmethod
@@ -194,10 +209,11 @@ class typogen(object):
             #Balanced:
             if iTypoIntensity > 0:
                 lstTypos += self.generate_miskeyed_typos(strHost, strCountry)
+                lstTypos += self.generate_miskeyed_sequence_typos(strHost, strCountry)
             #Rigorous:
             if iTypoIntensity > 50:
                 lstTypos += self.generate_transposed_character_typos(strHost)
-                lstTypos += self.generate_miskeyed_sequence_typos(strHost, strCountry)
+                lstTypos += self.generate_miskeyed_addition_typos(strHost, strCountry)
 
         if bTLDS:
             lastdot = strHost.rfind(".")

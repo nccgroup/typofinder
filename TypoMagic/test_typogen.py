@@ -25,3 +25,8 @@ class TestTypogen(TestCase):
         self.assertListEqual(['aabddd', 'aabfff', 'aabvvv', 'aabxxx', 'qqbccc', 'ssbccc', 'wwbccc', 'xxbccc', 'zzbccc'], sorted(result))
         result = typogen.generate_miskeyed_sequence_typos("abc", "gb")
         self.assertListEqual([], sorted(result))
+
+    def test_generate_miskeyed_addition_typos(self):
+        result = typogen.generate_miskeyed_addition_typos("abc", "gb")
+        self.assertListEqual(sorted(['abcd', 'abcf', 'abcv', 'abcx', 'abfc', 'abgc', 'abhc', 'abnc', 'abvc', 'aqbc', 'asbc', 'awbc', 'axbc', 'azbc',
+                              'abdc', 'abfc', 'abvc', 'abxc', 'afbc', 'agbc', 'ahbc', 'anbc', 'avbc', 'qabc', 'sabc', 'wabc', 'xabc', 'zabc']), sorted(result))
