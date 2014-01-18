@@ -241,8 +241,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 f = open(curdir + sep + self.path, "rb") 
                 self.send_response(200)
 
-                year = timedelta(days=30)
-                futuredate = date.today() + year
+                month = timedelta(days=30)
+                futuredate = date.today() + month
                 self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
                 self.send_header('Content-type','image/png')
                 self.end_headers()
@@ -258,8 +258,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 f = open(curdir + sep + strIMG, "rb") 
                 self.send_response(200)
 
-                year = timedelta(days=30)
-                futuredate = date.today() + year
+                month = timedelta(days=30)
+                futuredate = date.today() + month
                 self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
                 self.send_header('Content-type','image/png')
                 self.end_headers()
@@ -282,8 +282,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 f = open(curdir + sep + strIMG, "rb") 
                 self.send_response(200)
 
-                year = timedelta(days=30)
-                futuredate = date.today() + year
+                month = timedelta(days=30)
+                futuredate = date.today() + month
                 self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
                 self.send_header('Content-type','image/png')
                 self.end_headers()
