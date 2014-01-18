@@ -172,12 +172,8 @@ class typogen(object):
             if iTypoIntensity > 0:
                 lstTypos += self.generate_miskeyed_typos(strHost, strCountry)
             #Deep:
-            if iTypoIntensity > 33:
+            if iTypoIntensity > 50:
                 lstTypos += self.generate_transposed_character_typos(strHost)
-            #Insane:
-            if iTypoIntensity > 66:
-                #Nothing is currently classified as "Insane"
-                pass
 
         if bTLDS:
             lastdot = strHost.rfind(".")

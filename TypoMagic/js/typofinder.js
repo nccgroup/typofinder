@@ -504,23 +504,20 @@ $(document).ready(function () {
 
     // init the slider
     $( "#slider" ).slider({
-      value: 33,
+      value: 50,
       min: 0,
-      max: 99,  //Ideally this would max at 100%, but the current number/size of steps only adds up to 99%, leaving 100% an additional discrete option.
-      step: 33,
+      max: 100,
+      step: 50,
       slide: function( event, ui ) {
         $("#typoamount").val(ui.value);
-        if (ui.value < 33) {
+        if (ui.value < 50) {
             $( "#typoamountdesc" ).val( "Quick" );
         }
-        else if (ui.value < 66) {
+        else if (ui.value < 100) {
             $( "#typoamountdesc" ).val( "Balanced" );
         }
-        else if (ui.value < 99) {
-            $( "#typoamountdesc" ).val( "Deep" );
-        }
         else {
-            $( "#typoamountdesc" ).val( "Insane" );
+            $( "#typoamountdesc" ).val( "Rigorous" );
         }
       }
     });
