@@ -160,37 +160,37 @@ class hostinfo(object):
         try:
             countrycode = self.getGeobyIP(sIP)
             if countrycode:
-                return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
+                return "<img src=\"./flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
         except Exception:
             pass
-        return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
+        return "<img src=\"./flags/flags-iso/shiny/16/_unknown.png\">"
 
     def getGeoImagebyIPv6(self, sIP):
         try:
             countrycode = self.getGeobyIPv6(sIP)
             if countrycode:
-                return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
+                return "<img src=\"./flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
         except Exception:
             pass
-        return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
+        return "<img src=\"./flags/flags-iso/shiny/16/_unknown.png\">"
 
     def getGeoImagebyHostname(self, sHostname):
         try:
             countrycode = self.getGeobyHostname(sHostname)
             if countrycode:
-                return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
+                return "<img src=\"./flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
         except Exception:
             pass
-        return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"
+        return "<img src=\"./flags/flags-iso/shiny/16/_unknown.png\">"
             
     def getGeoImagebyHostnamev6(self, sHostname):
         try:
             countrycode = self.getGeobyHostnamev6(sHostname)
             if countrycode:
-                return "<img src=\"/flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
+                return "<img src=\"./flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
         except Exception:
             pass
-        return "<img src=\"/flags/flags-iso/shiny/16/_unknown.png\">"       
+        return "<img src=\"./flags/flags-iso/shiny/16/_unknown.png\">"       
 
     #
     # these are used by the v2 AJAX API

@@ -33,7 +33,7 @@ function emptyresults() {
 // Get the original domains data
 // -------------------------------------
 function getMasterData() {
-    var URL = "/entity.ncc";
+    var URL = "./entity.ncc";
     var strTag = " ( ";
     var intCount = 0;
 
@@ -136,7 +136,7 @@ function generateTag(data) {
 // IPv4 address
 // -------------------------------------
 function geoIPImageIPv4(sIP, domLI, strTBL) {
-    var URL = "/geov4.ncc/" + sIP;
+    var URL = "./geov4.ncc/" + sIP;
     var img = document.createElement('img');
     img.src = URL;
     if (strTBL != null) {
@@ -152,7 +152,7 @@ function geoIPImageIPv4(sIP, domLI, strTBL) {
 // IPv6 address
 // -------------------------------------
 function geoIPImageIPv6(sIP, domLI, strTBL) {
-    var URL = "/geov6.ncc/" + sIP;
+    var URL = "./geov6.ncc/" + sIP;
     var img = document.createElement('img');
     img.src = URL;
     if (strTBL != null) {
@@ -438,7 +438,7 @@ function fillDetails(domDiv, data) {
 // to parse the JSON results
 // -------------------------------------
 function loadDetails(strDomain, mynoresdiv) {
-    var URL = "/entity.ncc";
+    var URL = "./entity.ncc";
     var strTag = " ( ";
     var intCount = 0;
 

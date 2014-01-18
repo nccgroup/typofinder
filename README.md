@@ -17,7 +17,7 @@ Released under AGPL see LICENSE for more information
 Want to give it a go?
 -------------
 A sample deployment can be found here:
-* http://www.zemes.com:8002/
+* https://labs.nccgroup.com/typofinder/
 
 Development Wiki
 -------------
