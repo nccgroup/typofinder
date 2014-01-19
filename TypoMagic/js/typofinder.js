@@ -502,6 +502,27 @@ function loadDetails(strDomain, mynoresdiv) {
 // -------------------------------------
 $(document).ready(function () {
 
+    // init the slider
+    $( "#slider" ).slider({
+      value: 50,
+      min: 0,
+      max: 100,
+      step: 50,
+      slide: function( event, ui ) {
+        $("#typoamount").val(ui.value);
+        if (ui.value < 50) {
+            $( "#typoamountdesc" ).val( "Quick" );
+        }
+        else if (ui.value < 100) {
+            $( "#typoamountdesc" ).val( "Balanced" );
+        }
+        else {
+            $( "#typoamountdesc" ).val( "Rigorous" );
+        }
+      }
+    });
+    $( "#typoamountdesc" ).val( "Balanced" );
+
     // init the accordion
     $("#results").accordion();
     $("#results").accordion("option", "heightStyle", "content");
@@ -518,6 +539,9 @@ $(document).ready(function () {
 
     // Hide the progressbar
     document.getElementById("progressbar").style.display = "none";
+
+    //Autofocus the search box
+    $("#host").focus();
 
     $("#typogulator").submit(function () {
         // Hide the form

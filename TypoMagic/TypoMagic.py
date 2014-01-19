@@ -149,6 +149,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 # option checking
                 bTLD = 'tld' in post_data
                 bTypos = 'typos' in post_data
+                iTypoIntensity = int(post_data['typoamount'][0])
                 bBitFlip = 'bitflip' in post_data
 
                 # stupid user
@@ -161,7 +162,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 # domain name validation
                 if _typogen.is_domain_valid(strHost):
                     print("[i] Processing typos for " + strHost) 
-                    lstTypos = _typogen.generatetyposv2(strHost,"gb",bTLD,bTypos,bBitFlip)
+                    lstTypos = _typogen.generatetyposv2(strHost, "gb", bTypos, iTypoIntensity, bTLD, bBitFlip)
                     if lstTypos is not None:
                         self.output(json.dumps([strTypoHost for strTypoHost in lstTypos]))
                     else:
@@ -240,8 +241,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 f = open(curdir + sep + self.path, "rb") 
                 self.send_response(200)
 
-                year = timedelta(days=30)
-                futuredate = date.today() + year
+                month = timedelta(days=30)
+                futuredate = date.today() + month
                 self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
                 self.send_header('Content-type','image/png')
                 self.end_headers()
@@ -257,8 +258,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 f = open(curdir + sep + strIMG, "rb") 
                 self.send_response(200)
 
-                year = timedelta(days=30)
-                futuredate = date.today() + year
+                month = timedelta(days=30)
+                futuredate = date.today() + month
                 self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
                 self.send_header('Content-type','image/png')
                 self.end_headers()
@@ -281,8 +282,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 f = open(curdir + sep + strIMG, "rb") 
                 self.send_response(200)
 
-                year = timedelta(days=30)
-                futuredate = date.today() + year
+                month = timedelta(days=30)
+                futuredate = date.today() + month
                 self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
                 self.send_header('Content-type','image/png')
                 self.end_headers()
