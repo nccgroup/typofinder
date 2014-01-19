@@ -152,7 +152,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 try:
                      iTypoIntensity = int(post_data['typoamount'][0])
                 except:
-                     iTypoIntensity = 50
+                     iTypoIntensity = 100
 
                 bBitFlip = 'bitflip' in post_data
 
