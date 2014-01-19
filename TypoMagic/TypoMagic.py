@@ -149,7 +149,11 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 # option checking
                 bTLD = 'tld' in post_data
                 bTypos = 'typos' in post_data
-                iTypoIntensity = int(post_data['typoamount'][0])
+                try:
+                     iTypoIntensity = int(post_data['typoamount'][0])
+                except:
+                     iTypoIntensity = 50
+
                 bBitFlip = 'bitflip' in post_data
 
                 # stupid user

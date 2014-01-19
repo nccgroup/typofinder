@@ -504,7 +504,7 @@ $(document).ready(function () {
 
     // init the slider
     $( "#slider" ).slider({
-      value: 50,
+      value: 100,
       min: 0,
       max: 100,
       step: 50,
@@ -521,7 +521,7 @@ $(document).ready(function () {
         }
       }
     });
-    $( "#typoamountdesc" ).val( "Balanced" );
+    $( "#typoamountdesc" ).val( "Rigorous" );
 
     // init the accordion
     $("#results").accordion();
@@ -591,7 +591,8 @@ $(document).ready(function () {
 
         })
             .fail(function (xhr, textStatus, errorThrown) {
-                document.getElementById("progressbar").style.display = "none";
+                console.log("error " + textStatus)
+		document.getElementById("progressbar").style.display = "none";
                 document.getElementById("results").style.display = "none";
                 document.getElementById("resultstable").style.display = "none";
                 document.getElementById("typogulator").style.display = "block";
