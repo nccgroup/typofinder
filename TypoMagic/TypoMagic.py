@@ -91,8 +91,8 @@ def handleHostAJAX(sDomain):
         pass
 
     try:
-        for hostData in _hostinfo.getWEBMailv6(sDomain):
-            typo.wwwv6 .append(hostData.address)
+        for hostData in _hostinfo.getWWWv6(sDomain):
+            typo.wwwv6.append(hostData.address)
     except:
         pass
 
