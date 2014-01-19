@@ -44,6 +44,9 @@ def handleHostAJAX(sDomain):
     try:
         for hostData in _hostinfo.getIPv4(sDomain):
             typo.IPv4Address.append(hostData.address)
+    except dns.resolver.NXDOMAIN:
+        #Shortcut - If the domain query results in an NXDOMAIN, don't bother looking for subdomains.
+        return typo
     except:
         pass
 
