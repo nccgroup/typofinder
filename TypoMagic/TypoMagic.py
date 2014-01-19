@@ -35,6 +35,60 @@ _typogen = typogen.typogen()
 KEY = ''
 
 # v2 AJAX API
+def resolve_www(sDomain, typo):
+    # WWW
+    try:
+        for hostData in _hostinfo.getWWW(sDomain):
+            typo.wwwv4.append(hostData.address)
+    except dns.resolver.NXDOMAIN:
+        #No need to try IPv6 if this subdomain doesn't exist
+        return
+    except:
+        pass
+
+    try:
+        for hostData in _hostinfo.getWWWv6(sDomain):
+            typo.wwwv6.append(hostData.address)
+    except:
+        pass
+
+
+def resolve_webmail(sDomain, typo):
+    # WebMail
+    try:
+        for hostData in _hostinfo.getWEBMail(sDomain):
+            typo.webmailv4.append(hostData.address)
+    except dns.resolver.NXDOMAIN:
+        #No need to try IPv6 if this subdomain doesn't exist
+        return
+    except:
+        pass
+
+    try:
+        for hostData in _hostinfo.getWEBMailv6(sDomain):
+            typo.webmailv6.append(hostData.address)
+    except:
+        pass
+
+
+def resolve_m(sDomain, typo):
+    # M
+    try:
+        for hostData in _hostinfo.getM(sDomain):
+            typo.mv4.append(hostData.address)
+    except dns.resolver.NXDOMAIN:
+        #No need to try IPv6 if this subdomain doesn't exist
+        return
+    except:
+        pass
+
+    try:
+        for hostData in _hostinfo.getMv6(sDomain):
+            typo.mv6.append(hostData.address)
+    except:
+        pass
+
+
 def handleHostAJAX(sDomain):
     typo = objtypo()
     
@@ -83,44 +137,11 @@ def handleHostAJAX(sDomain):
     except:
         pass
 
-    # WWW
-    try:
-        for hostData in _hostinfo.getWWW(sDomain):
-            typo.wwwv4.append(hostData.address)
-    except:
-        pass
+    resolve_www(sDomain, typo)
 
-    try:
-        for hostData in _hostinfo.getWWWv6(sDomain):
-            typo.wwwv6.append(hostData.address)
-    except:
-        pass
+    resolve_webmail(sDomain, typo)
 
-    # WebMail
-    try:
-        for hostData in _hostinfo.getWEBMail(sDomain):
-            typo.webmailv4.append(hostData.address)
-    except:
-        pass
-
-    try:
-        for hostData in _hostinfo.getWEBMailv6(sDomain):
-            typo.webmailv6.append(hostData.address)
-    except:
-        pass
-    
-    # M
-    try:
-        for hostData in _hostinfo.getM(sDomain):
-            typo.mv4.append(hostData.address)
-    except:
-        pass
-
-    try:
-        for hostData in _hostinfo.getMv6(sDomain):
-            typo.mv6.append(hostData.address)
-    except:
-        pass
+    resolve_m(sDomain, typo)
 
     return typo
 
