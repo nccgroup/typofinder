@@ -33,8 +33,6 @@ class hostinfo(object):
             return None
         except dns.resolver.NoAnswer:
             return None
-        except dns.resolver.NXDOMAIN:
-            return None
 
     def getWWWv6(self, sHostname):
         # WWW
@@ -44,8 +42,6 @@ class hostinfo(object):
         except dns.exception.Timeout:
             return None
         except dns.resolver.NoAnswer:
-            return None
-        except dns.resolver.NXDOMAIN:
             return None
 
     def getM(self, sHostname):
@@ -57,8 +53,6 @@ class hostinfo(object):
             return None
         except dns.resolver.NoAnswer:
             return None
-        except dns.resolver.NXDOMAIN:
-            return None
 
     def getMv6(self, sHostname):
         # M
@@ -68,8 +62,6 @@ class hostinfo(object):
         except dns.exception.Timeout:
             return None
         except dns.resolver.NoAnswer:
-            return None
-        except dns.resolver.NXDOMAIN:
             return None
 
     def getWEBMail(self, sHostname):
@@ -81,8 +73,6 @@ class hostinfo(object):
             return None
         except dns.resolver.NoAnswer:
             return None
-        except dns.resolver.NXDOMAIN:
-            return None
 
     def getWEBMailv6(self, sHostname):
         # webmail
@@ -92,8 +82,6 @@ class hostinfo(object):
         except dns.exception.Timeout:
             return None
         except dns.resolver.NoAnswer:
-            return None
-        except dns.resolver.NXDOMAIN:
             return None
 
     def getMX(self, sHostname):
