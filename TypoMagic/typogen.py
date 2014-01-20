@@ -12,6 +12,7 @@
 
 import re
 import copy
+import codecs
 
 class typogen(object):
     """generate typo"""
@@ -236,4 +237,4 @@ class typogen(object):
             if not self.is_domain_valid(typo):
                 uniqueTypos.remove(typo)
 
-        return sorted(uniqueTypos)
+        return sorted([codecs.decode(asciiHost.encode(), "idna") for asciiHost in uniqueTypos])
