@@ -1,0 +1,39 @@
+#Derived from http://www.irongeek.com/homoglyph-attack-generator.php
+#The official list is available at http://www.unicode.org/Public/security/latest/confusables.txt
+-,- ‐ －
+0,0 O o Ο ο О о Օ Ｏ ｏ
+1,1 I ا １
+2,2 ２
+3,3 ３
+4,4 ４
+5,5 ５
+6,6 ６
+7,7 ７
+8,8 Ց ８
+9,9 ９
+a,A a À Á Â Ã Ä Å à á â ã ä å ɑ Α α а Ꭺ Ａ ａ
+b,B b ß ʙ Β β В Ь Ᏼ ᛒ Ｂ ｂ
+c,C c ϲ Ϲ С с Ꮯ Ⅽ ⅽ Ｃ ｃ
+d,D d Ď ď Đ đ ԁ ժ Ꭰ Ⅾ ⅾ Ｄ ｄ
+e,E e È É Ê Ë é ê ë Ē ē Ĕ ĕ Ė ė Ę Ě ě Ε Е е Ꭼ Ｅ ｅ
+f,F f Ϝ Ｆ ｆ
+g,G g ɡ ɢ Ԍ ն Ꮐ Ｇ ｇ
+h,H h ʜ Η Н һ Ꮋ Ｈ ｈ
+i,I i l ɩ Ι І і ا Ꭵ ᛁ Ⅰ ⅰ Ｉ ｉ
+j,J j ϳ Ј ј յ Ꭻ Ｊ ｊ
+k,K k Κ κ К Ꮶ ᛕ K Ｋ ｋ
+l,L l ʟ ι ا Ꮮ Ⅼ ⅼ Ｌ ｌ
+m,M m Μ Ϻ М Ꮇ ᛖ Ⅿ ⅿ Ｍ ｍ
+n,N n ɴ Ν Ｎ ｎ
+o,0 O o Ο ο О о Օ Ｏ ｏ
+p,P p Ρ ρ Р р Ꮲ Ｐ ｐ
+q,Q q Ⴍ Ⴓ Ｑ ｑ
+r,R r ʀ Ի Ꮢ ᚱ Ｒ ｒ
+s,S s Ѕ ѕ Տ Ⴝ Ꮪ Ｓ ｓ
+t,T t Τ τ Т Ꭲ Ｔ ｔ
+u,U u μ υ Ա Ս ⋃ Ｕ ｕ
+v,V v ν Ѵ ѵ Ꮩ Ⅴ ⅴ Ｖ ｖ
+w,W w ѡ Ꮃ Ｗ ｗ
+x,X x Χ χ Х х Ⅹ ⅹ Ｘ ｘ
+y,Y y ʏ Υ γ у Ү Ｙ ｙ
+z,Z z Ζ Ꮓ Ｚ ｚ

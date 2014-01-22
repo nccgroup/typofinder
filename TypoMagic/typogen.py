@@ -43,6 +43,30 @@ class typogen(object):
 
         return keyDict
 
+    @staticmethod
+    def loadhomoglyphs():
+        homoglyphs = dict()
+
+        with open("homoglyphs.txt","r",encoding="utf8") as f:
+            for line in f:
+                if not line.startswith("#"):
+                    split = line.rstrip().split(',')
+                    key = split[0]
+                    #filter out any glyphs which are the same as the key (case insensitive)
+                    tempvalues = [glyph for glyph in split[1].split(' ') if glyph.lower() != key]
+                    #filter out glyphs which do not survive round trip conversion, e.g. ß -> ss -> ss
+                    values = list()
+                    for glyph in tempvalues:
+                        try:
+                            if 'a' + glyph + 'b' == codecs.decode(codecs.encode('a' + glyph + 'b', "idna"), "idna"):
+                                values.append (glyph)
+                        except UnicodeError:
+                            #Some characters/combinations will fail the nameprep stage
+                            pass
+                    homoglyphs[key] = values
+
+        return homoglyphs
+
     def is_domain_valid(self, domain):
         #Ensure its in the correct character set
         if not re.match('^[a-z0-9.-]+$', domain):
@@ -136,6 +160,22 @@ class typogen(object):
         return result
 
     @staticmethod
+    def generate_homoglyph_typos(strHost):
+        # swap characters to similar looking characters
+
+        result = list()
+        # load homoglyph mapping
+        homoglyphs = typogen.loadhomoglyphs()
+
+        for idx, char in enumerate(strHost):
+            if char in homoglyphs:
+                for replacement_char in homoglyphs[char]:
+                    print (replacement_char)
+                    newhostname = strHost[:idx] + replacement_char + strHost[idx + 1:]
+                    result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
+        return result
+
+    @staticmethod
     def generate_miskeyed_addition_typos(strHost, strCountry):
         # add a surrounding key either side of each character
 
@@ -185,7 +225,7 @@ class typogen(object):
             result.append(strHost[:idx] + strHost[idx+1:idx+2] + strHost[idx:idx+1] + strHost[idx+2:])
         return result
 
-    def generatetyposv2(self, strHost, strCountry, bTypos, iTypoIntensity, bTLDS, bBitFlip):
+    def generatetyposv2(self, strHost, strCountry, bTypos, iTypoIntensity, bTLDS, bBitFlip, bHomoglyphs):
         """
         generate the typos
 
@@ -223,6 +263,9 @@ class typogen(object):
                 newHost = strHost[:lastdot] + "." + gtld
                 #print(newHost)
                 lstTypos.append(newHost)
+
+        if bHomoglyphs:
+            lstTypos += self.generate_homoglyph_typos(strHost)
 
         uniqueTypos = set(lstTypos)
 
