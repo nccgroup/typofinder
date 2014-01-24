@@ -1,5 +1,4 @@
-#Derived from http://www.irongeek.com/homoglyph-attack-generator.php
-#The official list is available at http://www.unicode.org/Public/security/latest/confusables.txt
+#Taken with permission from http://www.irongeek.com/homoglyph-attack-generator.php
 -,- ‐ －
 0,0 O o Ο ο О о Օ Ｏ ｏ
 1,1 I ا １
