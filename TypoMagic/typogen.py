@@ -12,6 +12,7 @@
 
 import re
 import copy
+import codecs
 
 class typogen(object):
     """generate typo"""
@@ -24,6 +25,9 @@ class typogen(object):
             for line in f:
                 if not line.lstrip().startswith('#'):
                     self.lstTlds.append(line.rstrip().lower())
+        print("Loading confusables...", end=" ", flush=True)
+        self.loadconfusables()
+        print("Done.")
 
     @staticmethod
     def loadkeyb(strCountry):
@@ -41,6 +45,90 @@ class typogen(object):
                     keyDict[split[0]] = [split[1]]
 
         return keyDict
+
+    @staticmethod
+    def loadadditionalhomoglyphs():
+        homoglyphs = dict()
+        with open("homoglyphs.txt","r",encoding="utf8") as f:
+            for line in f:
+                if not line.startswith("#"):
+                    split = line.rstrip().split(',')
+                    key = split[0]
+                    #filter out any glyphs which are the same as the key (case insensitive)
+                    tempvalues = [glyph for glyph in split[1].split(' ') if glyph.lower() != key]
+                    #filter out glyphs which do not survive round trip conversion, e.g. ß -> ss -> ss
+                    values = list()
+                    for glyph in tempvalues:
+                        try:
+                            if 'a' + glyph + 'b' == codecs.decode(codecs.encode('a' + glyph + 'b', "idna"), "idna"):
+                                values.append (glyph)
+                        except UnicodeError:
+                            #Some characters/combinations will fail the nameprep stage
+                            pass
+                    homoglyphs[key] = values
+
+        return homoglyphs
+
+    @staticmethod
+    def loadconfusables():
+        global _homoglyphs_confusables
+        _homoglyphs_confusables = dict()
+        rejected_sequences = set()
+
+        #'utf_8_sig' swallows the BOM at start of file
+        with open("confusables.txt","r",encoding="'utf_8_sig") as f:
+            for line in f:
+                #If line contains more than whitespace and isn't a comment
+                if line.strip() and not line.startswith("#"):
+                    split = line.split(';', maxsplit=2)
+                    #parse the left hand side of the pairing
+                    unihex = split[0].split(' ')[0]
+                    part0 = (chr(int(unihex, 16)))
+
+                    if part0 in rejected_sequences:
+                        continue
+
+                    #parse the right hand side of the pairing
+                    part1 = ''
+                    for unihex in split[1].strip().split(' '):
+                        part1 += (chr(int(unihex, 16)))
+
+                    if part1 in rejected_sequences:
+                        continue
+
+                    #Skip pairs already in the _homoglyphs dict
+                    if part0 in _homoglyphs_confusables and part1 in _homoglyphs_confusables[part0]:
+                        continue
+
+                    try:
+                        #filter out glyphs which do not survive round trip conversion, e.g. ß -> ss -> ss
+                        if 'a' + part0 + 'b' != codecs.decode(codecs.encode('a' + part0 + 'b', "idna"), "idna"):
+                            rejected_sequences.add(part0)
+                            continue
+                    except UnicodeError:
+                        #Some characters/combinations will fail the nameprep stage
+                        rejected_sequences.add(part0)
+                        continue
+
+                    try:
+                        #filter out glyphs which do not survive round trip conversion, e.g. ß -> ss -> ss
+                        if 'a' + part1 + 'b' != codecs.decode(codecs.encode('a' + part1 + 'b', "idna"), "idna"):
+                            rejected_sequences.add(part1)
+                            continue
+                    except UnicodeError:
+                        #Some characters/combinations will fail the nameprep stage
+                        rejected_sequences.add(part1)
+                        continue
+
+                    #Include left to right pair mapping in the dict
+                    if part0 not in _homoglyphs_confusables:
+                        _homoglyphs_confusables[part0] = set()
+                    _homoglyphs_confusables[part0].add(part1)
+
+                    #Include right to left pair mapping in the dict
+                    if part1 not in _homoglyphs_confusables:
+                        _homoglyphs_confusables[part1] = set()
+                    _homoglyphs_confusables[part1].add(part0)
 
     def is_domain_valid(self, domain):
         #Ensure its in the correct character set
@@ -91,8 +179,6 @@ class typogen(object):
             i+=1
         return result
 
-    # v2 API with two new options
-
     @staticmethod
     def generate_missing_character_typos(strHost):
         # missing characters
@@ -132,6 +218,44 @@ class typogen(object):
             if char in typoDict:
                 for replacement_char in typoDict[char]:
                     result.append(strHost[:idx] + replacement_char + strHost[idx + 1:])
+        return result
+
+    @staticmethod
+    def generate_homoglyph_confusables_typos(strHost):
+        # swap characters to similar looking characters, based on Unicode's confusables.txt
+
+        result = list()
+        global _homoglyphs_confusables
+        #Replace each homoglyph subsequence in the strHost with each replacement subsequence associated with the homoglyph subsequence
+        for homoglyph_subsequence in _homoglyphs_confusables:
+            idx = 0
+            while True:
+                idx = strHost.find(homoglyph_subsequence, idx)
+                if idx > 0:
+                    for replacement_subsequence in _homoglyphs_confusables[homoglyph_subsequence]:
+                        newhostname = strHost[:idx] + replacement_subsequence + strHost[idx + len(homoglyph_subsequence):]
+                        result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
+                    idx += len(homoglyph_subsequence)
+                else:
+                    break
+
+        return result
+
+    @staticmethod
+    def generate_additional_homoglyph_typos(strHost):
+        # swap characters to similar looking characters, based on homoglyphs.txt
+
+        result = list()
+        # load homoglyph mapping
+        homoglyphs = typogen.loadadditionalhomoglyphs()
+
+        for idx, char in enumerate(strHost):
+            if char in homoglyphs:
+                for replacement_char in homoglyphs[char]:
+                    print (replacement_char)
+                    newhostname = strHost[:idx] + replacement_char + strHost[idx + 1:]
+                    result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
+
         return result
 
     @staticmethod
@@ -184,7 +308,7 @@ class typogen(object):
             result.append(strHost[:idx] + strHost[idx+1:idx+2] + strHost[idx:idx+1] + strHost[idx+2:])
         return result
 
-    def generatetyposv2(self, strHost, strCountry, bTypos, iTypoIntensity, bTLDS, bBitFlip):
+    def generatetyposv2(self, strHost, strCountry, bTypos, iTypoIntensity, bTLDS, bBitFlip, bHomoglyphs):
         """
         generate the typos
 
@@ -223,6 +347,10 @@ class typogen(object):
                 #print(newHost)
                 lstTypos.append(newHost)
 
+        if bHomoglyphs:
+            lstTypos += self.generate_homoglyph_confusables_typos(strHost)
+            lstTypos += self.generate_additional_homoglyph_typos(strHost)
+
         uniqueTypos = set(lstTypos)
 
         # Add the original domain 
@@ -236,4 +364,4 @@ class typogen(object):
             if not self.is_domain_valid(typo):
                 uniqueTypos.remove(typo)
 
-        return sorted(uniqueTypos)
+        return sorted([codecs.decode(asciiHost.encode(), "idna") for asciiHost in uniqueTypos])

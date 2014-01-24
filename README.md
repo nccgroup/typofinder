@@ -36,6 +36,7 @@ Features
 * Geographic IP to flag
 * Google safe browsing integration
 * Bit flipping / squatting - http://dinaburg.org/bitsquatting.html
+* Homoglyph attack identification
 * Whois
  
 Dependencies
@@ -50,6 +51,7 @@ What it does
 * replace characters with adjacent keyboard characters depending on keyboard map supplied
 * swap the global TLD for each of the current valid TLDs list at - http://data.iana.org/TLD/tlds-alpha-by-domain.txt
 * flip bits in the legit domain to detect the bitsquatting attacks
+* swaps characters with similar looking characters to find homoglyph attacks
 * checks web sites against Google's Safe Browsing API<sup>1</sup>
 
 Usage

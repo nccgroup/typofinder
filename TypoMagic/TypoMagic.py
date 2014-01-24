@@ -180,8 +180,10 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
                 bBitFlip = 'bitflip' in post_data
 
+                bHomoglyphs = 'homoglyph' in post_data
+
                 # stupid user
-                if(bTypos == False and bTLD == False and bBitFlip == False):
+                if(not bTypos and not bTLD and not bBitFlip and not bHomoglyphs):
                      print("[i] No typos to process for " + strHost + " due to user option")
                      # this will cause an error in the JavaScript client which is relied upon
                      self.output("[!] No typos for " + strHost) 
@@ -190,7 +192,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 # domain name validation
                 if _typogen.is_domain_valid(strHost):
                     print("[i] Processing typos for " + strHost) 
-                    lstTypos = _typogen.generatetyposv2(strHost, "gb", bTypos, iTypoIntensity, bTLD, bBitFlip)
+                    lstTypos = _typogen.generatetyposv2(strHost, "gb", bTypos, iTypoIntensity, bTLD, bBitFlip, bHomoglyphs)
                     if lstTypos is not None:
                         self.output(json.dumps([strTypoHost for strTypoHost in lstTypos]))
                     else:
