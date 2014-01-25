@@ -25,9 +25,11 @@
     <Compile Include="hostinfo.py" />
     <Compile Include="objtypo.py" />
     <Compile Include="safebrowsing.py" />
+    <Compile Include="test_typogen.py" />
     <Compile Include="typogen.py" />
     <Compile Include="TypoMagic.py" />
     <Compile Include="whois.py" />
+    <Compile Include="__init__.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\jquery.dataTables.css" />
