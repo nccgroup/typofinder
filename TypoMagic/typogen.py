@@ -229,9 +229,9 @@ class typogen(object):
         #Replace each homoglyph subsequence in the strHost with each replacement subsequence associated with the homoglyph subsequence
         for homoglyph_subsequence in _homoglyphs_confusables:
             idx = 0
-            while True:
+            while 1:
                 idx = strHost.find(homoglyph_subsequence, idx)
-                if idx > 0:
+                if idx > -1:
                     for replacement_subsequence in _homoglyphs_confusables[homoglyph_subsequence]:
                         newhostname = strHost[:idx] + replacement_subsequence + strHost[idx + len(homoglyph_subsequence):]
                         result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
