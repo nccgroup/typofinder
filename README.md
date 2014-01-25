@@ -41,6 +41,7 @@ Features
  
 Dependencies
 -------------
+* Python (3.3)
 * dnspython (1.11.1)
 * pygeoip (0.3.0)
 
