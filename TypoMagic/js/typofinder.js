@@ -18,12 +18,6 @@ var intPBarCount = 0;
 var domainsNoResults = new Array();
 var masterData = null;
 
-function loadURL(strURL) {
-    console.log("loading URL");
-    window.open(strURL);
-    return false;
-}
-
 // -------------------------------------
 // Empty the results
 // -------------------------------------
@@ -291,9 +285,15 @@ function fillDetails(domDiv, data) {
         lilink = document.createElement('li');
         aLink = document.createElement('a');
 
-        aLink.href = "#";
-        strHost = "http://www."  + data.strDomain;
-        aLink.setAttribute('onclick', 'loadURL(\" " + strHost + " \") ');
+        strHost = "http://www." + data.strDomain;
+        aLink.href = strHost;
+        aLink.addEventListener('click', 
+            function (event) {
+                event.preventDefault();
+                window.open(this.href);
+            },
+        false);
+
 
         aLink.innerHTML = "link (be careful) www." + data.strDomain;
         lilink.appendChild(aLink);
