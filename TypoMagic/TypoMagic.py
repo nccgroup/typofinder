@@ -373,6 +373,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.key:
+        prinf("[i] Google safe browsing key supplied");
         KEY = args.key	
 
     try:   
