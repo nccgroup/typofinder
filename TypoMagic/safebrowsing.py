@@ -4,6 +4,7 @@ from urllib import parse
 
 # globals
 value = 0
+longtermthen = DT.datetime.now()
 now = DT.datetime.now()
 
 def safebrowsingqueryv2 (query_hostname, key):
@@ -32,8 +33,9 @@ def safebrowsingqueryv2 (query_hostname, key):
     # Make sure the Google Safe Browsing API is not abused
     if (value < 10000) and ((now - then).seconds < 86400):
         value += 1
-    elif ((now - then).seconds > 86400):
+    elif ((now - longtermthen).seconds > 86400):
         value = 0
+        longtermthen = now
     else:
         return ""
 
