@@ -322,7 +322,16 @@ function fillDetails(domDiv, data) {
         // URL
         lilink = document.createElement('li');
         aLink = document.createElement('a');
-        aLink.href = "javascript:window.open('http://www." + data.strDomain + "')";
+        
+        strHost = "http://www." + data.strDomain;
+        aLink.href = strHost;
+        aLink.addEventListener('click',
+            function (event) {
+                event.preventDefault();
+                window.open(this.href);
+            },
+        false);
+
         aLink.innerHTML = "link (be careful) www." + data.strDomain;
         lilink.appendChild(aLink);
         ul.appendChild(lilink);
@@ -345,7 +354,16 @@ function fillDetails(domDiv, data) {
         // URL
         lilink = document.createElement('li');
         aLink = document.createElement('a');
-        aLink.href = "javascript:window.open('http://m." + data.strDomain + "')";
+
+        strHost = "http://m." + data.strDomain;
+        aLink.href = strHost;
+        aLink.addEventListener('click',
+            function (event) {
+                event.preventDefault();
+                window.open(this.href);
+            },
+        false);
+
         aLink.innerHTML = "link (be careful) m." + data.strDomain;
         lilink.appendChild(aLink);
         ul.appendChild(lilink);
@@ -367,7 +385,16 @@ function fillDetails(domDiv, data) {
         // URL
         lilink = document.createElement('li');
         aLink = document.createElement('a');
-        aLink.href = "javascript:window.open('http://m." + data.strDomain + "')";
+
+        strHost = "http://m." + data.strDomain;
+        aLink.href = strHost;
+        aLink.addEventListener('click',
+            function (event) {
+                event.preventDefault();
+                window.open(this.href);
+            },
+        false);
+
         aLink.innerHTML = "link (be careful) m." + data.strDomain;
         lilink.appendChild(aLink);
         ul.appendChild(lilink);
@@ -390,7 +417,16 @@ function fillDetails(domDiv, data) {
         // URL
         lilink = document.createElement('li');
         aLink = document.createElement('a');
-        aLink.href = "javascript:window.open('http://webmail." + data.strDomain + "')";
+
+        strHost = "http://webmail." + data.strDomain;
+        aLink.href = strHost;
+        aLink.addEventListener('click',
+            function (event) {
+                event.preventDefault();
+                window.open(this.href);
+            },
+        false);
+
         aLink.innerHTML = "link (be careful) webmail." + data.strDomain;
         lilink.appendChild(aLink);
         ul.appendChild(lilink);
@@ -412,7 +448,16 @@ function fillDetails(domDiv, data) {
         // URL
         lilink = document.createElement('li');
         aLink = document.createElement('a');
-        aLink.href = "javascript:window.open('http://webmail." + data.strDomain + "')";
+        
+        strHost = "http://webmail." + data.strDomain;
+        aLink.href = strHost;
+        aLink.addEventListener('click',
+            function (event) {
+                event.preventDefault();
+                window.open(this.href);
+            },
+        false);
+
         aLink.innerHTML = "link (be careful) webmail." + data.strDomain;
         lilink.appendChild(aLink);
         ul.appendChild(lilink);
