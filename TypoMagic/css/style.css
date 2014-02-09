@@ -3,3 +3,4 @@ A:visited {text-decoration: none; color: #a7062a;}
 A:active {text-decoration: none; color: #a7062a;}
 #results {display:none;}
 #resultstable {display:none;}
+.details {background-color: lightgrey;}

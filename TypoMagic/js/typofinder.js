@@ -526,6 +526,49 @@ function loadDetails(strDomain, mynoresdiv) {
             intPBarCount++
             // Style
             if (intPBarCount >= intPBarMax) {
+
+                /*
+                 * Insert a 'details' header to the table
+                 */
+                var nCloneTh = document.createElement( 'th' );
+                $('#resultstabletable thead tr').each( function () {
+                    this.insertBefore( nCloneTh, this.childNodes[0] );
+                } );
+
+                /*
+                 * Insert a 'details' column & button to the table
+                 */
+                var nCloneTd = document.createElement( 'td' );
+                nCloneTd.innerHTML = '<img src="images/add.png">';
+                nCloneTd.className = "center";
+
+                $('#resultstabletable tbody tr').each( function () {
+                    this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
+                } );
+
+                /* Add event listener for opening and closing details
+                 * Note that the indicator for showing which row is open is not controlled by DataTables,
+                 * rather it is done here
+                 */
+                $('#resultstabletable tbody td img').on('click', function () {
+                    var nTr = $(this).parents('tr')[0];
+                    if ( oTable.fnIsOpen(nTr) )
+                    {
+                        /* This row is already open - close it */
+                        this.src = "images/add.png";
+                        oTable.fnClose( nTr );
+                    }
+                    else
+                    {
+                        /* Open this row */
+                        this.src = "images/minus.png";
+                        oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
+                        /* Ensure that the new row is as wide as the table is now that it has the extra details column */
+                        newrow = $(this).closest("tr").next("tr").children("td");
+                        newrow.attr("colspan", parseInt(newrow.attr("colspan")) + 1);
+                    }
+                } );
+
                 // Fill the no results div
                 fillNoResDetails(mynoresdiv);
                 $("#results").accordion("refresh");
@@ -550,6 +593,36 @@ function loadDetails(strDomain, mynoresdiv) {
     
         }, 'json');
 }
+
+
+/* Formating function for row details */
+function fnFormatDetails ( oTable, nTr )
+{
+    var aData = oTable.fnGetData( nTr );
+    var strDomain = aData[0];
+    if (strDomain.indexOf(" ") > -1)
+    {
+        strDomain = strDomain.substr(0, strDomain.indexOf(" "));
+    }
+    var sOut = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+    if (aData[3] != "")
+    {
+        sOut += '<tr><td><a href="http://www.' + strDomain + '" target="_blank">http://www.' + strDomain + '</a></td></tr>';
+    }
+    if (aData[4] != "")
+    {
+        sOut += '<tr><td><a href="http://webmail.' + strDomain + '" target="_blank">http://webmail.' + strDomain + '</a></td></tr>';
+    }
+    if (aData[5] != "")
+    {
+        sOut += '<tr><td><a href="http://m.' + strDomain + '" target="_blank">http://m.' + strDomain + '</a></td></tr>';
+    }
+    sOut += '</table>';
+
+    return sOut;
+}
+
+var oTable;
 
 // -------------------------------------
 // Ready event (i.e. entry point)
@@ -588,7 +661,7 @@ $(document).ready(function () {
     });
 
     // init the data table
-    $('#resultstabletable').dataTable({
+    oTable = $('#resultstabletable').dataTable({
         'iDisplayLength': 100
     });
 
