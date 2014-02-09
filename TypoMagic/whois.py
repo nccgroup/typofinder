@@ -16,10 +16,13 @@
 
 import socket
 
+tld_to_whois = dict()
 
 def dowhois(sServer, sDomain):
-    s = socket.socket(socket.AF_INET , socket.SOCK_STREAM)
-    s.connect((sServer , 43))
+    #print ("Whois: " + sDomain + " @ " + sServer)
+
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((sServer, 43))
     query = sDomain + '\r\n'
     s.send(query.encode())
     response = ''
@@ -39,28 +42,36 @@ def dowhois(sServer, sDomain):
     return response
 
 def ourwhois(sDomain):
-    # TODO, add more whois servers for other TLDs
-
     sLDot = sDomain.rfind(".")
     tld = sDomain[sLDot:]
 
-    sServer = ''
-
-    if tld == ".com" or tld == '.org' or tld == ".net":
-        sServer = 'whois.internic.net'
-    elif tld ==".uk":
-        sServer = 'whois.nic.uk'
-    elif tld ==".de":
-        sServer = 'whois.denic.de'
+    if tld in tld_to_whois:
+        sServer = tld_to_whois[tld]
     else:
-        return "Nowt"
+        sServer = "whois.iana.org"
+
+        try:
+            for sLine in dowhois(sServer,tld).split('\n'):
+                if "whois:" in sLine:
+                    sServer = sLine.lstrip(' ')[14:]
+                    tld_to_whois[tld] = sServer;
+                    break
+        except:
+            pass
+
+    return recursivewhois(sServer, sDomain)
+
+def recursivewhois(sServer, sDomain):
+    result = dowhois(sServer,sDomain)
 
     try:
-        for sLine in dowhois(sServer,sDomain).split('\n'):
-            if "Whois Server: " in sLine:
+        for sLine in result.split('\n'):
+            if "Whois Server:" in sLine:
                 sServer = sLine.lstrip(' ')[14:]
+                return recursivewhois(sServer, sDomain)
+
     except:
         pass
 
-    return dowhois(sServer,sDomain)
+    return result.lstrip()
     
