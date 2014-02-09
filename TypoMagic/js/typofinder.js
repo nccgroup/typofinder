@@ -604,20 +604,37 @@ function fnFormatDetails ( oTable, nTr )
     {
         strDomain = strDomain.substr(0, strDomain.indexOf(" "));
     }
-    var sOut = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
-    if (aData[3] != "")
+
+    var sOut = '';
+    //Links
+    if (aData[3] != "" || aData[4] != "" || aData[5] != "")
     {
-        sOut += '<tr><td><a href="http://www.' + strDomain + '" target="_blank">http://www.' + strDomain + '</a></td></tr>';
+        sOut += '<h5>Links (be careful!):</h5>';
+        sOut += '<table cellpadding="5" cellspacing="0" border="0">';
+        if (aData[3] != "")
+        {
+            sOut += '<tr><td><a href="http://www.' + strDomain + '" target="_blank">http://www.' + strDomain + '</a></td></tr>';
+        }
+        if (aData[4] != "")
+        {
+            sOut += '<tr><td><a href="http://webmail.' + strDomain + '" target="_blank">http://webmail.' + strDomain + '</a></td></tr>';
+        }
+        if (aData[5] != "")
+        {
+            sOut += '<tr><td><a href="http://m.' + strDomain + '" target="_blank">http://m.' + strDomain + '</a></td></tr>';
+        }
+        sOut += '</table>';
     }
-    if (aData[4] != "")
-    {
-        sOut += '<tr><td><a href="http://webmail.' + strDomain + '" target="_blank">http://webmail.' + strDomain + '</a></td></tr>';
-    }
-    if (aData[5] != "")
-    {
-        sOut += '<tr><td><a href="http://m.' + strDomain + '" target="_blank">http://m.' + strDomain + '</a></td></tr>';
-    }
-    sOut += '</table>';
+
+    //Whois
+    sOut += '<h5>WHOIS Data:</h5>';
+    sOut += '<pre class="whois">Loading...\r\n\r\n</pre>';
+    $.ajax({
+      url: "whois.ncc/"+strDomain
+    })
+    .done(function( msg ) {
+      oTable.$(nTr).next().find(".whois").text(msg);
+    });
 
     return sOut;
 }
