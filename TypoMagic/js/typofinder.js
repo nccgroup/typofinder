@@ -427,7 +427,7 @@ function fillDetails(domDiv, data) {
             },
         false);
 
-        aLink.innerHTML = "link (be careful) webmail." + data.strDomain;
+        aLink.innerText = "link (be careful) webmail." + data.strDomain;
         lilink.appendChild(aLink);
         ul.appendChild(lilink);
     }
@@ -458,7 +458,7 @@ function fillDetails(domDiv, data) {
             },
         false);
 
-        aLink.innerHTML = "link (be careful) webmail." + data.strDomain;
+        aLink.innerText = "link (be careful) webmail." + data.strDomain;
         lilink.appendChild(aLink);
         ul.appendChild(lilink);
     }
@@ -640,7 +640,7 @@ function fnFormatDetails ( oTable, nTr )
                     window.open(this.href);
                 },
             false);
-            aLink.innerHTML = "www." + strDomain;
+            aLink.innerText = "www." + strDomain;
 
             domTD.appendChild(aLink);
 
@@ -663,7 +663,7 @@ function fnFormatDetails ( oTable, nTr )
                     window.open(this.href);
                 },
             false);
-            aLink.innerHTML = "webmail." + strDomain;
+            aLink.innerText = "webmail." + strDomain;
 
             domTD.appendChild(aLink);
         }
@@ -684,7 +684,7 @@ function fnFormatDetails ( oTable, nTr )
                     window.open(this.href);
                 },
             false);
-            aLink.innerHTML = "m." + strDomain;
+            aLink.innerText = "m." + strDomain;
 
             domTD.appendChild(aLink);
         }
