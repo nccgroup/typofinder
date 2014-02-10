@@ -295,7 +295,7 @@ function fillDetails(domDiv, data) {
         false);
 
 
-        aLink.innerHTML = "link (be careful) www." + data.strDomain;
+        aLink.innerText = "link (be careful) www." + data.strDomain;
         lilink.appendChild(aLink);
         ul.appendChild(lilink);
     }
@@ -332,7 +332,7 @@ function fillDetails(domDiv, data) {
             },
         false);
 
-        aLink.innerHTML = "link (be careful) www." + data.strDomain;
+        aLink.innerText = "link (be careful) www." + data.strDomain;
         lilink.appendChild(aLink);
         ul.appendChild(lilink);
     }
@@ -364,7 +364,7 @@ function fillDetails(domDiv, data) {
             },
         false);
 
-        aLink.innerHTML = "link (be careful) m." + data.strDomain;
+        aLink.innerText = "link (be careful) m." + data.strDomain;
         lilink.appendChild(aLink);
         ul.appendChild(lilink);
     }
@@ -395,7 +395,7 @@ function fillDetails(domDiv, data) {
             },
         false);
 
-        aLink.innerHTML = "link (be careful) m." + data.strDomain;
+        aLink.innerText = "link (be careful) m." + data.strDomain;
         lilink.appendChild(aLink);
         ul.appendChild(lilink);
     }
@@ -605,30 +605,107 @@ function fnFormatDetails ( oTable, nTr )
         strDomain = strDomain.substr(0, strDomain.indexOf(" "));
     }
 
-    var sOut = '';
+    // var sOut = '';
+    var domOut = document.createDocumentFragment();
+
     //Links
     if (aData[3] != "" || aData[4] != "" || aData[5] != "")
     {
-        sOut += '<h5>Links (be careful!):</h5>';
-        sOut += '<table cellpadding="5" cellspacing="0" border="0">';
+        // sOut += '<h5>Links (be careful!):</h5>';
+        var domH5 = document.createElement('h5');
+        domH5.innerText = "Links (be careful!)";
+        domOut.appendChild(domH5);
+
+        // sOut += '<table cellpadding="5" cellspacing="0" border="0">';
+        var domTBL = document.createElement("table");
+        domTBL.setAttribute('cellpadding', 5);
+        domTBL.setAttribute('cellspacing', 0);
+        domTBL.setAttribute('border', 0);
+
+        
         if (aData[3] != "")
         {
-            sOut += '<tr><td><a href="http://www.' + strDomain + '" target="_blank">http://www.' + strDomain + '</a></td></tr>';
+            var domTR = document.createElement('tr');
+            domTBL.appendChild(domTR);
+
+            var domTD = document.createElement('td');
+            domTR.appendChild(domTD);
+
+            aLink = document.createElement('a');
+            strHost = "http://www." + strDomain;
+            aLink.href = strHost;
+            aLink.addEventListener('click',
+                function (event) {
+                    event.preventDefault();
+                    window.open(this.href);
+                },
+            false);
+            aLink.innerHTML = "www." + strDomain;
+
+            domTD.appendChild(aLink);
+
+            
         }
         if (aData[4] != "")
         {
-            sOut += '<tr><td><a href="http://webmail.' + strDomain + '" target="_blank">http://webmail.' + strDomain + '</a></td></tr>';
+            var domTR = document.createElement('tr');
+            domTBL.appendChild(domTR);
+
+            var domTD = document.createElement('td');
+            domTR.appendChild(domTD);
+
+            aLink = document.createElement('a');
+            strHost = "http://webmail." + strDomain;
+            aLink.href = strHost;
+            aLink.addEventListener('click',
+                function (event) {
+                    event.preventDefault();
+                    window.open(this.href);
+                },
+            false);
+            aLink.innerHTML = "webmail." + strDomain;
+
+            domTD.appendChild(aLink);
         }
         if (aData[5] != "")
         {
-            sOut += '<tr><td><a href="http://m.' + strDomain + '" target="_blank">http://m.' + strDomain + '</a></td></tr>';
+            var domTR = document.createElement('tr');
+            domTBL.appendChild(domTR);
+
+            var domTD = document.createElement('td');
+            domTR.appendChild(domTD);
+
+            aLink = document.createElement('a');
+            strHost = "http://m." + strDomain;
+            aLink.href = strHost;
+            aLink.addEventListener('click',
+                function (event) {
+                    event.preventDefault();
+                    window.open(this.href);
+                },
+            false);
+            aLink.innerHTML = "m." + strDomain;
+
+            domTD.appendChild(aLink);
         }
-        sOut += '</table>';
+        
+        // sOut += '</table>';
+        domOut.appendChild(domTBL);
     }
 
     //Whois
-    sOut += '<h5>WHOIS Data:</h5>';
-    sOut += '<pre class="whois">Loading...\r\n\r\n</pre>';
+    //sOut += '<h5>WHOIS Data:</h5>';
+    //sOut += '<pre class="whois"></pre>';
+    
+    var domH5Whois = document.createElement('h5');
+    domH5Whois.innerText = "WHOIS Data:";
+    domOut.appendChild(domH5Whois);
+
+    var domPre = document.createElement('pre');
+    domPre.setAttribute('class', 'whois');
+    domPre.innerText = "Loading...\r\n\r\n";
+    domOut.appendChild(domPre);
+
     $.ajax({
       url: "whois.ncc/"+strDomain
     })
@@ -636,7 +713,7 @@ function fnFormatDetails ( oTable, nTr )
       oTable.$(nTr).next().find(".whois").text(msg);
     });
 
-    return sOut;
+    return domOut;
 }
 
 var oTable;
