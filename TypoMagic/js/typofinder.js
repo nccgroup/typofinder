@@ -725,25 +725,25 @@ var oTable;
 $(document).ready(function () {
 
     // init the slider
-    $( "#slider" ).slider({
-      value: 100,
-      min: 0,
-      max: 100,
-      step: 50,
-      slide: function( event, ui ) {
-        $("#typoamount").val(ui.value);
-        if (ui.value < 50) {
-            $( "#typoamountdesc" ).val( "Quick" );
+    $("#slider").slider({
+        value: 100,
+        min: 0,
+        max: 100,
+        step: 50,
+        slide: function (event, ui) {
+            $("#typoamount").val(ui.value);
+            if (ui.value < 50) {
+                $("#typoamountdesc").val("Quick");
+            }
+            else if (ui.value < 100) {
+                $("#typoamountdesc").val("Balanced");
+            }
+            else {
+                $("#typoamountdesc").val("Rigorous");
+            }
         }
-        else if (ui.value < 100) {
-            $( "#typoamountdesc" ).val( "Balanced" );
-        }
-        else {
-            $( "#typoamountdesc" ).val( "Rigorous" );
-        }
-      }
     });
-    $( "#typoamountdesc" ).val( "Rigorous" );
+    $("#typoamountdesc").val("Rigorous");
 
     // init the accordion
     $("#results").accordion();
@@ -782,6 +782,49 @@ $(document).ready(function () {
         // Reset the table
         $('#resultstabletable').dataTable()._fnClearTable();
 
+        // Set cookie
+        try {
+            setCookie("typofinder-domain", document.getElementById('host').value, 365);
+        } catch(err){
+        
+        }
+        
+        try {
+            setCookie("typofinder-typos", document.getElementById('typos').value, 365);
+        } catch(err){
+        
+        }
+
+        try {
+            setCookie("typofinder-bitflip", document.getElementById('bitflip').value, 365);
+        } catch(err){
+        
+        }
+
+        try {
+            setCookie("typofinder-homoglyph", document.getElementById('homoglyph').value, 365);
+        } catch(err){
+        
+        }
+
+        try {
+            setCookie("typofinder-tlds", document.getElementById('tld').value, 365);
+        } catch(err){
+        
+        }
+
+        try {
+            setCookie("typofinder-typoamount", document.getElementById('typoamount').value, 365);
+        } catch(err){
+        
+        }
+
+        try {
+            setCookie("typofinder-typoamountdesc", document.getElementById('typoamountdesc').value, 365);
+        } catch(err){
+        
+        } 
+
         //Do the AJAX post
         $.post($("#typogulator").attr("action"), $("#typogulator").serialize(), function (data) {
             //$("#results").html(data);
@@ -814,7 +857,7 @@ $(document).ready(function () {
         })
             .fail(function (xhr, textStatus, errorThrown) {
                 console.log("error " + textStatus)
-		document.getElementById("progressbar").style.display = "none";
+                document.getElementById("progressbar").style.display = "none";
                 document.getElementById("results").style.display = "none";
                 document.getElementById("resultstable").style.display = "none";
                 document.getElementById("typogulator").style.display = "block";
