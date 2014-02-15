@@ -575,7 +575,7 @@ function loadDetails(strDomain, mynoresdiv) {
                 // Hide the progress bar
                 document.getElementById("progressbar").style.display = "none";
                 // Shows the results
-                document.getElementById("results").style.display = "block";
+                // document.getElementById("results").style.display = "block";
                 // Shows the original form
                 document.getElementById("typogulator").style.display = "block";
                 // Shows the results table
@@ -769,7 +769,7 @@ $(document).ready(function () {
         // Hide the form
         document.getElementById("typogulator").style.display = "none";
         // Hide and empty the results
-        document.getElementById("results").style.display = "none";
+        // document.getElementById("results").style.display = "none";
         emptyresults();
         // Hide the results table
         document.getElementById("resultstable").style.display = "none";
@@ -858,7 +858,7 @@ $(document).ready(function () {
             .fail(function (xhr, textStatus, errorThrown) {
                 console.log("error " + textStatus)
                 document.getElementById("progressbar").style.display = "none";
-                document.getElementById("results").style.display = "none";
+                // document.getElementById("results").style.display = "none";
                 document.getElementById("resultstable").style.display = "none";
                 document.getElementById("typogulator").style.display = "block";
             })
