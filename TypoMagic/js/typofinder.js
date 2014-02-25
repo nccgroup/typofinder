@@ -135,14 +135,14 @@ function generateTag(data) {
 // for the flag for the geo of the 
 // IPv4 address
 // -------------------------------------
-function geoIPImageIPv4(sIP, domLI, strTBL) {
+function geoIPImageIPv4(sIP, strTBL) {
     var URL = "./geov4.ncc/" + sIP;
     var img = document.createElement('img');
     img.src = URL;
     if (strTBL != null) {
         strTBL = strTBL + "<img src =\"" + URL + "\"><br/>"; // this is horrible and dangerous
     }
-    domLI.appendChild(img);
+
     return strTBL;
 }
 
@@ -151,14 +151,14 @@ function geoIPImageIPv4(sIP, domLI, strTBL) {
 // for the flag for the geo of the 
 // IPv6 address
 // -------------------------------------
-function geoIPImageIPv6(sIP, domLI, strTBL) {
+function geoIPImageIPv6(sIP, strTBL) {
     var URL = "./geov6.ncc/" + sIP;
     var img = document.createElement('img');
     img.src = URL;
     if (strTBL != null) {
         strTBL = strTBL + "<img src =\"" + URL + "\"><br/>"; // this is horrible and dangerous
     }
-    domLI.appendChild(img);
+
     return strTBL;
 }
 
@@ -190,13 +190,8 @@ function fillDetails(domDiv, data) {
     // IPv4 Address
     if (data.IPv4Addresses.length > 0) {
         for (intCount = 0; intCount < data.IPv4Addresses.length; intCount++) {
-            ul = document.createElement('ul');
-            domDiv.appendChild(ul);
-            li = document.createElement('li');
-            ul.appendChild(li);
-            li.innerText = "IPv4: " + data.IPv4Addresses[intCount];
             strTBLIP = strTBLIP + "IPv4: " + data.IPv4Addresses[intCount];
-            strTBLIP = geoIPImageIPv4(data.IPv4Addresses[intCount], li, strTBLIP);
+            strTBLIP = geoIPImageIPv4(data.IPv4Addresses[intCount], strTBLIP);
         }
     }
 
@@ -204,13 +199,8 @@ function fillDetails(domDiv, data) {
     // IPv6 Address
     if (data.IPv6Addresses.length > 0) {
         for (intCount = 0; intCount < data.IPv6Addresses.length; intCount++) {
-            ul = document.createElement('ul');
-            domDiv.appendChild(ul);
-            li = document.createElement('li');
-            ul.appendChild(li);
-            li.innerText = "IPv6: " + data.IPv6Addresses[intCount];
             strTBLIP = strTBLIP + "IPv6: " + data.IPv6Addresses[intCount];
-            strTBILP = geoIPImageIPv6(data.IPv6Addresses[intCount], li, strTBLIP);
+            strTBILP = geoIPImageIPv6(data.IPv6Addresses[intCount], strTBLIP);
         }
     }
 
@@ -218,44 +208,21 @@ function fillDetails(domDiv, data) {
     var strTBLMX = "";
     if (data.aMX.length > 0) {
         for (intCount = 0; intCount < data.aMX.length; intCount++) {
-            ul = document.createElement('ul');
-            domDiv.appendChild(ul);
-            li = document.createElement('li');
-            ul.appendChild(li);
-            li.innerText = "MX: " + data.aMX[intCount];
             strTBLMX = strTBLMX + data.aMX[intCount] + "<br/>";
 
 
             if (data.aMXIPv4[data.aMX[intCount]] != null) {
-                //console.log("MX IPv4 " + data.aMX[intCount] + " - " + data.aMXIPv4[data.aMX[intCount]]);
-
-                var ulinner = document.createElement('ul');
-                li.appendChild(ulinner);
-
                 for (IP in data.aMXIPv4[data.aMX[intCount]]) {
-                    var liinner = document.createElement('li');
-                    ulinner.appendChild(liinner);
-                    liinner.innerText = "MX IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP];
                     strTBLMX = strTBLMX + "- IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP];
-                    strTBLMX = geoIPImageIPv4(data.aMXIPv4[data.aMX[intCount]][IP], liinner, strTBLMX);
-                    //console.log("IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP]);                                   
+                    strTBLMX = geoIPImageIPv4(data.aMXIPv4[data.aMX[intCount]][IP], strTBLMX);
                 }
             }
 
 
             if (data.aMXIPv6[data.aMX[intCount]] != null) {
-                //console.log("MX IPv6 " + data.aMX[intCount] + " - " + data.aMXIPv6[data.aMX[intCount]]);
-
-                var ulinner = document.createElement('ul');
-                li.appendChild(ulinner);
-
                 for (IP in data.aMXIPv6[data.aMX[intCount]]) {
-                    var liinner = document.createElement('li');
-                    ulinner.appendChild(liinner);
-                    liinner.innerText = "MX IPv6: " + data.aMXIPv6[data.aMX[intCount]][IP];
                     strTBLMX = strTBLMX + "- IPv6: " + data.aMXIPv6[data.aMX[intCount]][IP];
-                    strTBLMX = geoIPImageIPv6(data.aMXIPv6[data.aMX[intCount]][IP], liinner, strTBLMX);
-                    //console.log("IPv6: " + data.aMXIPv4[data.aMX[intCount]][IP]);                                   
+                    strTBLMX = geoIPImageIPv6(data.aMXIPv6[data.aMX[intCount]][IP], strTBLMX);
                 }
             }
 
@@ -265,205 +232,53 @@ function fillDetails(domDiv, data) {
     // www IPv4 Address
     var strTBLwww = "";
     if (data.wwwv4.length > 0) {
-        ul = document.createElement('ul');
-        domDiv.appendChild(ul);
-
         for (intCount = 0; intCount < data.wwwv4.length; intCount++) {
-            li = document.createElement('li');
-            ul.appendChild(li);
-            li.innerText = "www IPv4: " + data.wwwv4[intCount];
             strTBLwww = strTBLwww + "IPv4: " + data.wwwv4[intCount]
-            strTBLwww = geoIPImageIPv4(data.wwwv4[intCount], li, strTBLwww);
-
-            // Safebrowsing
-            if (data.SafeBrowsing.length > 0) {
-                li.innerText = "www IPv4: " + data.wwwv6[intCount] + " - " + data.SafeBrowsing;
-            }
+            strTBLwww = geoIPImageIPv4(data.wwwv4[intCount], strTBLwww);
         }
-
-        // URL
-        lilink = document.createElement('li');
-        aLink = document.createElement('a');
-
-        strHost = "http://www." + data.strDomain;
-        aLink.href = strHost;
-        aLink.addEventListener('click', 
-            function (event) {
-                event.preventDefault();
-                window.open(this.href);
-            },
-        false);
-
-
-        aLink.innerText = "link (be careful) www." + data.strDomain;
-        lilink.appendChild(aLink);
-        ul.appendChild(lilink);
     }
 
     // www IPv6 Address
     if (data.wwwv6.length > 0) {
-        ul = document.createElement('ul');
-        domDiv.appendChild(ul);
-
         for (intCount = 0; intCount < data.wwwv6.length; intCount++) {
-            li = document.createElement('li');
-            ul.appendChild(li);
-            li.innerText = "www IPv6: " + data.wwwv6[intCount];
             strTBLwww = strTBLwww + "IPv6: " + data.wwwv6[intCount]
-            strTBLwww = geoIPImageIPv6(data.wwwv6[intCount], li, strTBLwww);
-
-            // Safebrowsing
-            if (data.SafeBrowsing.length > 0) {
-                li.innerText = "www IPv6: " + data.wwwv6[intCount] + " - " + data.SafeBrowsing;
-            }
-
+            strTBLwww = geoIPImageIPv6(data.wwwv6[intCount], strTBLwww);
         }
-
-        // URL
-        lilink = document.createElement('li');
-        aLink = document.createElement('a');
-        
-        strHost = "http://www." + data.strDomain;
-        aLink.href = strHost;
-        aLink.addEventListener('click',
-            function (event) {
-                event.preventDefault();
-                window.open(this.href);
-            },
-        false);
-
-        aLink.innerText = "link (be careful) www." + data.strDomain;
-        lilink.appendChild(aLink);
-        ul.appendChild(lilink);
     }
 
     // m IPv4 Address
     var strTBLm = "";
     if (data.mv4.length > 0) {
-        ul = document.createElement('ul');
-        domDiv.appendChild(ul);
-
         for (intCount = 0; intCount < data.mv4.length; intCount++) {
-            li = document.createElement('li');
-            ul.appendChild(li);
-            li.innerText = "m IPv4: " + data.mv4[intCount];
             strTBLm = strTBLm + "IPv4 " + data.mv4[intCount];
-            strTBLm = geoIPImageIPv4(data.mv4[intCount], li, strTBLm);
+            strTBLm = geoIPImageIPv4(data.mv4[intCount], strTBLm);
         }
-
-        // URL
-        lilink = document.createElement('li');
-        aLink = document.createElement('a');
-
-        strHost = "http://m." + data.strDomain;
-        aLink.href = strHost;
-        aLink.addEventListener('click',
-            function (event) {
-                event.preventDefault();
-                window.open(this.href);
-            },
-        false);
-
-        aLink.innerText = "link (be careful) m." + data.strDomain;
-        lilink.appendChild(aLink);
-        ul.appendChild(lilink);
     }
 
     // m IPv6 Address
     if (data.mv6.length > 0) {
-        ul = document.createElement('ul');
-        domDiv.appendChild(ul);
-
         for (intCount = 0; intCount < data.mv6.length; intCount++) {
-            li = document.createElement('li');
-            ul.appendChild(li);
-            li.innerText = "m IPv6: " + data.mv6[intCount];
             strTBLm = strTBLm + "IPv6: " + data.mv6[intCount];
-            strTBLm = geoIPImageIPv6(data.mv6[intCount], li, strTBLm);
+            strTBLm = geoIPImageIPv6(data.mv6[intCount], strTBLm);
         }
-
-        // URL
-        lilink = document.createElement('li');
-        aLink = document.createElement('a');
-
-        strHost = "http://m." + data.strDomain;
-        aLink.href = strHost;
-        aLink.addEventListener('click',
-            function (event) {
-                event.preventDefault();
-                window.open(this.href);
-            },
-        false);
-
-        aLink.innerText = "link (be careful) m." + data.strDomain;
-        lilink.appendChild(aLink);
-        ul.appendChild(lilink);
     }
 
     // webmail IPv4 Address
     var strTBLwebmail = "";
     if (data.webmailv4.length > 0) {
-        ul = document.createElement('ul');
-        domDiv.appendChild(ul);
-
         for (intCount = 0; intCount < data.webmailv4.length; intCount++) {
-            li = document.createElement('li');
-            ul.appendChild(li);
-            li.innerText = "webmail IPv4: " + data.webmailv4[intCount];
             strTBLwebmail = strTBLwebmail + "IPv4: " + data.webmailv4[intCount];
-            strTBLwebmail = geoIPImageIPv4(data.webmailv4[intCount], li, strTBLwebmail);
+            strTBLwebmail = geoIPImageIPv4(data.webmailv4[intCount], strTBLwebmail);
         }
-
-        // URL
-        lilink = document.createElement('li');
-        aLink = document.createElement('a');
-
-        strHost = "http://webmail." + data.strDomain;
-        aLink.href = strHost;
-        aLink.addEventListener('click',
-            function (event) {
-                event.preventDefault();
-                window.open(this.href);
-            },
-        false);
-
-        aLink.innerText = "link (be careful) webmail." + data.strDomain;
-        lilink.appendChild(aLink);
-        ul.appendChild(lilink);
     }
 
     // webmail IPv6 Address
     if (data.webmailv6.length > 0) {
-        ul = document.createElement('ul');
-        domDiv.appendChild(ul);
-
         for (intCount = 0; intCount < data.webmailv6.length; intCount++) {
-            li = document.createElement('li');
-            ul.appendChild(li);
-            li.innerText = "webmail IPv6: " + data.webmailv6[intCount];
             strTBLwebmail = strTBLwebmail + "IPv6: " + data.webmailv6[intCount];
-            strTBLwebmail = geoIPImageIPv6(data.webmailv6[intCount], li, strTBLwebmail);
+            strTBLwebmail = geoIPImageIPv6(data.webmailv6[intCount], strTBLwebmail);
         }
-
-        // URL
-        lilink = document.createElement('li');
-        aLink = document.createElement('a');
-        
-        strHost = "http://webmail." + data.strDomain;
-        aLink.href = strHost;
-        aLink.addEventListener('click',
-            function (event) {
-                event.preventDefault();
-                window.open(this.href);
-            },
-        false);
-
-        aLink.innerText = "link (be careful) webmail." + data.strDomain;
-        lilink.appendChild(aLink);
-        ul.appendChild(lilink);
     }
-
-
 
     var strDomain = "";
 
