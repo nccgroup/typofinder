@@ -596,6 +596,7 @@ $(document).ready(function () {
         domainsNoResults = new Array();
         // Reset the table
         $('#resultstabletable').dataTable()._fnClearTable();
+        $('#resultstabletable thead tr th:empty').remove();
 
         // Set cookie
         try {
