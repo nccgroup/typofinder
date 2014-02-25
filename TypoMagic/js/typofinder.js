@@ -365,7 +365,7 @@ function loadDetails(strDomain, mynoresdiv) {
                  * Note that the indicator for showing which row is open is not controlled by DataTables,
                  * rather it is done here
                  */
-                $('#resultstabletable tbody td img').on('click', function () {
+                $('#resultstabletable tbody td:first-of-type img').on('click', function () {
                     var nTr = $(this).parents('tr')[0];
                     if ( oTable.fnIsOpen(nTr) )
                     {
