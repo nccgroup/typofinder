@@ -309,16 +309,12 @@ function fillDetails(domDiv, data) {
 // -------------------------------------
 function loadDetails(strDomain, mynoresdiv) {
     var URL = "./entity.ncc";
-    var strTag = " ( ";
     var intCount = 0;
 
     $.post(URL, { host: strDomain }, function (data) {
-            //console.log(data)
-
             // Header
             var node = document.createElement("H3");
             node.setAttribute("id", data.strDomain);
-
 
             var strTag = generateTag(data);
             if (strTag != null) {
@@ -332,7 +328,6 @@ function loadDetails(strDomain, mynoresdiv) {
                 var mydiv = document.createElement("div");
                 fillDetails(mydiv, data);
                 document.getElementById("results").appendChild(mydiv);
-
             } else {
                 // Don't both creating those with nothing interesting
                 // var textnode = document.createTextNode(data.strDomain);
@@ -398,8 +393,6 @@ function loadDetails(strDomain, mynoresdiv) {
             }
 
             $("#progressbar").progressbar("option", "value", intPBarCount);
-
-            //$("#results").accordion("refresh");
         })
         .fail(function (xhr, textStatus, errorThrown) {
     
@@ -509,9 +502,6 @@ function fnFormatDetails ( oTable, nTr )
     }
 
     //Whois
-    //sOut += '<h5>WHOIS Data:</h5>';
-    //sOut += '<pre class="whois"></pre>';
-    
     var domH5Whois = document.createElement('h5');
     domH5Whois.innerText = "WHOIS Data:";
     domOut.appendChild(domH5Whois);
