@@ -167,7 +167,7 @@ function fillNoResDetails(domDiv) {
 }
 
 // -------------------------------------
-// this generates the results div contents for this domain
+// this generates the results table row contents for this domain
 // -------------------------------------
 function fillDetails(domDiv, data) {
     var ul = null;
@@ -602,7 +602,13 @@ $(document).ready(function () {
             setCookie("typofinder-typoamountdesc", document.getElementById('typoamountdesc').value, 365);
         } catch(err){
         
-        } 
+        }
+
+        try {
+            setCookie("typofinder-doppelganger", document.getElementById('doppelganger').value, 365);
+        } catch(err){
+
+        }
 
         //Do the AJAX post
         $.post($("#typogulator").attr("action"), $("#typogulator").serialize(), function (data) {

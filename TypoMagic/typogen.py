@@ -163,6 +163,27 @@ class typogen(object):
         return result
 
     @staticmethod
+    def generate_country_code_doppelgangers(strHost):
+        result = list()
+        with open("countrynames.txt", 'r', encoding="UTF-8") as countrynames:
+            for line in countrynames:
+                if not line.startswith('#'):
+                    parts = line.split(';', maxsplit=2)
+                    # 2 letter country code subdomain, but without the dot
+                    result.append(parts[0].strip().lower() + strHost)
+                    # 3 letter country code subdomain, but without the dot
+                    result.append(parts[1].strip().lower() + strHost)
+        return result
+
+    @staticmethod
+    def generate_subdomain_doppelgangers(strHost):
+        result = list()
+        with open("vhosts-default.lst", 'r') as subdomains:
+            for subdomain in subdomains:
+                result.append(subdomain.strip() + strHost)
+        return result
+
+    @staticmethod
     def bitflipstring(strInput):
         """
         Flips the lowest 7 bits in each character of the given string to build a list of mutated values.
@@ -308,7 +329,7 @@ class typogen(object):
             result.append(strHost[:idx] + strHost[idx+1:idx+2] + strHost[idx:idx+1] + strHost[idx+2:])
         return result
 
-    def generatetyposv2(self, strHost, strCountry, bTypos, iTypoIntensity, bTLDS, bBitFlip, bHomoglyphs):
+    def generatetyposv2(self, strHost, strCountry, bTypos, iTypoIntensity, bTLDS, bBitFlip, bHomoglyphs, bDoppelganger):
         """
         generate the typos
 
@@ -350,6 +371,11 @@ class typogen(object):
         if bHomoglyphs:
             lstTypos += self.generate_homoglyph_confusables_typos(strHost)
             lstTypos += self.generate_additional_homoglyph_typos(strHost)
+
+        if bDoppelganger:
+            #Commented out until a slider is put in - this following line results in Ssssllloooowwww searches
+            #lstTypos += self.generate_country_code_doppelgangers(strHost)
+            lstTypos += self.generate_subdomain_doppelgangers(strHost)
 
         uniqueTypos = set(lstTypos)
 
