@@ -291,6 +291,7 @@ function fillDetails(domDiv, data) {
     // Add the results row to the table
     $('#resultstabletable').dataTable().fnAddData(
                                                 [
+                                                    null,
                                                     strDomain, // domain
                                                     strTBLIP, // IP
                                                     strTBLMX, // MX
@@ -334,51 +335,8 @@ function loadDetails(strDomain, mynoresdiv) {
             }
 
             intPBarCount++
-            // Style
+
             if (intPBarCount >= intPBarMax) {
-
-                /*
-                 * Insert a 'details' header to the table
-                 */
-                var nCloneTh = document.createElement( 'th' );
-                $('#resultstabletable thead tr').each( function () {
-                    this.insertBefore( nCloneTh, this.childNodes[0] );
-                } );
-
-                /*
-                 * Insert a 'details' column & button to the table
-                 */
-                var nCloneTd = document.createElement( 'td' );
-                nCloneTd.innerHTML = '<img src="images/add.png">';
-                nCloneTd.className = "center";
-
-                $('#resultstabletable tbody tr').each( function () {
-                    this.insertBefore(  nCloneTd.cloneNode( true ), this.childNodes[0] );
-                } );
-
-                /* Add event listener for opening and closing details
-                 * Note that the indicator for showing which row is open is not controlled by DataTables,
-                 * rather it is done here
-                 */
-                $('#resultstabletable tbody td:first-of-type img').on('click', function () {
-                    var nTr = $(this).parents('tr')[0];
-                    if ( oTable.fnIsOpen(nTr) )
-                    {
-                        /* This row is already open - close it */
-                        this.src = "images/add.png";
-                        oTable.fnClose( nTr );
-                    }
-                    else
-                    {
-                        /* Open this row */
-                        this.src = "images/minus.png";
-                        oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
-                        /* Ensure that the new row is as wide as the table is now that it has the extra details column */
-                        newrow = $(this).closest("tr").next("tr").children("td");
-                        newrow.attr("colspan", parseInt(newrow.attr("colspan")) + 1);
-                    }
-                } );
-
                 // Fill the no results div
                 fillNoResDetails(mynoresdiv);
                 $("#results").accordion("refresh");
@@ -407,7 +365,7 @@ function loadDetails(strDomain, mynoresdiv) {
 function fnFormatDetails ( oTable, nTr )
 {
     var aData = oTable.fnGetData( nTr );
-    var strDomain = aData[0];
+    var strDomain = aData[1];
     if (strDomain.indexOf(" ") > -1)
     {
         strDomain = strDomain.substr(0, strDomain.indexOf(" "));
@@ -417,7 +375,7 @@ function fnFormatDetails ( oTable, nTr )
     var domOut = document.createDocumentFragment();
 
     //Links
-    if (aData[3] != "" || aData[4] != "" || aData[5] != "")
+    if (aData[4] != "" || aData[5] != "" || aData[6] != "")
     {
         // sOut += '<h5>Links (be careful!):</h5>';
         var domH5 = document.createElement('h5');
@@ -431,7 +389,7 @@ function fnFormatDetails ( oTable, nTr )
         domTBL.setAttribute('border', 0);
 
         
-        if (aData[3] != "")
+        if (aData[4] != "")
         {
             var domTR = document.createElement('tr');
             domTBL.appendChild(domTR);
@@ -454,7 +412,7 @@ function fnFormatDetails ( oTable, nTr )
 
             
         }
-        if (aData[4] != "")
+        if (aData[5] != "")
         {
             var domTR = document.createElement('tr');
             domTBL.appendChild(domTR);
@@ -475,7 +433,7 @@ function fnFormatDetails ( oTable, nTr )
 
             domTD.appendChild(aLink);
         }
-        if (aData[5] != "")
+        if (aData[6] != "")
         {
             var domTR = document.createElement('tr');
             domTBL.appendChild(domTR);
@@ -561,7 +519,37 @@ $(document).ready(function () {
 
     // init the data table
     oTable = $('#resultstabletable').dataTable({
-        'iDisplayLength': 100
+        "iDisplayLength": 100,
+        "aoColumnDefs": [
+            { "bSortable": false, "aTargets": [ 0 ] }
+        ],
+        "aaSorting": [[1, 'asc']],
+        "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+            $('td:first', nRow).html('<img src="images/add.png">');
+
+            /* Add event listener for opening and closing details
+             * Note that the indicator for showing which row is open is not controlled by DataTables,
+             * rather it is done here
+             */
+            $('td:first-of-type img', nRow).on('click', function () {
+                var nTr = $(this).parents('tr')[0];
+                if ( oTable.fnIsOpen(nTr) )
+                {
+                    /* This row is already open - close it */
+                    this.src = "images/add.png";
+                    oTable.fnClose( nTr );
+                }
+                else
+                {
+                    /* Open this row */
+                    this.src = "images/minus.png";
+                    oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
+                    /* Ensure that the new row is as wide as the table is now that it has the extra details column */
+                    newrow = $(this).closest("tr").next("tr").children("td");
+                    newrow.attr("colspan", parseInt(newrow.attr("colspan")) + 1);
+                }
+            } );
+        }
     });
 
     // Hide the progressbar
@@ -586,7 +574,6 @@ $(document).ready(function () {
         domainsNoResults = new Array();
         // Reset the table
         $('#resultstabletable').dataTable()._fnClearTable();
-        $('#resultstabletable thead tr th:empty').remove();
 
         // Set cookie
         try {
