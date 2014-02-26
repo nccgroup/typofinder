@@ -14,6 +14,7 @@ import re
 import copy
 import codecs
 
+
 class typogen(object):
     """generate typo"""
 
@@ -49,7 +50,7 @@ class typogen(object):
     @staticmethod
     def loadadditionalhomoglyphs():
         homoglyphs = dict()
-        with open("homoglyphs.txt","r",encoding="utf8") as f:
+        with open("homoglyphs.txt", "r", encoding="utf8") as f:
             for line in f:
                 if not line.startswith("#"):
                     split = line.rstrip().split(',')
@@ -61,7 +62,7 @@ class typogen(object):
                     for glyph in tempvalues:
                         try:
                             if 'a' + glyph + 'b' == codecs.decode(codecs.encode('a' + glyph + 'b', "idna"), "idna"):
-                                values.append (glyph)
+                                values.append(glyph)
                         except UnicodeError:
                             #Some characters/combinations will fail the nameprep stage
                             pass
@@ -76,7 +77,7 @@ class typogen(object):
         rejected_sequences = set()
 
         #'utf_8_sig' swallows the BOM at start of file
-        with open("confusables.txt","r",encoding="'utf_8_sig") as f:
+        with open("confusables.txt", "r", encoding="'utf_8_sig") as f:
             for line in f:
                 #If line contains more than whitespace and isn't a comment
                 if line.strip() and not line.startswith("#"):
@@ -157,7 +158,7 @@ class typogen(object):
         result = list()
         mask = 1
         #As we know we're flipping ASCII, only do the lowest 7 bits
-        for i in range(0,7):
+        for i in range(0, 7):
             result.append(inputbyte ^ mask)
             mask <<= 1
         return result
@@ -197,7 +198,7 @@ class typogen(object):
             flippedchars = typogen.bitflipbyte(character.encode("UTF-8")[0])
             for flippedchar in flippedchars:
                 result.append(strInput[:i] + chr(flippedchar) + strInput[i + 1:])
-            i+=1
+            i += 1
         return result
 
     @staticmethod
@@ -273,7 +274,6 @@ class typogen(object):
         for idx, char in enumerate(strHost):
             if char in homoglyphs:
                 for replacement_char in homoglyphs[char]:
-                    print (replacement_char)
                     newhostname = strHost[:idx] + replacement_char + strHost[idx + 1:]
                     result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
 
@@ -309,7 +309,7 @@ class typogen(object):
             sequence_len = 1
             while idx+1 < len(strHost) and strHost[idx+1] == char:
                 sequence_len += 1
-                idx+=1
+                idx += 1
 
             #Increment the index at this point to make the maths easier if we found a sequence
             idx += 1

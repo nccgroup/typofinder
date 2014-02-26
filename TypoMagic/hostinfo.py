@@ -13,108 +13,66 @@
 import dns.resolver
 import pygeoip
 
+
 class hostinfo(object):
     """Host information class"""
+
+    A_type = dns.rdatatype.from_text('A')
+    AAAA_type = dns.rdatatype.from_text('AAAA')
 
     def __init__(self):
         self._resolver = dns.resolver.Resolver()
         self._resolver.Timeout = 2.0
         self._resolver.lifetime = 2.0
         self._resolver.cache = dns.resolver.LRUCache()
+        self._resolver.search = list() #Ensure no search suffixes
         self._gi = pygeoip.GeoIP('GeoIP.dat')
         self._giv6 = pygeoip.GeoIP('GeoIPv6.dat')
 
-    def getWWW(self, sHostname):
-        # WWW
+    def do_query(self, prefix, sHostname, rdatatype):
         try:
-            dnsAnswers = self._resolver.query("www." + sHostname, 'A')
+            if prefix:
+                domainname = dns.name.from_text(prefix + '.' + sHostname, origin=dns.name.root)
+            else:
+                domainname = dns.name.from_text(sHostname, origin=dns.name.root)
+
+            dnsAnswers = self._resolver.query(domainname, rdatatype)
             return dnsAnswers
         except dns.exception.Timeout:
             return None
         except dns.resolver.NoAnswer:
             return None
+
+    def getWWW(self, sHostname):
+        return self.do_query('www', sHostname, self.A_type)
 
     def getWWWv6(self, sHostname):
-        # WWW
-        try:
-            dnsAnswers = self._resolver.query("www." + sHostname, 'AAAA')
-            return dnsAnswers
-        except dns.exception.Timeout:
-            return None
-        except dns.resolver.NoAnswer:
-            return None
+        return self.do_query('www', sHostname, self.AAAA_type)
 
     def getM(self, sHostname):
-        # M
-        try:
-            dnsAnswers = self._resolver.query("m." + sHostname, 'A')
-            return dnsAnswers
-        except dns.exception.Timeout:
-            return None
-        except dns.resolver.NoAnswer:
-            return None
+        return self.do_query('m', sHostname, self.A_type)
 
     def getMv6(self, sHostname):
-        # M
-        try:
-            dnsAnswers = self._resolver.query("m." + sHostname, 'AAAA')
-            return dnsAnswers
-        except dns.exception.Timeout:
-            return None
-        except dns.resolver.NoAnswer:
-            return None
+        return self.do_query('m', sHostname, self.AAAA_type)
 
     def getWEBMail(self, sHostname):
-        # webmail
-        try:
-            dnsAnswers = self._resolver.query("webmail." + sHostname, 'A')
-            return dnsAnswers
-        except dns.exception.Timeout:
-            return None
-        except dns.resolver.NoAnswer:
-            return None
+        return self.do_query('webmail', sHostname, self.A_type)
 
     def getWEBMailv6(self, sHostname):
-        # webmail
-        try:
-            dnsAnswers = self._resolver.query("webmail." + sHostname, 'AAAA')
-            return dnsAnswers
-        except dns.exception.Timeout:
-            return None
-        except dns.resolver.NoAnswer:
-            return None
+        return self.do_query('webmail', sHostname, self.AAAA_type)
 
     def getMX(self, sHostname):
         # MX
         try:
-            dnsAnswers = self._resolver.query(sHostname, 'MX')
-            return dnsAnswers
-        except dns.exception.Timeout:
-            return None
-        except dns.resolver.NoAnswer:
-            return None
-        except dns.resolver.NXDOMAIN:
+            return self.do_query(None, sHostname, 'MX')
+        except dns.resolver.NXDOMAIN:   #Special case, return None rather than throwing NXDOMAIN (TODO figure out why!)
             return None
 
     def getIPv4(self, sHostname):
-        # IPv4
-        try:  
-            dnsAnswers = self._resolver.query(sHostname, 'A')
-            return dnsAnswers
-        except dns.exception.Timeout:
-            return None
-        except dns.resolver.NoAnswer:
-            return None
+        return self.do_query(None, sHostname, self.A_type)
 
     def getIPv6(self, sHostname):
-        # IPv6
-        try:       
-            dnsAnswers = self._resolver.query(sHostname, 'AAAA')
-            return dnsAnswers
-        except dns.exception.Timeout:
-            return None
-        except dns.resolver.NoAnswer:
-            return None
+        return self.do_query(None, sHostname, self.AAAA_type)
 
     def getGeobyIP(self, sIP):
         try:
@@ -130,65 +88,14 @@ class hostinfo(object):
         except Exception:
             pass
 
-    def getGeobyHostname(self, sHostname):
-        try:
-            # Geo Location
-            return self._gi.country_code_by_name(sHostname)
-        except Exception:
-            pass
-
-    def getGeobyHostnamev6(self, sHostname):
-        try:
-            # Geo Location
-            return self._giv6.country_code_by_name(sHostname)
-        except Exception:
-            pass
-
-    def getGeoImagebyIP(self, sIP):
-        try:
-            countrycode = self.getGeobyIP(sIP)
-            if countrycode:
-                return "<img src=\"./flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
-        except Exception:
-            pass
-        return "<img src=\"./flags/flags-iso/shiny/16/_unknown.png\">"
-
-    def getGeoImagebyIPv6(self, sIP):
-        try:
-            countrycode = self.getGeobyIPv6(sIP)
-            if countrycode:
-                return "<img src=\"./flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
-        except Exception:
-            pass
-        return "<img src=\"./flags/flags-iso/shiny/16/_unknown.png\">"
-
-    def getGeoImagebyHostname(self, sHostname):
-        try:
-            countrycode = self.getGeobyHostname(sHostname)
-            if countrycode:
-                return "<img src=\"./flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
-        except Exception:
-            pass
-        return "<img src=\"./flags/flags-iso/shiny/16/_unknown.png\">"
-            
-    def getGeoImagebyHostnamev6(self, sHostname):
-        try:
-            countrycode = self.getGeobyHostnamev6(sHostname)
-            if countrycode:
-                return "<img src=\"./flags/flags-iso/shiny/16/"+ countrycode +".png\" alt=\"" + countrycode + "\">"
-        except Exception:
-            pass
-        return "<img src=\"./flags/flags-iso/shiny/16/_unknown.png\">"       
-
     #
     # these are used by the v2 AJAX API
     #
-
     def getGeoImagebyIPv4new(self, sIP):
         try:
             countrycode = self.getGeobyIP(sIP)
             if countrycode:
-                return "/flags/flags-iso/shiny/16/"+ countrycode +".png"
+                return "/flags/flags-iso/shiny/16/"+ countrycode + ".png"
         except Exception:
             pass
         return "/flags/flags-iso/shiny/16/_unknown.png"
@@ -197,7 +104,7 @@ class hostinfo(object):
         try:
             countrycode = self.getGeobyIPv6(sIP)
             if countrycode:
-                return "/flags/flags-iso/shiny/16/"+ countrycode +".png"
+                return "/flags/flags-iso/shiny/16/"+ countrycode + ".png"
         except Exception:
             pass
         return "/flags/flags-iso/shiny/16/_unknown.png"

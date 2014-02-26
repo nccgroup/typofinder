@@ -54,7 +54,7 @@ def ourwhois(sDomain):
             for sLine in dowhois(sServer,tld).split('\n'):
                 if "whois:" in sLine:
                     sServer = sLine.lstrip(' ')[14:]
-                    tld_to_whois[tld] = sServer;
+                    tld_to_whois[tld] = sServer
                     break
         except:
             pass
