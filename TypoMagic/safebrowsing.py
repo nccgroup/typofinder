@@ -27,6 +27,7 @@ def safebrowsingqueryv2 (query_hostname, key):
         # Return the same as a positive response string if the Safe Browsing API key is missing.
         return ("")
 
+    global now, value, longtermthen
     then = now
     now = DT.datetime.now()
 
