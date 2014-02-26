@@ -19,17 +19,6 @@ var domainsNoResults = new Array();
 var masterData = null;
 
 // -------------------------------------
-// Empty the results
-// -------------------------------------
-function emptyresults() {
-    var myNode = document.getElementById("results");
-    while (myNode.firstChild) {
-        myNode.removeChild(myNode.firstChild);
-    }
-    $("#results").accordion("refresh");
-}
-
-// -------------------------------------
 // Get the original domains data
 // -------------------------------------
 function getMasterData() {
@@ -561,9 +550,6 @@ $(document).ready(function () {
     $("#typogulator").submit(function () {
         // Hide the form
         document.getElementById("typogulator").style.display = "none";
-        // Hide and empty the results
-        // document.getElementById("results").style.display = "none";
-        emptyresults();
         // Hide the results table
         document.getElementById("resultstable").style.display = "none";
         // Reset and show the progress bar
@@ -620,7 +606,6 @@ $(document).ready(function () {
 
         //Do the AJAX post
         $.post($("#typogulator").attr("action"), $("#typogulator").serialize(), function (data) {
-            //$("#results").html(data);
 
             // max for the progress bar
             intPBarMax = data.length + 1; // we add one to factor in the first request
