@@ -315,7 +315,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             # v2 REST API - get whois for domain
             elif "whois.ncc" in self.path:
                 lastSlash = self.path.rfind("/")
-                strDomain = self.path[lastSlash + 1:]
+                strDomain = urllib.parse.unquote(self.path[lastSlash + 1:])
                 
                 self.send_response(200)
                 self.send_header("Content-type", "text/html")

@@ -15,6 +15,7 @@
 #
 
 import socket
+import codecs
 
 tld_to_whois = dict()
 
@@ -23,7 +24,7 @@ def dowhois(sServer, sDomain):
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((sServer, 43))
-    query = sDomain + '\r\n'
+    query = str(codecs.encode(sDomain, "idna"), "ascii") + '\r\n'
     s.send(query.encode())
     response = ''
         
