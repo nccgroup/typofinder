@@ -377,7 +377,28 @@ function fnFormatDetails ( oTable, nTr )
         domTBL.setAttribute('cellspacing', 0);
         domTBL.setAttribute('border', 0);
 
-        
+
+        if (aData[2] != "")
+        {
+            var domTR = document.createElement('tr');
+            domTBL.appendChild(domTR);
+
+            var domTD = document.createElement('td');
+            domTR.appendChild(domTD);
+
+            aLink = document.createElement('a');
+            strHost = "http://" + strDomain;
+            aLink.href = strHost;
+            aLink.addEventListener('click',
+                function (event) {
+                    event.preventDefault();
+                    window.open(this.href);
+                },
+            false);
+            aLink.innerText = strDomain;
+
+            domTD.appendChild(aLink);
+        }
         if (aData[4] != "")
         {
             var domTR = document.createElement('tr');
@@ -398,8 +419,6 @@ function fnFormatDetails ( oTable, nTr )
             aLink.innerText = "www." + strDomain;
 
             domTD.appendChild(aLink);
-
-            
         }
         if (aData[5] != "")
         {
