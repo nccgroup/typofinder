@@ -185,6 +185,16 @@ class typogen(object):
         return result
 
     @staticmethod
+    def generate_extra_dot_doppelgangers(strHost):
+        result = list()
+        for idx, char in enumerate(strHost):
+            #A dot instead of a character
+            result.append(strHost[:idx] + '.' + strHost[idx + 1:])
+            #A dot inserted between characters
+            result.append(strHost[:idx] + '.' + strHost[idx:])
+        return result
+
+    @staticmethod
     def bitflipstring(strInput):
         """
         Flips the lowest 7 bits in each character of the given string to build a list of mutated values.
@@ -365,7 +375,6 @@ class typogen(object):
             # tld swap out
             for gtld in self.lstTlds:
                 newHost = strHost[:lastdot] + "." + gtld
-                #print(newHost)
                 lstTypos.append(newHost)
 
         if bHomoglyphs:
@@ -376,6 +385,7 @@ class typogen(object):
             #Commented out until a slider is put in - this following line results in Ssssllloooowwww searches
             #lstTypos += self.generate_country_code_doppelgangers(strHost)
             lstTypos += self.generate_subdomain_doppelgangers(strHost)
+            lstTypos += self.generate_extra_dot_doppelgangers(strHost)
 
         uniqueTypos = set(lstTypos)
 
