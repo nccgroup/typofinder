@@ -179,7 +179,7 @@ class typogen(object):
     @staticmethod
     def generate_subdomain_doppelgangers(strHost):
         result = list()
-        with open("vhosts-default.lst", 'r') as subdomains:
+        with open("subdomains.txt", 'r') as subdomains:
             for subdomain in subdomains:
                 result.append(subdomain.strip() + strHost)
         return result

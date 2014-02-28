@@ -306,8 +306,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
                 month = timedelta(days=30)
                 futuredate = date.today() + month
-                self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
-                self.send_header('Content-type','image/png')
+                self.send_header('Expires', futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
+                self.send_header('Content-type', 'image/png')
                 self.end_headers()
                 self.wfile.write(f.read())
                 f.close()
