@@ -87,7 +87,7 @@ function getCookies() {
 
     try {
         if (getCookie("typofinder-noreg") == "true") document.getElementById('noreg').checked = true;
-        else if (getCookie("typofinder-noreg") == "") document.getElementById('noreg').checked = true;
+        else if (getCookie("typofinder-noreg") == "") document.getElementById('noreg').checked = false;
         else document.getElementById('noreg').checked = false;
     } catch (err) {
 
