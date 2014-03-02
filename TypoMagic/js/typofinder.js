@@ -56,9 +56,15 @@ function getCookies() {
 
     try {
         sValue = getCookie("typofinder-typoamount");
-        document.getElementById('typoamountdesc').value = getCookie("typofinder-typoamountdesc");
-        $("#slider").slider('value', sValue);
+        if(sValue != "" && getCookie("typofinder-typoamountdesc") != "" ){
+            document.getElementById('typoamountdesc').value = getCookie("typofinder-typoamountdesc");
+            $("#slider").slider('value', sValue);
+        } else {
+            $("#slider").slider('value', 100);
+            document.getElementById('typoamountdesc').value = "Rigorous";
+        }
     } catch (err) {
+        console.log("error");
         $("#slider").slider('value', 100);
         document.getElementById('typoamountdesc').value = "Rigorous";
     }
