@@ -79,6 +79,7 @@ function getCookies() {
 
     try {
         if (getCookie("typofinder-doppelganger") == "true") document.getElementById('doppelganger').checked = true;
+        else if (getCookie("typofinder-doppelganger") == "") document.getElementById('doppelganger').checked = true;
         else document.getElementById('doppelganger').checked = false;
     } catch (err) {
 
