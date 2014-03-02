@@ -10,6 +10,7 @@
 # Released under AGPL see LICENSE for more information#
 #
 
+
 class objtypo:
     """typo object"""
     
@@ -50,4 +51,7 @@ class objtypo:
 
     # http://stackoverflow.com/questions/5160077/encoding-nested-python-object-in-json
     def reprJSON(self):
-        return dict(strDomain=self.strDomain, strHost=self.strHost, bMX=self.bMX, bTypo=self.bTypo, IPv4Addresses=self.IPv4Address, IPv6Addresses=self.IPV6Address, SafeBrowsing = self.SafeBrowsing, wwwv4 = self.wwwv4, wwwv6 = self.wwwv6, mv4 = self.mv4, mv6 = self.mv6, webmailv4 = self.webmailv4, webmailv6 = self.webmailv6, aMX = self.aMX, aMXIPv4 = self.aMXIPv4, aMXIPv6 = self.aMXIPv6 ) 
+        return dict(strDomain=self.strDomain, strHost=self.strHost, bMX=self.bMX, bTypo=self.bTypo, IPv4Addresses=self.IPv4Address,
+                    IPv6Addresses=self.IPV6Address, SafeBrowsing = self.SafeBrowsing, wwwv4 = self.wwwv4, wwwv6 = self.wwwv6,
+                    mv4 = self.mv4, mv6 = self.mv6, webmailv4 = self.webmailv4, webmailv6 = self.webmailv6, aMX = self.aMX,
+                    aMXIPv4 = self.aMXIPv4, aMXIPv6 = self.aMXIPv6)

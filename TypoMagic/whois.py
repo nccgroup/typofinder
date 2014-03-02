@@ -15,6 +15,7 @@
 #
 
 import socket
+import codecs
 
 tld_to_whois = dict()
 
@@ -23,7 +24,10 @@ def dowhois(sServer, sDomain):
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((sServer, 43))
-    query = sDomain + '\r\n'
+    try:
+        query = str(codecs.encode(sDomain, "idna"), "ascii") + '\r\n'
+    except:
+        query = sDomain + '\r\n'
     s.send(query.encode())
     response = ''
         
@@ -54,7 +58,7 @@ def ourwhois(sDomain):
             for sLine in dowhois(sServer,tld).split('\n'):
                 if "whois:" in sLine:
                     sServer = sLine.lstrip(' ')[14:]
-                    tld_to_whois[tld] = sServer;
+                    tld_to_whois[tld] = sServer
                     break
         except:
             pass
@@ -74,4 +78,3 @@ def recursivewhois(sServer, sDomain):
         pass
 
     return result.lstrip()
-    

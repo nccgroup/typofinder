@@ -14,6 +14,7 @@ import re
 import copy
 import codecs
 
+
 class typogen(object):
     """generate typo"""
 
@@ -49,7 +50,7 @@ class typogen(object):
     @staticmethod
     def loadadditionalhomoglyphs():
         homoglyphs = dict()
-        with open("homoglyphs.txt","r",encoding="utf8") as f:
+        with open("homoglyphs.txt", "r", encoding="utf8") as f:
             for line in f:
                 if not line.startswith("#"):
                     split = line.rstrip().split(',')
@@ -61,7 +62,7 @@ class typogen(object):
                     for glyph in tempvalues:
                         try:
                             if 'a' + glyph + 'b' == codecs.decode(codecs.encode('a' + glyph + 'b', "idna"), "idna"):
-                                values.append (glyph)
+                                values.append(glyph)
                         except UnicodeError:
                             #Some characters/combinations will fail the nameprep stage
                             pass
@@ -76,7 +77,7 @@ class typogen(object):
         rejected_sequences = set()
 
         #'utf_8_sig' swallows the BOM at start of file
-        with open("confusables.txt","r",encoding="'utf_8_sig") as f:
+        with open("confusables.txt", "r", encoding="'utf_8_sig") as f:
             for line in f:
                 #If line contains more than whitespace and isn't a comment
                 if line.strip() and not line.startswith("#"):
@@ -157,9 +158,40 @@ class typogen(object):
         result = list()
         mask = 1
         #As we know we're flipping ASCII, only do the lowest 7 bits
-        for i in range(0,7):
+        for i in range(0, 7):
             result.append(inputbyte ^ mask)
             mask <<= 1
+        return result
+
+    @staticmethod
+    def generate_country_code_doppelgangers(strHost):
+        result = list()
+        with open("countrynames.txt", 'r', encoding="UTF-8") as countrynames:
+            for line in countrynames:
+                if not line.startswith('#'):
+                    parts = line.split(';', maxsplit=2)
+                    # 2 letter country code subdomain, but without the dot
+                    result.append(parts[0].strip().lower() + strHost)
+                    # 3 letter country code subdomain, but without the dot
+                    result.append(parts[1].strip().lower() + strHost)
+        return result
+
+    @staticmethod
+    def generate_subdomain_doppelgangers(strHost):
+        result = list()
+        with open("subdomains.txt", 'r') as subdomains:
+            for subdomain in subdomains:
+                result.append(subdomain.strip() + strHost)
+        return result
+
+    @staticmethod
+    def generate_extra_dot_doppelgangers(strHost):
+        result = list()
+        for idx, char in enumerate(strHost):
+            #A dot instead of a character
+            result.append(strHost[:idx] + '.' + strHost[idx + 1:])
+            #A dot inserted between characters
+            result.append(strHost[:idx] + '.' + strHost[idx:])
         return result
 
     @staticmethod
@@ -176,7 +208,7 @@ class typogen(object):
             flippedchars = typogen.bitflipbyte(character.encode("UTF-8")[0])
             for flippedchar in flippedchars:
                 result.append(strInput[:i] + chr(flippedchar) + strInput[i + 1:])
-            i+=1
+            i += 1
         return result
 
     @staticmethod
@@ -252,7 +284,6 @@ class typogen(object):
         for idx, char in enumerate(strHost):
             if char in homoglyphs:
                 for replacement_char in homoglyphs[char]:
-                    print (replacement_char)
                     newhostname = strHost[:idx] + replacement_char + strHost[idx + 1:]
                     result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
 
@@ -288,7 +319,7 @@ class typogen(object):
             sequence_len = 1
             while idx+1 < len(strHost) and strHost[idx+1] == char:
                 sequence_len += 1
-                idx+=1
+                idx += 1
 
             #Increment the index at this point to make the maths easier if we found a sequence
             idx += 1
@@ -308,7 +339,7 @@ class typogen(object):
             result.append(strHost[:idx] + strHost[idx+1:idx+2] + strHost[idx:idx+1] + strHost[idx+2:])
         return result
 
-    def generatetyposv2(self, strHost, strCountry, bTypos, iTypoIntensity, bTLDS, bBitFlip, bHomoglyphs):
+    def generatetyposv2(self, strHost, strCountry, bTypos, iTypoIntensity, bTLDS, bBitFlip, bHomoglyphs, bDoppelganger):
         """
         generate the typos
 
@@ -344,12 +375,17 @@ class typogen(object):
             # tld swap out
             for gtld in self.lstTlds:
                 newHost = strHost[:lastdot] + "." + gtld
-                #print(newHost)
                 lstTypos.append(newHost)
 
         if bHomoglyphs:
             lstTypos += self.generate_homoglyph_confusables_typos(strHost)
             lstTypos += self.generate_additional_homoglyph_typos(strHost)
+
+        if bDoppelganger:
+            #Commented out until a slider is put in - this following line results in Ssssllloooowwww searches
+            #lstTypos += self.generate_country_code_doppelgangers(strHost)
+            lstTypos += self.generate_subdomain_doppelgangers(strHost)
+            lstTypos += self.generate_extra_dot_doppelgangers(strHost)
 
         uniqueTypos = set(lstTypos)
 

@@ -1,6 +1,7 @@
 from unittest import TestCase
 from typogen import typogen
 
+
 class TestTypogen(TestCase):
     def test_generate_missing_character_typos(self):
         result = typogen.generate_missing_character_typos("abc")

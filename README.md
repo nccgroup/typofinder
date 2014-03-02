@@ -43,7 +43,7 @@ Dependencies
 -------------
 * Python (3.3)
 * dnspython (1.11.1)
-* pygeoip (0.3.0)
+* pygeoip (0.3.1)
 
 What it does
 -------------

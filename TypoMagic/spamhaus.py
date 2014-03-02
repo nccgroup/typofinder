@@ -34,9 +34,9 @@ class Spamhaus(ExtraInfoQuery):
             self._resolver.query(queryname, "A")
             short_msg = "Spamhaus Blocked"
         except NXDOMAIN:
-            return (None, None)
+            return None, None
         except DNSException:
-            return ("DNS Failure", "")
+            return "DNS Failure", ""
 
         detail_msg = ""
         txt_result_answer = self._resolver.query(queryname, "TXT")
@@ -45,4 +45,4 @@ class Spamhaus(ExtraInfoQuery):
             if match:
                 detail_msg += "See: <a href=\"" + match.group(1) + "\">" + match.group(1) + "</a> "
 
-        return (short_msg, detail_msg)
+        return short_msg, detail_msg

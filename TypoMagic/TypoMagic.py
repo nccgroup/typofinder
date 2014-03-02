@@ -129,11 +129,9 @@ def handleHostAJAX(sDomain):
     except:
         pass
 
-
     # Safe Browsing
     try:
         typo.SafeBrowsing = safebrowsing.safebrowsingqueryv2("www." + sDomain, KEY)
-        pass
     except:
         pass
 
@@ -144,6 +142,7 @@ def handleHostAJAX(sDomain):
     resolve_m(sDomain, typo)
 
     return typo
+
 
 class MyHandler(http.server.BaseHTTPRequestHandler):
 
@@ -174,25 +173,25 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 bTLD = 'tld' in post_data
                 bTypos = 'typos' in post_data
                 try:
-                     iTypoIntensity = int(post_data['typoamount'][0])
+                    iTypoIntensity = int(post_data['typoamount'][0])
                 except:
-                     iTypoIntensity = 100
+                    iTypoIntensity = 100
 
                 bBitFlip = 'bitflip' in post_data
-
                 bHomoglyphs = 'homoglyph' in post_data
+                bDoppelganger = 'doppelganger' in post_data
 
                 # stupid user
-                if(not bTypos and not bTLD and not bBitFlip and not bHomoglyphs):
-                     print("[i] No typos to process for " + strHost + " due to user option")
-                     # this will cause an error in the JavaScript client which is relied upon
-                     self.output("[!] No typos for " + strHost) 
-                     return    
+                if not bTypos and not bTLD and not bBitFlip and not bHomoglyphs and not bDoppelganger:
+                    print("[i] No typos to process for " + strHost + " due to user option")
+                    # this will cause an error in the JavaScript client which is relied upon
+                    self.output("[!] No typos for " + strHost)
+                    return
 
                 # domain name validation
                 if _typogen.is_domain_valid(strHost):
                     print("[i] Processing typos for " + strHost) 
-                    lstTypos = _typogen.generatetyposv2(strHost, "gb", bTypos, iTypoIntensity, bTLD, bBitFlip, bHomoglyphs)
+                    lstTypos = _typogen.generatetyposv2(strHost, "gb", bTypos, iTypoIntensity, bTLD, bBitFlip, bHomoglyphs, bDoppelganger)
                     if lstTypos is not None:
                         self.output(json.dumps([strTypoHost for strTypoHost in lstTypos]))
                     else:
@@ -241,7 +240,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
         else:
             with open(path, "rb") as f:
                 self.send_response(200)
-                self.send_header('Content-type',mime_type)
+                self.send_header('Content-type', mime_type)
                 self.end_headers()
                 self.wfile.write(f.read())
 
@@ -273,8 +272,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
                 month = timedelta(days=30)
                 futuredate = date.today() + month
-                self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
-                self.send_header('Content-type','image/png')
+                self.send_header('Expires', futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
+                self.send_header('Content-type', 'image/png')
                 self.end_headers()
                 self.wfile.write(f.read())
                 f.close()
@@ -290,19 +289,12 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
                 month = timedelta(days=30)
                 futuredate = date.today() + month
-                self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
-                self.send_header('Content-type','image/png')
+                self.send_header('Expires', futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
+                self.send_header('Content-type', 'image/png')
                 self.end_headers()
                 self.wfile.write(f.read())
                 f.close()
 
-
-                #print("[-" + args.base + "/" + strIMG)
-
-                #self.send_response(301)
-                #self.send_header("Location", strIMG)
-                #self.end_headers()
-                #self.output("")
             # v2 REST API - get geo for an IPv6
             elif "geov6.ncc" in self.path:
                 lastSlash = self.path.rfind("/")
@@ -314,20 +306,16 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
                 month = timedelta(days=30)
                 futuredate = date.today() + month
-                self.send_header('Expires',futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
-                self.send_header('Content-type','image/png')
+                self.send_header('Expires', futuredate.strftime('%a, %d %b %Y %H:%M:%S GMT'))
+                self.send_header('Content-type', 'image/png')
                 self.end_headers()
                 self.wfile.write(f.read())
                 f.close()
 
-                #self.send_response(301)
-                #self.send_header("Location", strIMG)
-                #self.end_headers()
-                #self.output("")
             # v2 REST API - get whois for domain
             elif "whois.ncc" in self.path:
                 lastSlash = self.path.rfind("/")
-                strDomain = self.path[lastSlash + 1:]
+                strDomain = urllib.parse.unquote(self.path[lastSlash + 1:])
                 
                 self.send_response(200)
                 self.send_header("Content-type", "text/html")
@@ -335,11 +323,10 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.output(ourwhois(strDomain))
                 
             else:
-               self.send_error(404,'[!] File Not Found: %s' % self.path)
+                self.send_error(404, '[!] File Not Found: %s' % self.path)
 
         except IOError:
-            self.send_error(404,'[!] File Not Found: %s' % self.path)
-
+            self.send_error(404, '[!] File Not Found: %s' % self.path)
         except:
             pass
 
@@ -364,16 +351,16 @@ def tcpport(parameter):
 
 if __name__ == '__main__':
     
-    print ("[i] NCC Group domain typofinder - https://github.com/nccgroup")
+    print("[i] NCC Group domain typofinder - https://github.com/nccgroup")
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p','--port', help='Port to listen on',required=False, type=tcpport, default=801)
-    parser.add_argument('-a','--address', help='hostname / IP address to bind to',required=False, type=str, default='')
-    parser.add_argument('-k','--key',help='Google SafeBrowsing API key', required=False)
+    parser.add_argument('-p', '--port', help='Port to listen on',required=False, type=tcpport, default=801)
+    parser.add_argument('-a', '--address', help='hostname / IP address to bind to', required=False, type=str, default='')
+    parser.add_argument('-k', '--key',help='Google SafeBrowsing API key', required=False)
     args = parser.parse_args()
 
     if args.key:
-        print("[i] Google safe browsing key supplied");
+        print("[i] Google safe browsing key supplied")
         KEY = args.key	
 
     try:   
@@ -382,11 +369,11 @@ if __name__ == '__main__':
         print("[!] Supplied address invalid! exiting!")
         sys.exit()
 
-    print ("[i]", time.asctime(), " Server Starts - %s:%s" % (args.address, args.port))
+    print("[i]", time.asctime(), " Server Starts - %s:%s" % (args.address, args.port))
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:
         pass
     
     httpd.server_close()
-    print ("[i]", time.asctime(), " Server Stops - %s:%s" % (args.address, args.port))
+    print("[i]", time.asctime(), " Server Stops - %s:%s" % (args.address, args.port))
