@@ -176,12 +176,13 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 strHost = str(post_data['host'])[2:-2]
 
                 if sys.platform.startswith('linux'):
-                    strSysLog=""
                     if self.headers['X-Forwarded-For'] == None: # chechk if it isn't behind a proxy - this would allow spoofing in theory
                         strSysLog = 'Domain,' + strHost + ',' + self.client_address[0]
+                        syslog.syslog(strSysLog)
                     else:
                         sysSysLog = 'Domain,' + strHost + ',' + self.headers['X-Forwarded-For'] + ',' + self.client_address[0]
-                    syslog.syslog(strSysLog)
+                        syslog.syslog(strSysLog)
+
                 # option checking
                 bTLD = 'tld' in post_data
                 bTypos = 'typos' in post_data
