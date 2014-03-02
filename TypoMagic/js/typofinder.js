@@ -669,14 +669,14 @@ $(document).ready(function () {
             setCookie("typofinder-typoamount", $('#slider').slider("option", "value"), 365);
         } catch (err) {
             setCookie("typofinder-typoamount", 100, 365);
-            setCookie("typofinder-typoamountdesc", "Rigorous");
+            setCookie("typofinder-typoamountdesc", "Rigorous", 365);
         }
 
         try {
             setCookie("typofinder-typoamountdesc", document.getElementById('typoamountdesc').value, 365);
         } catch (err) {
             setCookie("typofinder-typoamount", 100, 365);
-            setCookie("typofinder-typoamountdesc", "Rigorous");
+            setCookie("typofinder-typoamountdesc", "Rigorous", 365);
         }
 
         try {
