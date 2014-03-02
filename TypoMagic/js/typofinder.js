@@ -32,24 +32,28 @@ function getCookies() {
 
     try {
         if (getCookie("typofinder-typos") == "true") document.getElementById('typos').checked = true;
+        else document.getElementById('typos').checked = false;
     } catch (err) {
 
     }
 
     try {
         if (getCookie("typofinder-bitflip") == "true") document.getElementById('bitflip').checked = true;
+        else document.getElementById('bitflip').checked = false;
     } catch (err) {
 
     }
 
     try {
         if (getCookie("typofinder-homoglyph") == "true") document.getElementById('homoglyph').checked = true;
+        else document.getElementById('homoglyph').checked = false;
     } catch (err) {
 
     }
 
     try {
         if (getCookie("typofinder-tlds") == "true") document.getElementById('tld').checked = true;
+        else document.getElementById('tld').checked = false;
     } catch (err) {
 
     }
@@ -71,6 +75,7 @@ function getCookies() {
 
     try {
         if (getCookie("typofinder-doppelganger") == "true") document.getElementById('doppelganger').checked = true;
+        else document.getElementById('doppelganger').checked = false;
     } catch (err) {
 
     }
