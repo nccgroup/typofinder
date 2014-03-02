@@ -32,7 +32,7 @@ function getCookies() {
 
     try {
         if (getCookie("typofinder-typos") == "true") document.getElementById('typos').checked = true;
-        else if (getCookie("typofinder-typos") == "" document.getElementById('typos').checked = true;
+        else if (getCookie("typofinder-typos") == "") document.getElementById('typos').checked = true;
         else document.getElementById('typos').checked = false;
     } catch (err) {
 
@@ -40,7 +40,7 @@ function getCookies() {
 
     try {
         if (getCookie("typofinder-bitflip") == "true") document.getElementById('bitflip').checked = true;
-        else if (getCookie("typofinder-bitflip") == "" document.getElementById('bitflip').checked = true;
+        else if (getCookie("typofinder-bitflip") == "") document.getElementById('bitflip').checked = true;
         else document.getElementById('bitflip').checked = false;
     } catch (err) {
 
@@ -48,7 +48,7 @@ function getCookies() {
 
     try {
         if (getCookie("typofinder-homoglyph") == "true") document.getElementById('homoglyph').checked = true;
-        else if (getCookie("typofinder-homoglyph") == "" document.getElementById('homoglyph').checked = true;
+        else if (getCookie("typofinder-homoglyph") == "") document.getElementById('homoglyph').checked = true;
         else document.getElementById('homoglyph').checked = false;
     } catch (err) {
 
