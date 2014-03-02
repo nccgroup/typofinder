@@ -30,6 +30,12 @@ from objtypo import objtypo
 import safebrowsing
 from whois import ourwhois
 
+print ("[i] Running on : " + sys.platform)
+if sys.platform.startswith('linux'):
+    import syslog
+    syslog.openlog(ident="TYPOFINDER",logoption=syslog.LOG_PID, facility=syslog.LOG_LOCAL0)
+    syslog.syslog('Log processing initiated...')
+
 _hostinfo = hostinfo.hostinfo()
 _typogen = typogen.typogen()
 KEY = ''
@@ -171,6 +177,15 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
                 print("[i] " + str(post_data))
                 strHost = str(post_data['host'])[2:-2]
+
+                if sys.platform.startswith('linux'):
+                    strSysLog = "Ooops"
+                    if self.headers['X-Forwarded-For'] == None: # chechk if it isn't behind a proxy - this would allow spoofing in theory
+                        strSysLog = 'Domain,' + strHost + ',' + self.client_address[0]
+                        syslog.syslog(strSysLog)
+                    else:
+                        strSysLog = 'Domain,' + strHost + ',' + self.headers['X-Forwarded-For'] + ',' + self.client_address[0]
+                    syslog.syslog(strSysLog)
 
                 # option checking
                 bTLD = 'tld' in post_data

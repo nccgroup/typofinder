@@ -18,6 +18,83 @@ var intPBarCount = 0;
 var domainsNoResults = new Array();
 var masterData = null;
 
+
+// -------------------------------------
+//
+// -------------------------------------
+function getCookies() {
+    // Set cookie
+    try {
+        document.getElementById('host').value = getCookie("typofinder-domain");
+    } catch (err) {
+
+    }
+
+    try {
+        if (getCookie("typofinder-typos") == "true") document.getElementById('typos').checked = true;
+        else if (getCookie("typofinder-typos") == "") document.getElementById('typos').checked = true;
+        else document.getElementById('typos').checked = false;
+    } catch (err) {
+
+    }
+
+    try {
+        if (getCookie("typofinder-bitflip") == "true") document.getElementById('bitflip').checked = true;
+        else if (getCookie("typofinder-bitflip") == "") document.getElementById('bitflip').checked = true;
+        else document.getElementById('bitflip').checked = false;
+    } catch (err) {
+
+    }
+
+    try {
+        if (getCookie("typofinder-homoglyph") == "true") document.getElementById('homoglyph').checked = true;
+        else if (getCookie("typofinder-homoglyph") == "") document.getElementById('homoglyph').checked = true;
+        else document.getElementById('homoglyph').checked = false;
+    } catch (err) {
+
+    }
+
+    try {
+        if (getCookie("typofinder-tlds") == "true") document.getElementById('tld').checked = true;
+        else if (getCookie("typofinder-tlds") == "") document.getElementById('tld').checked = true;
+        else document.getElementById('tld').checked = false;
+    } catch (err) {
+
+    }
+
+    try {
+        sValue = getCookie("typofinder-typoamount");
+        if(sValue != "" && getCookie("typofinder-typoamountdesc") != "" ){
+            document.getElementById('typoamountdesc').value = getCookie("typofinder-typoamountdesc");
+            $("#slider").slider('value', sValue);
+        } else {
+            $("#slider").slider('value', 100);
+            document.getElementById('typoamountdesc').value = "Rigorous";
+        }
+    } catch (err) {
+        console.log("error");
+        $("#slider").slider('value', 100);
+        document.getElementById('typoamountdesc').value = "Rigorous";
+    }
+
+    try {
+        if (getCookie("typofinder-doppelganger") == "true") document.getElementById('doppelganger').checked = true;
+        else if (getCookie("typofinder-doppelganger") == "") document.getElementById('doppelganger').checked = true;
+        else document.getElementById('doppelganger').checked = false;
+    } catch (err) {
+
+    }
+
+    try {
+        if (getCookie("typofinder-noreg") == "true") document.getElementById('noreg').checked = true;
+        else if (getCookie("typofinder-noreg") == "") document.getElementById('noreg').checked = false;
+        else document.getElementById('noreg').checked = false;
+    } catch (err) {
+
+    }
+
+}
+
 // -------------------------------------
 // Get the original domains data
 // -------------------------------------
@@ -114,7 +191,7 @@ function generateTag(data) {
 
     if (bVal == true) return strTag;
     else {
-        domainsNoResults.push(data.strDomain);
+        domainsNoResults.push(data.strDomain); // likely no longer needed
         return null;
     }
 }
@@ -152,24 +229,9 @@ function geoIPImageIPv6(sIP, strTBL) {
 }
 
 // -------------------------------------
-// this generates the div contents
-// for a particular domain
-// -------------------------------------
-function fillNoResDetails(domDiv) {
-    domDiv.innerText = "The following domains yielded no results (i.e. likely not registered or potentially not valid)";
-    ul = document.createElement('ul');
-    domDiv.appendChild(ul);
-    for (var intCount = 0; intCount < domainsNoResults.length; intCount++) {
-        li = document.createElement('li');
-        ul.appendChild(li);
-        li.innerText = domainsNoResults[intCount];
-    }
-}
-
-// -------------------------------------
 // this generates the results table row contents for this domain
 // -------------------------------------
-function fillDetails(domDiv, data) {
+function fillDetails(data) {
     var ul = null;
     var li = null;
     var ourTD = null;
@@ -297,55 +359,50 @@ function fillDetails(domDiv, data) {
 // this is called for each domain
 // to parse the JSON results
 // -------------------------------------
-function loadDetails(strDomain, mynoresdiv) {
+function loadDetails(strDomain) {
     var URL = "./entity.ncc";
     var intCount = 0;
 
     $.post(URL, { host: strDomain }, function (data) {
-            // Header
-            var node = document.createElement("H3");
-            node.setAttribute("id", data.strDomain);
 
-            var strTag = generateTag(data);
-            if (strTag != null) {
+        var strTag = generateTag(data);
+        if (strTag != null) {
+            fillDetails(data);
+        } else {
+            // Add the no results row to the table
+            $('#notregtabletable').dataTable().fnAddData(
+                                                [
+                                                    strDomain // domain
+                                                ]
+                                            );
+        }
 
-                // Results header value
-                var textnode = document.createTextNode(data.strDomain + " " + strTag);
-                node.appendChild(textnode);
-                document.getElementById("results").appendChild(node);
+        intPBarCount++
 
-                // Results div
-                var mydiv = document.createElement("div");
-                fillDetails(mydiv, data);
-                document.getElementById("results").appendChild(mydiv);
-            } else {
-                // Don't both creating those with nothing interesting
-                // var textnode = document.createTextNode(data.strDomain);
+        if (intPBarCount >= intPBarMax) {
+            // Hide the progress bar
+            document.getElementById("progressbar").style.display = "none";
+            // Shows the original form
+            document.getElementById("typogulator").style.display = "block";
+            // Shows the results table
+            document.getElementById("resultstable").style.display = "block";
+            // Check the setting
+            if (document.getElementById('noreg').checked == true) {
+                // Shows the no results table   
+                document.getElementById("notregtable").style.display = "block";
+                // Shows the titles (we don't need to show both if the user doesn't wish to show the second
+                document.getElementById("reg").style.display = "block";
+                document.getElementById("unreg").style.display = "block";
             }
+        }
 
-            intPBarCount++
-
-            if (intPBarCount >= intPBarMax) {
-                // Fill the no results div
-                fillNoResDetails(mynoresdiv);
-                $("#results").accordion("refresh");
-                // Hide the progress bar
-                document.getElementById("progressbar").style.display = "none";
-                // Shows the results
-                // document.getElementById("results").style.display = "block";
-                // Shows the original form
-                document.getElementById("typogulator").style.display = "block";
-                // Shows the results table
-                document.getElementById("resultstable").style.display = "block";
-            }
-
-            $("#progressbar").progressbar("option", "value", intPBarCount);
-        })
+        $("#progressbar").progressbar("option", "value", intPBarCount);
+    })
         .fail(function (xhr, textStatus, errorThrown) {
-    
+
         })
         .always(function (data) {
-    
+
         }, 'json');
 }
 
@@ -529,36 +586,44 @@ $(document).ready(function () {
     oTable = $('#resultstabletable').dataTable({
         "iDisplayLength": 100,
         "aoColumnDefs": [
-            { "bSortable": false, "aTargets": [ 0 ] }
+            { "bSortable": false, "aTargets": [0] }
         ],
         "aaSorting": [[1, 'asc']],
-        "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+        "fnCreatedRow": function (nRow, aData, iDataIndex) {
             $('td:first', nRow).html('<img src="images/add.png">');
 
             /* Add event listener for opening and closing details
-             * Note that the indicator for showing which row is open is not controlled by DataTables,
-             * rather it is done here
-             */
+            * Note that the indicator for showing which row is open is not controlled by DataTables,
+            * rather it is done here
+            */
             $('td:first-of-type img', nRow).on('click', function () {
                 var nTr = $(this).parents('tr')[0];
-                if ( oTable.fnIsOpen(nTr) )
-                {
+                if (oTable.fnIsOpen(nTr)) {
                     /* This row is already open - close it */
                     this.src = "images/add.png";
-                    oTable.fnClose( nTr );
+                    oTable.fnClose(nTr);
                 }
-                else
-                {
+                else {
                     /* Open this row */
                     this.src = "images/minus.png";
-                    oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
+                    oTable.fnOpen(nTr, fnFormatDetails(oTable, nTr), 'details');
                     /* Ensure that the new row is as wide as the table is now that it has the extra details column */
                     newrow = $(this).closest("tr").next("tr").children("td");
                     newrow.attr("colspan", parseInt(newrow.attr("colspan")) + 1);
                 }
-            } );
+            });
         }
     });
+
+    // init the data table
+    o2Table = $('#notregtabletable').dataTable({
+        "iDisplayLength": 100,
+        "aoColumnDefs": [
+            { "bSortable": false, "aTargets": [0] }
+        ],
+        "aaSorting": [[1, 'asc']] 
+        
+        });
 
     // Hide the progressbar
     document.getElementById("progressbar").style.display = "none";
@@ -566,11 +631,20 @@ $(document).ready(function () {
     //Autofocus the search box
     $("#host").focus();
 
+    // Read the cookie values if present from a previous session
+    getCookies();
+
+    // Submit function processing
     $("#typogulator").submit(function () {
         // Hide the form
         document.getElementById("typogulator").style.display = "none";
         // Hide the results table
         document.getElementById("resultstable").style.display = "none";
+        // Hide the results table
+        document.getElementById("notregtable").style.display = "none";
+        // Shows the title
+        document.getElementById("reg").style.display = "none";
+        document.getElementById("unreg").style.display = "none";
         // Reset and show the progress bar
         intPBarCount = 0;
         $("#progressbar").progressbar("option", "value", 0);
@@ -579,54 +653,64 @@ $(document).ready(function () {
         domainsNoResults = new Array();
         // Reset the table
         $('#resultstabletable').dataTable()._fnClearTable();
+        // Reset the no results table
+        $('#notregtabletable').dataTable()._fnClearTable();
 
         // Set cookie
         try {
             setCookie("typofinder-domain", document.getElementById('host').value, 365);
-        } catch(err){
-        
-        }
-        
-        try {
-            setCookie("typofinder-typos", document.getElementById('typos').value, 365);
-        } catch(err){
-        
+        } catch (err) {
+            setCookie("typofinder-domain", "false", 365);
         }
 
         try {
-            setCookie("typofinder-bitflip", document.getElementById('bitflip').value, 365);
-        } catch(err){
-        
+            setCookie("typofinder-typos", document.getElementById('typos').checked, 365);
+        } catch (err) {
+            setCookie("typofinder-typos", "false", 365);
         }
 
         try {
-            setCookie("typofinder-homoglyph", document.getElementById('homoglyph').value, 365);
-        } catch(err){
-        
+            setCookie("typofinder-bitflip", document.getElementById('bitflip').checked, 365);
+        } catch (err) {
+            setCookie("typofinder-bitflip", "false", 365);
         }
 
         try {
-            setCookie("typofinder-tlds", document.getElementById('tld').value, 365);
-        } catch(err){
-        
+            setCookie("typofinder-homoglyph", document.getElementById('homoglyph').checked, 365);
+        } catch (err) {
+            setCookie("typofinder-homoglyph", "false", 365);
         }
 
         try {
-            setCookie("typofinder-typoamount", document.getElementById('typoamount').value, 365);
-        } catch(err){
-        
+            setCookie("typofinder-tlds", document.getElementById('tld').checked, 365);
+        } catch (err) {
+            setCookie("typofinder-tlds", "false", 365);
+        }
+
+        try {
+            setCookie("typofinder-typoamount", $('#slider').slider("option", "value"), 365);
+        } catch (err) {
+            setCookie("typofinder-typoamount", 100, 365);
+            setCookie("typofinder-typoamountdesc", "Rigorous", 365);
         }
 
         try {
             setCookie("typofinder-typoamountdesc", document.getElementById('typoamountdesc').value, 365);
-        } catch(err){
-        
+        } catch (err) {
+            setCookie("typofinder-typoamount", 100, 365);
+            setCookie("typofinder-typoamountdesc", "Rigorous", 365);
         }
 
         try {
-            setCookie("typofinder-doppelganger", document.getElementById('doppelganger').value, 365);
-        } catch(err){
+            setCookie("typofinder-doppelganger", document.getElementById('doppelganger').checked, 365);
+        } catch (err) {
+            setCookie("typofinder-doppelganger", false, 365);
+        }
 
+        try {
+            setCookie("typofinder-noreg", document.getElementById('noreg').checked, 365);
+        } catch (err) {
+            setCookie("typofinder-noreg", false, 365);
         }
 
         //Do the AJAX post
@@ -638,22 +722,13 @@ $(document).ready(function () {
             // set the max on the progress bar
             $("#progressbar").progressbar("option", "max", data.length);
 
-            // Create a top entry in the results for domains with no findings
-            var node = document.createElement("H3");
-            node.setAttribute("id", "NoResults");
-            var textnode = document.createTextNode("Typos with no results");
-            node.appendChild(textnode);
-            document.getElementById("results").appendChild(node);
-            var mynoresdiv = document.createElement("div");
-            document.getElementById("results").appendChild(mynoresdiv);
-
             // Get the original domains data
             getMasterData();
 
             // now loop through and process them
             for (key in data) {
                 // the success function
-                loadDetails(data[key], mynoresdiv);
+                loadDetails(data[key]);
             }
 
 
@@ -661,8 +736,8 @@ $(document).ready(function () {
             .fail(function (xhr, textStatus, errorThrown) {
                 console.log("error " + textStatus)
                 document.getElementById("progressbar").style.display = "none";
-                // document.getElementById("results").style.display = "none";
                 document.getElementById("resultstable").style.display = "none";
+                document.getElementById("notregtabletable").style.display = "none";
                 document.getElementById("typogulator").style.display = "block";
             })
             .always(function (data) {
