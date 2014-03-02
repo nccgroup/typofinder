@@ -18,6 +18,58 @@ var intPBarCount = 0;
 var domainsNoResults = new Array();
 var masterData = null;
 
+
+// -------------------------------------
+//
+// -------------------------------------
+function getCookies() {
+    // Set cookie
+    try {
+        document.getElementById('host').value = getCookie("typofinder-domain");
+    } catch (err) {
+
+    }
+
+    try {
+        if (getCookie("typofinder-typos") == "true") document.getElementById('typos').checked = true;
+    } catch (err) {
+
+    }
+
+    try {
+        if (getCookie("typofinder-bitflip") == "true") document.getElementById('bitflip').checked = true;
+    } catch (err) {
+
+    }
+
+    try {
+        if (getCookie("typofinder-homoglyph") == "true") document.getElementById('homoglyph').checked = true;
+    } catch (err) {
+
+    }
+
+    try {
+        if (getCookie("typofinder-tlds") == "true") document.getElementById('tld').checked = true;
+    } catch (err) {
+
+    }
+
+    try {
+        sValue = getCookie("typofinder-typoamount");
+        document.getElementById('typoamountdesc').value = getCookie("typofinder-typoamountdesc");
+        $("#slider").slider('value', sValue);
+    } catch (err) {
+        $("#slider").slider('value', 100);
+        document.getElementById('typoamountdesc').value = "Rigorous";
+    }
+
+    try {
+        if (getCookie("typofinder-doppelganger") == "true") document.getElementById('doppelganger').checked = true;
+    } catch (err) {
+
+    }
+}
+
 // -------------------------------------
 // Get the original domains data
 // -------------------------------------
@@ -529,34 +581,32 @@ $(document).ready(function () {
     oTable = $('#resultstabletable').dataTable({
         "iDisplayLength": 100,
         "aoColumnDefs": [
-            { "bSortable": false, "aTargets": [ 0 ] }
+            { "bSortable": false, "aTargets": [0] }
         ],
         "aaSorting": [[1, 'asc']],
-        "fnCreatedRow": function( nRow, aData, iDataIndex ) {
+        "fnCreatedRow": function (nRow, aData, iDataIndex) {
             $('td:first', nRow).html('<img src="images/add.png">');
 
             /* Add event listener for opening and closing details
-             * Note that the indicator for showing which row is open is not controlled by DataTables,
-             * rather it is done here
-             */
+            * Note that the indicator for showing which row is open is not controlled by DataTables,
+            * rather it is done here
+            */
             $('td:first-of-type img', nRow).on('click', function () {
                 var nTr = $(this).parents('tr')[0];
-                if ( oTable.fnIsOpen(nTr) )
-                {
+                if (oTable.fnIsOpen(nTr)) {
                     /* This row is already open - close it */
                     this.src = "images/add.png";
-                    oTable.fnClose( nTr );
+                    oTable.fnClose(nTr);
                 }
-                else
-                {
+                else {
                     /* Open this row */
                     this.src = "images/minus.png";
-                    oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
+                    oTable.fnOpen(nTr, fnFormatDetails(oTable, nTr), 'details');
                     /* Ensure that the new row is as wide as the table is now that it has the extra details column */
                     newrow = $(this).closest("tr").next("tr").children("td");
                     newrow.attr("colspan", parseInt(newrow.attr("colspan")) + 1);
                 }
-            } );
+            });
         }
     });
 
@@ -566,6 +616,10 @@ $(document).ready(function () {
     //Autofocus the search box
     $("#host").focus();
 
+    // Read the cookie values if present from a previous session
+    getCookies();
+
+    // Submit function processing
     $("#typogulator").submit(function () {
         // Hide the form
         document.getElementById("typogulator").style.display = "none";
@@ -583,50 +637,52 @@ $(document).ready(function () {
         // Set cookie
         try {
             setCookie("typofinder-domain", document.getElementById('host').value, 365);
-        } catch(err){
-        
-        }
-        
-        try {
-            setCookie("typofinder-typos", document.getElementById('typos').value, 365);
-        } catch(err){
-        
+        } catch (err) {
+            setCookie("typofinder-domain", "false", 365);
         }
 
         try {
-            setCookie("typofinder-bitflip", document.getElementById('bitflip').value, 365);
-        } catch(err){
-        
+            setCookie("typofinder-typos", document.getElementById('typos').checked, 365);
+        } catch (err) {
+            setCookie("typofinder-typos", "false", 365);
         }
 
         try {
-            setCookie("typofinder-homoglyph", document.getElementById('homoglyph').value, 365);
-        } catch(err){
-        
+            setCookie("typofinder-bitflip", document.getElementById('bitflip').checked, 365);
+        } catch (err) {
+            setCookie("typofinder-bitflip", "false", 365);
         }
 
         try {
-            setCookie("typofinder-tlds", document.getElementById('tld').value, 365);
-        } catch(err){
-        
+            setCookie("typofinder-homoglyph", document.getElementById('homoglyph').checked, 365);
+        } catch (err) {
+            setCookie("typofinder-homoglyph", "false", 365);
         }
 
         try {
-            setCookie("typofinder-typoamount", document.getElementById('typoamount').value, 365);
-        } catch(err){
-        
+            setCookie("typofinder-tlds", document.getElementById('tld').checked, 365);
+        } catch (err) {
+            setCookie("typofinder-tlds", "false", 365);
+        }
+
+        try {
+            setCookie("typofinder-typoamount", $('#slider').slider("option", "value"), 365);
+        } catch (err) {
+            setCookie("typofinder-typoamount", 100, 365);
+            setCookie("typofinder-typoamountdesc", "Rigorous");
         }
 
         try {
             setCookie("typofinder-typoamountdesc", document.getElementById('typoamountdesc').value, 365);
-        } catch(err){
-        
+        } catch (err) {
+            setCookie("typofinder-typoamount", 100, 365);
+            setCookie("typofinder-typoamountdesc", "Rigorous");
         }
 
         try {
-            setCookie("typofinder-doppelganger", document.getElementById('doppelganger').value, 365);
-        } catch(err){
-
+            setCookie("typofinder-doppelganger", document.getElementById('doppelganger').checked, 365);
+        } catch (err) {
+            setCookie("typofinder-doppelganger", false, 365);
         }
 
         //Do the AJAX post
