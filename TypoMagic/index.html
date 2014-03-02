@@ -52,6 +52,8 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
     <input id="bitflip" type="checkbox" name="bitflip" value="bitflip" checked /><label for="bitflip">Bitflip each character</label>
     <input id="homoglyph" type="checkbox" name="homoglyph" value="homoglyph" checked /><label for="homoglyph">Swap characters with homoglyphs</label>
     <input id="doppelganger" type="checkbox" name="doppelganger" value="doppelganger" checked /><label for="doppelganger">Try common subdomain doppelgangers</label>
+    <br />
+    <input id="noreg" type="checkbox" name="nonreg" value="nonreg"/><label for="nonreg">Show unregistered typo domains</label>
 <br />
 </form>
 </div>
@@ -69,6 +71,7 @@ available from <a href="http://www.maxmind.com">www.maxmind.com</a>.
 
 <!-- Results in Table Form -->
 <div class="ui-widget">
+    <h2 id="reg">Registered typo domains</h2>
     <div id="resultstable" class="results">
         <br />
         <br />
@@ -94,12 +97,28 @@ available from <a href="http://www.maxmind.com">www.maxmind.com</a>.
         </div>
 
     </div>
-</div>
 
-<!-- Results -->
-<br />
-<br />
-<div id="results" class="results"></div>
+    <br /><br />
+    <h2 id="unreg">Unregistered typo domains</h2>
+    <div id="notregtable" class="resnotreg">
+        <br />
+        <br />
+
+        <div id="resnotreg_wrapper" class="dataTables_wrapper" role="grid">
+    
+            <table id ="notregtabletable">
+                <thead>
+                    <tr>
+                        <th>domain</th>
+                    </tr>
+                </thead>
+
+            </table>
+
+        </div>
+
+    </div>
+</div>
 
 </body>
 </html>

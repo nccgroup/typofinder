@@ -84,6 +84,15 @@ function getCookies() {
     } catch (err) {
 
     }
+
+    try {
+        if (getCookie("typofinder-noreg") == "true") document.getElementById('noreg').checked = true;
+        else if (getCookie("typofinder-noreg") == "") document.getElementById('noreg').checked = true;
+        else document.getElementById('noreg').checked = false;
+    } catch (err) {
+
+    }
+
 }
 
 // -------------------------------------
@@ -182,7 +191,7 @@ function generateTag(data) {
 
     if (bVal == true) return strTag;
     else {
-        domainsNoResults.push(data.strDomain);
+        domainsNoResults.push(data.strDomain); // likely no longer needed
         return null;
     }
 }
@@ -220,24 +229,9 @@ function geoIPImageIPv6(sIP, strTBL) {
 }
 
 // -------------------------------------
-// this generates the div contents
-// for a particular domain
-// -------------------------------------
-function fillNoResDetails(domDiv) {
-    domDiv.innerText = "The following domains yielded no results (i.e. likely not registered or potentially not valid)";
-    ul = document.createElement('ul');
-    domDiv.appendChild(ul);
-    for (var intCount = 0; intCount < domainsNoResults.length; intCount++) {
-        li = document.createElement('li');
-        ul.appendChild(li);
-        li.innerText = domainsNoResults[intCount];
-    }
-}
-
-// -------------------------------------
 // this generates the results table row contents for this domain
 // -------------------------------------
-function fillDetails(domDiv, data) {
+function fillDetails(data) {
     var ul = null;
     var li = null;
     var ourTD = null;
@@ -365,55 +359,50 @@ function fillDetails(domDiv, data) {
 // this is called for each domain
 // to parse the JSON results
 // -------------------------------------
-function loadDetails(strDomain, mynoresdiv) {
+function loadDetails(strDomain) {
     var URL = "./entity.ncc";
     var intCount = 0;
 
     $.post(URL, { host: strDomain }, function (data) {
-            // Header
-            var node = document.createElement("H3");
-            node.setAttribute("id", data.strDomain);
 
-            var strTag = generateTag(data);
-            if (strTag != null) {
+        var strTag = generateTag(data);
+        if (strTag != null) {
+            fillDetails(data);
+        } else {
+            // Add the no results row to the table
+            $('#notregtabletable').dataTable().fnAddData(
+                                                [
+                                                    strDomain // domain
+                                                ]
+                                            );
+        }
 
-                // Results header value
-                var textnode = document.createTextNode(data.strDomain + " " + strTag);
-                node.appendChild(textnode);
-                document.getElementById("results").appendChild(node);
+        intPBarCount++
 
-                // Results div
-                var mydiv = document.createElement("div");
-                fillDetails(mydiv, data);
-                document.getElementById("results").appendChild(mydiv);
-            } else {
-                // Don't both creating those with nothing interesting
-                // var textnode = document.createTextNode(data.strDomain);
+        if (intPBarCount >= intPBarMax) {
+            // Hide the progress bar
+            document.getElementById("progressbar").style.display = "none";
+            // Shows the original form
+            document.getElementById("typogulator").style.display = "block";
+            // Shows the results table
+            document.getElementById("resultstable").style.display = "block";
+            // Check the setting
+            if (document.getElementById('noreg').checked == true) {
+                // Shows the no results table   
+                document.getElementById("notregtable").style.display = "block";
+                // Shows the titles (we don't need to show both if the user doesn't wish to show the second
+                document.getElementById("reg").style.display = "block";
+                document.getElementById("unreg").style.display = "block";
             }
+        }
 
-            intPBarCount++
-
-            if (intPBarCount >= intPBarMax) {
-                // Fill the no results div
-                fillNoResDetails(mynoresdiv);
-                $("#results").accordion("refresh");
-                // Hide the progress bar
-                document.getElementById("progressbar").style.display = "none";
-                // Shows the results
-                // document.getElementById("results").style.display = "block";
-                // Shows the original form
-                document.getElementById("typogulator").style.display = "block";
-                // Shows the results table
-                document.getElementById("resultstable").style.display = "block";
-            }
-
-            $("#progressbar").progressbar("option", "value", intPBarCount);
-        })
+        $("#progressbar").progressbar("option", "value", intPBarCount);
+    })
         .fail(function (xhr, textStatus, errorThrown) {
-    
+
         })
         .always(function (data) {
-    
+
         }, 'json');
 }
 
@@ -626,6 +615,16 @@ $(document).ready(function () {
         }
     });
 
+    // init the data table
+    o2Table = $('#notregtabletable').dataTable({
+        "iDisplayLength": 100,
+        "aoColumnDefs": [
+            { "bSortable": false, "aTargets": [0] }
+        ],
+        "aaSorting": [[1, 'asc']] 
+        
+        });
+
     // Hide the progressbar
     document.getElementById("progressbar").style.display = "none";
 
@@ -641,6 +640,11 @@ $(document).ready(function () {
         document.getElementById("typogulator").style.display = "none";
         // Hide the results table
         document.getElementById("resultstable").style.display = "none";
+        // Hide the results table
+        document.getElementById("notregtable").style.display = "none";
+        // Shows the title
+        document.getElementById("reg").style.display = "none";
+        document.getElementById("unreg").style.display = "none";
         // Reset and show the progress bar
         intPBarCount = 0;
         $("#progressbar").progressbar("option", "value", 0);
@@ -649,6 +653,8 @@ $(document).ready(function () {
         domainsNoResults = new Array();
         // Reset the table
         $('#resultstabletable').dataTable()._fnClearTable();
+        // Reset the no results table
+        $('#notregtabletable').dataTable()._fnClearTable();
 
         // Set cookie
         try {
@@ -701,6 +707,12 @@ $(document).ready(function () {
             setCookie("typofinder-doppelganger", false, 365);
         }
 
+        try {
+            setCookie("typofinder-noreg", document.getElementById('noreg').checked, 365);
+        } catch (err) {
+            setCookie("typofinder-noreg", false, 365);
+        }
+
         //Do the AJAX post
         $.post($("#typogulator").attr("action"), $("#typogulator").serialize(), function (data) {
 
@@ -710,22 +722,13 @@ $(document).ready(function () {
             // set the max on the progress bar
             $("#progressbar").progressbar("option", "max", data.length);
 
-            // Create a top entry in the results for domains with no findings
-            var node = document.createElement("H3");
-            node.setAttribute("id", "NoResults");
-            var textnode = document.createTextNode("Typos with no results");
-            node.appendChild(textnode);
-            document.getElementById("results").appendChild(node);
-            var mynoresdiv = document.createElement("div");
-            document.getElementById("results").appendChild(mynoresdiv);
-
             // Get the original domains data
             getMasterData();
 
             // now loop through and process them
             for (key in data) {
                 // the success function
-                loadDetails(data[key], mynoresdiv);
+                loadDetails(data[key]);
             }
 
 
@@ -733,8 +736,8 @@ $(document).ready(function () {
             .fail(function (xhr, textStatus, errorThrown) {
                 console.log("error " + textStatus)
                 document.getElementById("progressbar").style.display = "none";
-                // document.getElementById("results").style.display = "none";
                 document.getElementById("resultstable").style.display = "none";
+                document.getElementById("notregtabletable").style.display = "none";
                 document.getElementById("typogulator").style.display = "block";
             })
             .always(function (data) {
