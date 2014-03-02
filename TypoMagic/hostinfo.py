@@ -64,7 +64,7 @@ class hostinfo(object):
     def getMX(self, sHostname):
         # MX
         try:
-            return self.do_query(None, sHostname, 'MX')
+            return self.do_query(None, sHostname, dns.rdatatype.from_text('MX'))
         except dns.resolver.NXDOMAIN:   #Special case, return None rather than throwing NXDOMAIN (TODO figure out why!)
             return None
 

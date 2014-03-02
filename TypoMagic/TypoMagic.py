@@ -96,38 +96,41 @@ def handleHostAJAX(sDomain):
     
     # IP address for domain
     try:
-        for hostData in _hostinfo.getIPv4(sDomain):
-            typo.IPv4Address.append(hostData.address)
+        ipv4addresses = _hostinfo.getIPv4(sDomain)
+        if ipv4addresses:
+            for hostData in ipv4addresses:
+                typo.IPv4Address.append(hostData.address)
+        #Else, found a domain with no IP associated with it.
     except dns.resolver.NXDOMAIN:
         #Shortcut - If the domain query results in an NXDOMAIN, don't bother looking for subdomains.
         return typo
-    except:
-        pass
 
-    try:
-        for hostData in _hostinfo.getIPv6(sDomain):
+    ipv6addresses = _hostinfo.getIPv6(sDomain)
+    if ipv6addresses:
+        for hostData in ipv6addresses:
             typo.IPV6Address.append(hostData.address)
-    except:
-        pass
 
     # MX
-    try:
-        for hostData in _hostinfo.getMX(sDomain):
+    mxRecords =  _hostinfo.getMX(sDomain)
+    if mxRecords:
+        for hostData in mxRecords:
             typo.aMX.append(str(hostData.exchange).strip("."))
 
-            for hostDataInnerv4 in _hostinfo.getIPv4(str(hostData.exchange).strip(".")):
-                if str(hostData.exchange).strip(".") in typo.aMXIPv4:
-                    typo.aMXIPv4[str(hostData.exchange).strip(".")].append(hostDataInnerv4.address)
-                else:
-                    typo.aMXIPv4[str(hostData.exchange).strip(".")] = [hostDataInnerv4.address]
+            ipv4addresses = _hostinfo.getIPv4(str(hostData.exchange).strip("."))
+            if ipv4addresses:
+                for hostDataInnerv4 in ipv4addresses:
+                    if str(hostData.exchange).strip(".") in typo.aMXIPv4:
+                        typo.aMXIPv4[str(hostData.exchange).strip(".")].append(hostDataInnerv4.address)
+                    else:
+                        typo.aMXIPv4[str(hostData.exchange).strip(".")] = [hostDataInnerv4.address]
 
-            for hostDataInnerv6 in _hostinfo.getIPv6(str(hostData.exchange).strip(".")):
-                if str(hostData.exchange).strip(".") in typo.aMXIPv6:
-                    typo.aMXIPv6[str(hostData.exchange).strip(".")].append(hostDataInnerv6.address)
-                else:
-                    typo.aMXIPv6[str(hostData.exchange).strip(".")] = [hostDataInnerv6.address]
-    except:
-        pass
+            ipv6addresses = _hostinfo.getIPv6(str(hostData.exchange).strip("."))
+            if ipv6addresses:
+                for hostDataInnerv6 in ipv6addresses:
+                    if str(hostData.exchange).strip(".") in typo.aMXIPv6:
+                        typo.aMXIPv6[str(hostData.exchange).strip(".")].append(hostDataInnerv6.address)
+                    else:
+                        typo.aMXIPv6[str(hostData.exchange).strip(".")] = [hostDataInnerv6.address]
 
     # Safe Browsing
     try:
