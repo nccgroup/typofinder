@@ -176,7 +176,8 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 strHost = str(post_data['host'])[2:-2]
 
                 if sys.platform.startswith('linux'):
-                    syslog.syslog('Domain,' + strHost + "," + self.client_address)
+                    strSysLog = 'Domain,' + strHost + ',' + self.client_address
+                    syslog.syslog(strSysLog)
                 # option checking
                 bTLD = 'tld' in post_data
                 bTypos = 'typos' in post_data
