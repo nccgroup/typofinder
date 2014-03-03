@@ -117,7 +117,7 @@ def handleHostAJAX(sDomain):
             typo.IPV6Address.append(hostData.address)
 
     # MX
-    mxRecords =  _hostinfo.getMX(sDomain)
+    mxRecords = _hostinfo.getMX(sDomain)
     if mxRecords:
         for hostData in mxRecords:
             typo.aMX.append(str(hostData.exchange).strip("."))

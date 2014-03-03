@@ -734,7 +734,7 @@ $(document).ready(function () {
 
         })
             .fail(function (xhr, textStatus, errorThrown) {
-                console.log("error " + textStatus)
+                console.log("error " + textStatus);
                 document.getElementById("progressbar").style.display = "none";
                 document.getElementById("resultstable").style.display = "none";
                 document.getElementById("notregtabletable").style.display = "none";
