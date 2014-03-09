@@ -42,6 +42,8 @@ class hostinfo(object):
             return None
         except dns.resolver.NoAnswer:
             return None
+        except dns.resolver.NoNameservers:
+            return None
 
     def getWWW(self, sHostname):
         return self.do_query('www', sHostname, self.A_type)
