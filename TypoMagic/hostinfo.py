@@ -26,8 +26,8 @@ class hostinfo(object):
         self._resolver.lifetime = 2.0
         self._resolver.cache = dns.resolver.LRUCache()
         self._resolver.search = list() #Ensure no search suffixes
-        self._gi = pygeoip.GeoIP('GeoIP.dat')
-        self._giv6 = pygeoip.GeoIP('GeoIPv6.dat')
+        self._gi = pygeoip.GeoIP('datasources/GeoIP.dat')
+        self._giv6 = pygeoip.GeoIP('datasources/GeoIPv6.dat')
 
     def do_query(self, prefix, sHostname, rdatatype):
         try:
@@ -41,6 +41,8 @@ class hostinfo(object):
         except dns.exception.Timeout:
             return None
         except dns.resolver.NoAnswer:
+            return None
+        except dns.resolver.NoNameservers:
             return None
 
     def getWWW(self, sHostname):
@@ -64,7 +66,7 @@ class hostinfo(object):
     def getMX(self, sHostname):
         # MX
         try:
-            return self.do_query(None, sHostname, 'MX')
+            return self.do_query(None, sHostname, dns.rdatatype.from_text('MX'))
         except dns.resolver.NXDOMAIN:   #Special case, return None rather than throwing NXDOMAIN (TODO figure out why!)
             return None
 
