@@ -44,7 +44,7 @@ Dependencies
 * Python (3.3)
 * dnspython (1.11.1)
 * pygeoip (0.3.1)
-* publicsuffix (1.0.5) - Note: Ensure that <python_home>\Lib\site-packages\publicsuffix.txt is kept updated with the latest content from: http://publicsuffix.org/list/effective_tld_names.dat
+* publicsuffix (1.0.5)
 
 What it does
 -------------
@@ -61,6 +61,11 @@ Usage
 * Launch in TypoMagic directory
 * Connect to http://127.0.0.1:801/
 * Follow prompts
+
+Updating Data Sources
+-------------
+The included updatedatasources.py script can be used to ensure that the program is using the latest 3rd party data.
+Please be considerate of the data providers and use this script sparingly.
 
 Google Safe Browsing API Key
 -------------

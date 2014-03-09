@@ -18,26 +18,18 @@ import socket
 import codecs
 from publicsuffix import PublicSuffixList
 
-#Seed the whois server map with special cases that aren't returned by iana
-tld_to_whois = {".ac.uk" : "whois.ja.net",
-                ".gov.uk" : "whois.ja.net",
-                ".br.com" : "whois.centralnic.com",
-                ".cn.com" : "whois.centralnic.com",
-                ".eu.com" : "whois.centralnic.com",
-                ".gb.com" : "whois.centralnic.com",
-                ".gb.net" : "whois.centralnic.com",
-                ".qc.com" : "whois.centralnic.com",
-                ".hu.com" : "whois.centralnic.com",
-                ".no.com" : "whois.centralnic.com",
-                ".sa.com" : "whois.centralnic.com",
-                ".se.com" : "whois.centralnic.com",
-                ".se.net" : "whois.centralnic.com",
-                ".uk.com" : "whois.centralnic.com",
-                ".uk.net" : "whois.centralnic.com",
-                ".us.com" : "whois.centralnic.com",
-                ".uy.com" : "whois.centralnic.com",
-                ".za.com" : "whois.centralnic.com"}
-psl = PublicSuffixList()
+#Seed the whois server map with special cases that aren't in our whois-servers.txt list nor returned by iana
+#Based on http://www.nirsoft.net/whois-servers.txt
+tld_to_whois = {".ac.uk": "whois.ja.net"}
+
+with open("datasources/whois-servers.txt", "r") as whois_servers:
+    for line in whois_servers:
+        if line.startswith(';'):
+            continue
+        parts = line.split(' ')
+        tld_to_whois['.' + parts[0].strip()] = parts[1].strip()
+
+psl = PublicSuffixList(input_file=codecs.open("datasources/effective_tld_names.dat", "r", "utf8"))
 
 def _dowhois(sServer, sDomain):
     """

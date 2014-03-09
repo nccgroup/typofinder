@@ -26,8 +26,8 @@ class hostinfo(object):
         self._resolver.lifetime = 2.0
         self._resolver.cache = dns.resolver.LRUCache()
         self._resolver.search = list() #Ensure no search suffixes
-        self._gi = pygeoip.GeoIP('GeoIP.dat')
-        self._giv6 = pygeoip.GeoIP('GeoIPv6.dat')
+        self._gi = pygeoip.GeoIP('datasources/GeoIP.dat')
+        self._giv6 = pygeoip.GeoIP('datasources/GeoIPv6.dat')
 
     def do_query(self, prefix, sHostname, rdatatype):
         try:

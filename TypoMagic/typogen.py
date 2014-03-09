@@ -21,7 +21,7 @@ class typogen(object):
     def __init__(self):
         #Load up the list of TLDs
         self.lstTlds = list()
-        filename = "./tlds.txt"
+        filename = "datasources/tlds-alpha-by-domain.txt"
         with open(filename) as f:
             for line in f:
                 if not line.lstrip().startswith('#'):
@@ -36,7 +36,7 @@ class typogen(object):
 
         # obviously you can have other maps here
         # I've only included this one
-        filename = "./keyb" + strCountry + ".txt"
+        filename = "datasources/keyb" + strCountry + ".txt"
         with open(filename) as f:
             for line in f:
                 split = line.rstrip().split(',')
@@ -50,7 +50,7 @@ class typogen(object):
     @staticmethod
     def loadadditionalhomoglyphs():
         homoglyphs = dict()
-        with open("homoglyphs.txt", "r", encoding="utf8") as f:
+        with open("datasources/homoglyphs.txt", "r", encoding="utf8") as f:
             for line in f:
                 if not line.startswith("#"):
                     split = line.rstrip().split(',')
@@ -77,7 +77,7 @@ class typogen(object):
         rejected_sequences = set()
 
         #'utf_8_sig' swallows the BOM at start of file
-        with open("confusables.txt", "r", encoding="'utf_8_sig") as f:
+        with open("datasources/confusables.txt", "r", encoding="'utf_8_sig") as f:
             for line in f:
                 #If line contains more than whitespace and isn't a comment
                 if line.strip() and not line.startswith("#"):
@@ -166,7 +166,7 @@ class typogen(object):
     @staticmethod
     def generate_country_code_doppelgangers(strHost):
         result = list()
-        with open("countrynames.txt", 'r', encoding="UTF-8") as countrynames:
+        with open("datasources/countrynames.txt", 'r', encoding="UTF-8") as countrynames:
             for line in countrynames:
                 if not line.startswith('#'):
                     parts = line.split(';', maxsplit=2)
@@ -179,7 +179,7 @@ class typogen(object):
     @staticmethod
     def generate_subdomain_doppelgangers(strHost):
         result = list()
-        with open("subdomains.txt", 'r') as subdomains:
+        with open("datasources/subdomains.txt", 'r') as subdomains:
             for subdomain in subdomains:
                 result.append(subdomain.strip() + strHost)
         return result
