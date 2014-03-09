@@ -44,6 +44,7 @@ Dependencies
 * Python (3.3)
 * dnspython (1.11.1)
 * pygeoip (0.3.1)
+* publicsuffix (1.0.5) - Note: Ensure that <python_home>\Lib\site-packages\publicsuffix.txt is kept updated with the latest content from: http://publicsuffix.org/list/effective_tld_names.dat
 
 What it does
 -------------
