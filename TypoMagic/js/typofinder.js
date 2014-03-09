@@ -421,7 +421,7 @@ function fnFormatDetails ( oTable, nTr )
     var domOut = document.createDocumentFragment();
 
     //Links
-    if (aData[4] != "" || aData[5] != "" || aData[6] != "")
+    if (aData[2] != "" || aData[4] != "" || aData[5] != "" || aData[6] != "")
     {
         // sOut += '<h5>Links (be careful!):</h5>';
         var domH5 = document.createElement('h5');
