@@ -362,8 +362,10 @@ function fillDetails(data) {
 function loadDetails(strDomain) {
     var URL = "./entity.ncc";
     var intCount = 0;
-
+    
     $.post(URL, { host: strDomain }, function (data) {
+
+        intPBarCount++;
 
         var strTag = generateTag(data);
         if (strTag != null) {
@@ -377,7 +379,7 @@ function loadDetails(strDomain) {
                                             );
         }
 
-        intPBarCount++
+
 
         if (intPBarCount >= intPBarMax) {
             // Hide the progress bar
@@ -399,7 +401,9 @@ function loadDetails(strDomain) {
         $("#progressbar").progressbar("option", "value", intPBarCount);
     })
         .fail(function (xhr, textStatus, errorThrown) {
-
+            console.log("Error " + textStatus + " " + xhr);
+            intPBarCount++;
+            $("#progressbar").progressbar("option", "value", intPBarCount);
         })
         .always(function (data) {
 
