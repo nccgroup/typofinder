@@ -355,6 +355,26 @@ function fillDetails(data) {
 
 }
 
+
+function unVeil() 
+{
+
+    console.log("All done");
+    // Hide the progress bar
+    document.getElementById("progressbar").style.display = "none";
+    // Shows the original form
+    document.getElementById("typogulator").style.display = "block";
+    // Shows the results table
+    document.getElementById("resultstable").style.display = "block";
+    // Check the setting
+    if (document.getElementById('noreg').checked == true) {
+        // Shows the no results table   
+        document.getElementById("notregtable").style.display = "block";
+        // Shows the titles (we don't need to show both if the user doesn't wish to show the second
+        document.getElementById("reg").style.display = "block";
+        document.getElementById("unreg").style.display = "block";
+    }
+}
 // -------------------------------------
 // this is called for each domain
 // to parse the JSON results
@@ -362,16 +382,23 @@ function fillDetails(data) {
 function loadDetails(strDomain) {
     var URL = "./entity.ncc";
     var intCount = 0;
-    
+
+    //console.log("processing " + strDomain);
+
     $.post(URL, { host: strDomain }, function (data) {
 
         intPBarCount++;
 
+        //console.log("processed " + strDomain);
         var strTag = generateTag(data);
-        if (strTag != null) {
+        //console.log("got tag " + strDomain);
+        if (strTag != null && data != null) {
+            //console.log("filling " + strDomain);
             fillDetails(data);
+            //console.log("filled " + strDomain);
         } else {
             // Add the no results row to the table
+            //console.log("no results for " + strDomain);
             $('#notregtabletable').dataTable().fnAddData(
                                                 [
                                                     strDomain // domain
@@ -382,27 +409,21 @@ function loadDetails(strDomain) {
 
 
         if (intPBarCount >= intPBarMax) {
-            // Hide the progress bar
-            document.getElementById("progressbar").style.display = "none";
-            // Shows the original form
-            document.getElementById("typogulator").style.display = "block";
-            // Shows the results table
-            document.getElementById("resultstable").style.display = "block";
-            // Check the setting
-            if (document.getElementById('noreg').checked == true) {
-                // Shows the no results table   
-                document.getElementById("notregtable").style.display = "block";
-                // Shows the titles (we don't need to show both if the user doesn't wish to show the second
-                document.getElementById("reg").style.display = "block";
-                document.getElementById("unreg").style.display = "block";
-            }
+            unVeil();
+        } else {
+            //console.log(intPBarCount + " of " + intPBarMax);
         }
 
         $("#progressbar").progressbar("option", "value", intPBarCount);
     })
         .fail(function (xhr, textStatus, errorThrown) {
-            console.log("Error " + textStatus + " " + xhr);
+            console.log("Error " + textStatus + " " + errorThrown + " " + strDomain);
             intPBarCount++;
+            if (intPBarCount >= intPBarMax) {
+                unVeil();
+            } else {
+                //console.log(intPBarCount + " of " + intPBarMax);
+            }
             $("#progressbar").progressbar("option", "value", intPBarCount);
         })
         .always(function (data) {
