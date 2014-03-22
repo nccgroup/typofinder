@@ -44,55 +44,67 @@ KEY = ''
 def resolve_www(sDomain, typo):
     # WWW
     try:
-        for hostData in _hostinfo.getWWW(sDomain):
-            typo.wwwv4.append(hostData.address)
+        www4results = _hostinfo.getWWW(sDomain)
+        if www4results:
+            for hostData in www4results:
+                typo.wwwv4.append(hostData.address)
     except dns.resolver.NXDOMAIN:
         #No need to try IPv6 if this subdomain doesn't exist
         return
-    except:
-        pass
 
     try:
-        for hostData in _hostinfo.getWWWv6(sDomain):
-            typo.wwwv6.append(hostData.address)
-    except:
-        pass
+        www6results = _hostinfo.getWWWv6(sDomain)
+        if www6results:
+            for hostData in www6results:
+                typo.wwwv6.append(hostData.address)
+    except dns.resolver.NXDOMAIN:
+        #This *should* only happen in the odd case that the domain has been deleted in the time that's
+        #passed since we asked for it's A record.
+        return
 
 
 def resolve_webmail(sDomain, typo):
     # WebMail
     try:
-        for hostData in _hostinfo.getWEBMail(sDomain):
-            typo.webmailv4.append(hostData.address)
+        webmail4results = _hostinfo.getWEBMail(sDomain)
+        if webmail4results:
+            for hostData in webmail4results:
+                typo.webmailv4.append(hostData.address)
     except dns.resolver.NXDOMAIN:
         #No need to try IPv6 if this subdomain doesn't exist
         return
-    except:
-        pass
 
     try:
-        for hostData in _hostinfo.getWEBMailv6(sDomain):
-            typo.webmailv6.append(hostData.address)
-    except:
-        pass
+        webmail6results = _hostinfo.getWEBMailv6(sDomain)
+        if webmail6results:
+            for hostData in webmail6results:
+                typo.webmailv6.append(hostData.address)
+    except dns.resolver.NXDOMAIN:
+        #This *should* only happen in the odd case that the domain has been deleted in the time that's
+        #passed since we asked for it's A record.
+        return
 
 
 def resolve_m(sDomain, typo):
     # M
     try:
-        for hostData in _hostinfo.getM(sDomain):
-            typo.mv4.append(hostData.address)
+        m4results = _hostinfo.getM(sDomain)
+        if m4results:
+            for hostData in m4results:
+                typo.mv4.append(hostData.address)
     except dns.resolver.NXDOMAIN:
         #No need to try IPv6 if this subdomain doesn't exist
         return
-    except:
-        pass
 
     try:
-        for hostData in _hostinfo.getMv6(sDomain):
-            typo.mv6.append(hostData.address)
-    except:
-        pass
+        m6results = _hostinfo.getMv6(sDomain)
+        if m6results:
+            for hostData in m6results:
+                typo.mv6.append(hostData.address)
+    except dns.resolver.NXDOMAIN:
+        #This *should* only happen in the odd case that the domain has been deleted in the time that's
+        #passed since we asked for it's A record.
+        return
 
 
 def handleHostAJAX(sDomain):
@@ -107,14 +119,14 @@ def handleHostAJAX(sDomain):
             for hostData in ipv4addresses:
                 typo.IPv4Address.append(hostData.address)
         #Else, found a domain with no IP associated with it.
+
+        ipv6addresses = _hostinfo.getIPv6(sDomain)
+        if ipv6addresses:
+            for hostData in ipv6addresses:
+                typo.IPV6Address.append(hostData.address)
     except dns.resolver.NXDOMAIN:
         #Shortcut - If the domain query results in an NXDOMAIN, don't bother looking for subdomains.
         return typo
-
-    ipv6addresses = _hostinfo.getIPv6(sDomain)
-    if ipv6addresses:
-        for hostData in ipv6addresses:
-            typo.IPV6Address.append(hostData.address)
 
     # MX
     mxRecords = _hostinfo.getMX(sDomain)
@@ -122,22 +134,26 @@ def handleHostAJAX(sDomain):
         for hostData in mxRecords:
             typo.aMX.append(str(hostData.exchange).strip("."))
 
-            ipv4addresses = _hostinfo.getIPv4(str(hostData.exchange).strip("."))
-            if ipv4addresses:
-                for hostDataInnerv4 in ipv4addresses:
-                    if str(hostData.exchange).strip(".") in typo.aMXIPv4:
-                        typo.aMXIPv4[str(hostData.exchange).strip(".")].append(hostDataInnerv4.address)
-                    else:
-                        typo.aMXIPv4[str(hostData.exchange).strip(".")] = [hostDataInnerv4.address]
+            try:
+                ipv4addresses = _hostinfo.getIPv4(str(hostData.exchange).strip("."))
 
-            ipv6addresses = _hostinfo.getIPv6(str(hostData.exchange).strip("."))
-            if ipv6addresses:
-                for hostDataInnerv6 in ipv6addresses:
-                    if str(hostData.exchange).strip(".") in typo.aMXIPv6:
-                        typo.aMXIPv6[str(hostData.exchange).strip(".")].append(hostDataInnerv6.address)
-                    else:
-                        typo.aMXIPv6[str(hostData.exchange).strip(".")] = [hostDataInnerv6.address]
+                if ipv4addresses:
+                    for hostDataInnerv4 in ipv4addresses:
+                        if str(hostData.exchange).strip(".") in typo.aMXIPv4:
+                            typo.aMXIPv4[str(hostData.exchange).strip(".")].append(hostDataInnerv4.address)
+                        else:
+                            typo.aMXIPv4[str(hostData.exchange).strip(".")] = [hostDataInnerv4.address]
 
+                ipv6addresses = _hostinfo.getIPv6(str(hostData.exchange).strip("."))
+                if ipv6addresses:
+                    for hostDataInnerv6 in ipv6addresses:
+                        if str(hostData.exchange).strip(".") in typo.aMXIPv6:
+                            typo.aMXIPv6[str(hostData.exchange).strip(".")].append(hostDataInnerv6.address)
+                        else:
+                            typo.aMXIPv6[str(hostData.exchange).strip(".")] = [hostDataInnerv6.address]
+            except dns.resolver.NXDOMAIN:
+                #This MX record points at non-existent domain
+                pass
     # Safe Browsing
     try:
         typo.SafeBrowsing = safebrowsing.safebrowsingqueryv2("www." + sDomain, KEY)
@@ -180,7 +196,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
 
                 if sys.platform.startswith('linux'):
                     strSysLog = "Ooops"
-                    if self.headers['X-Forwarded-For'] == None: # chechk if it isn't behind a proxy - this would allow spoofing in theory
+                    if self.headers['X-Forwarded-For'] == None: # check if it isn't behind a proxy - this would allow spoofing in theory
                         strSysLog = 'Domain,' + strHost + ',' + self.client_address[0]
                         syslog.syslog(strSysLog)
                     else:
@@ -226,18 +242,17 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                     return
             # v2 AJAX API - get basic information for a domain      
             elif self.path.endswith("entity.ncc"):
-                self.send_response(200)
-                self.send_header("Content-type", "application/json")
-                self.end_headers()
-                
                 length = int(self.headers['Content-Length'])
                 post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
                 strHost = str(post_data['host'])[2:-2]
-                try:
-                    objFoo = handleHostAJAX(strHost)
-                    self.output(json.dumps(objFoo.reprJSON()))
-                except dns.resolver.NXDOMAIN:
-                    pass
+
+                objFoo = handleHostAJAX(strHost)
+
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+                self.output(json.dumps(objFoo.reprJSON()))
+                
         except:
             print(sys.exc_info())
             traceback.print_exc(file=sys.stdout)
