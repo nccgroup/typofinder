@@ -13,10 +13,12 @@
 import re
 import copy
 import codecs
+from publicsuffix import PublicSuffixList
 
 
 class typogen(object):
     """generate typo"""
+    psl = PublicSuffixList(input_file=codecs.open("datasources/effective_tld_names.dat", "r", "utf8"))
 
     def __init__(self):
         #Load up the list of TLDs
@@ -371,10 +373,11 @@ class typogen(object):
                 lstTypos += self.generate_miskeyed_addition_typos(strHost, strCountry)
 
         if bTLDS:
-            lastdot = strHost.rfind(".")
-            # tld swap out
+            public_suffix = self.psl.get_public_suffix(strHost)
+            no_suffix = public_suffix[:public_suffix.find('.')] + '.'
+            # Add each TLD
             for gtld in self.lstTlds:
-                newHost = strHost[:lastdot] + "." + gtld
+                newHost = no_suffix + gtld
                 lstTypos.append(newHost)
 
         if bHomoglyphs:
