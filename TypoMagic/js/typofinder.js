@@ -15,13 +15,24 @@
 // -------------------------------------
 var intPBarMax = 0;
 var intPBarCount = 0;
-var domainsNoResults = new Array();
+var domainsNoResults = [];
 var masterData = null;
 
 
 // -------------------------------------
 //
 // -------------------------------------
+function isCookieSet(cookieName) {
+    try
+    {
+        return (getCookie(cookieName) == "true" || getCookie(cookieName) == "");
+    }
+    catch (err)
+    {
+        return false;
+    }
+}
+
 function getCookies() {
     // Set cookie
     try {
@@ -30,40 +41,13 @@ function getCookies() {
 
     }
 
-    try {
-        if (getCookie("typofinder-typos") == "true") document.getElementById('typos').checked = true;
-        else if (getCookie("typofinder-typos") == "") document.getElementById('typos').checked = true;
-        else document.getElementById('typos').checked = false;
-    } catch (err) {
-
-    }
+    document.getElementById('typos').checked = isCookieSet("typofinder-typos");
+    document.getElementById('bitflip').checked = isCookieSet("typofinder-bitflip");
+    document.getElementById('homoglyph').checked = isCookieSet("typofinder-homoglyph");
+    document.getElementById('tld').checked = isCookieSet("typofinder-tlds");
 
     try {
-        if (getCookie("typofinder-bitflip") == "true") document.getElementById('bitflip').checked = true;
-        else if (getCookie("typofinder-bitflip") == "") document.getElementById('bitflip').checked = true;
-        else document.getElementById('bitflip').checked = false;
-    } catch (err) {
-
-    }
-
-    try {
-        if (getCookie("typofinder-homoglyph") == "true") document.getElementById('homoglyph').checked = true;
-        else if (getCookie("typofinder-homoglyph") == "") document.getElementById('homoglyph').checked = true;
-        else document.getElementById('homoglyph').checked = false;
-    } catch (err) {
-
-    }
-
-    try {
-        if (getCookie("typofinder-tlds") == "true") document.getElementById('tld').checked = true;
-        else if (getCookie("typofinder-tlds") == "") document.getElementById('tld').checked = true;
-        else document.getElementById('tld').checked = false;
-    } catch (err) {
-
-    }
-
-    try {
-        sValue = getCookie("typofinder-typoamount");
+        var sValue = getCookie("typofinder-typoamount");
         if(sValue != "" && getCookie("typofinder-typoamountdesc") != "" ){
             document.getElementById('typoamountdesc').value = getCookie("typofinder-typoamountdesc");
             $("#slider").slider('value', sValue);
@@ -77,22 +61,8 @@ function getCookies() {
         document.getElementById('typoamountdesc').value = "Rigorous";
     }
 
-    try {
-        if (getCookie("typofinder-doppelganger") == "true") document.getElementById('doppelganger').checked = true;
-        else if (getCookie("typofinder-doppelganger") == "") document.getElementById('doppelganger').checked = true;
-        else document.getElementById('doppelganger').checked = false;
-    } catch (err) {
-
-    }
-
-    try {
-        if (getCookie("typofinder-noreg") == "true") document.getElementById('noreg').checked = true;
-        else if (getCookie("typofinder-noreg") == "") document.getElementById('noreg').checked = false;
-        else document.getElementById('noreg').checked = false;
-    } catch (err) {
-
-    }
-
+    document.getElementById('doppelganger').checked = isCookieSet("typofinder-doppelganger");
+    document.getElementById('noreg').checked = isCookieSet("typofinder-noreg");
 }
 
 // -------------------------------------
@@ -100,8 +70,6 @@ function getCookies() {
 // -------------------------------------
 function getMasterData() {
     var URL = "./entity.ncc";
-    var strTag = " ( ";
-    var intCount = 0;
 
     $.post(URL, { host: document.getElementById("host").value }, function (data) {
 
@@ -232,10 +200,6 @@ function geoIPImageIPv6(sIP, strTBL) {
 // this generates the results table row contents for this domain
 // -------------------------------------
 function fillDetails(data) {
-    var ul = null;
-    var li = null;
-    var ourTD = null;
-
     var strTBLIP = ""; // used for v4 and v6 results column
 
     // IPv4 Address
@@ -249,9 +213,9 @@ function fillDetails(data) {
 
     // IPv6 Address
     if (data.IPv6Addresses.length > 0) {
-        for (intCount = 0; intCount < data.IPv6Addresses.length; intCount++) {
+        for (var intCount = 0; intCount < data.IPv6Addresses.length; intCount++) {
             strTBLIP = strTBLIP + "IPv6: " + data.IPv6Addresses[intCount];
-            strTBILP = geoIPImageIPv6(data.IPv6Addresses[intCount], strTBLIP);
+            strTBLIP = geoIPImageIPv6(data.IPv6Addresses[intCount], strTBLIP);
         }
     }
 
@@ -263,7 +227,7 @@ function fillDetails(data) {
 
 
             if (data.aMXIPv4[data.aMX[intCount]] != null) {
-                for (IP in data.aMXIPv4[data.aMX[intCount]]) {
+                for (var IP in data.aMXIPv4[data.aMX[intCount]]) {
                     strTBLMX = strTBLMX + "- IPv4: " + data.aMXIPv4[data.aMX[intCount]][IP];
                     strTBLMX = geoIPImageIPv4(data.aMXIPv4[data.aMX[intCount]][IP], strTBLMX);
                 }
@@ -271,7 +235,7 @@ function fillDetails(data) {
 
 
             if (data.aMXIPv6[data.aMX[intCount]] != null) {
-                for (IP in data.aMXIPv6[data.aMX[intCount]]) {
+                for (var IP in data.aMXIPv6[data.aMX[intCount]]) {
                     strTBLMX = strTBLMX + "- IPv6: " + data.aMXIPv6[data.aMX[intCount]][IP];
                     strTBLMX = geoIPImageIPv6(data.aMXIPv6[data.aMX[intCount]][IP], strTBLMX);
                 }
@@ -284,7 +248,7 @@ function fillDetails(data) {
     var strTBLwww = "";
     if (data.wwwv4.length > 0) {
         for (intCount = 0; intCount < data.wwwv4.length; intCount++) {
-            strTBLwww = strTBLwww + "IPv4: " + data.wwwv4[intCount]
+            strTBLwww = strTBLwww + "IPv4: " + data.wwwv4[intCount];
             strTBLwww = geoIPImageIPv4(data.wwwv4[intCount], strTBLwww);
         }
     }
@@ -292,7 +256,7 @@ function fillDetails(data) {
     // www IPv6 Address
     if (data.wwwv6.length > 0) {
         for (intCount = 0; intCount < data.wwwv6.length; intCount++) {
-            strTBLwww = strTBLwww + "IPv6: " + data.wwwv6[intCount]
+            strTBLwww = strTBLwww + "IPv6: " + data.wwwv6[intCount];
             strTBLwww = geoIPImageIPv6(data.wwwv6[intCount], strTBLwww);
         }
     }
@@ -381,7 +345,6 @@ function unVeil()
 // -------------------------------------
 function loadDetails(strDomain) {
     var URL = "./entity.ncc";
-    var intCount = 0;
 
     //console.log("processing " + strDomain);
 
@@ -455,9 +418,9 @@ function fnFormatDetails ( oTable, nTr )
 
         // sOut += '<table cellpadding="5" cellspacing="0" border="0">';
         var domTBL = document.createElement("table");
-        domTBL.setAttribute('cellpadding', 5);
-        domTBL.setAttribute('cellspacing', 0);
-        domTBL.setAttribute('border', 0);
+        domTBL.setAttribute('cellpadding', '5');
+        domTBL.setAttribute('cellspacing', '0');
+        domTBL.setAttribute('border', '0');
 
 
         if (aData[2] != "")
@@ -468,9 +431,8 @@ function fnFormatDetails ( oTable, nTr )
             var domTD = document.createElement('td');
             domTR.appendChild(domTD);
 
-            aLink = document.createElement('a');
-            strHost = "http://" + strDomain;
-            aLink.href = strHost;
+            var aLink = document.createElement('a');
+            aLink.href = "http://" + strDomain;
             aLink.addEventListener('click',
                 function (event) {
                     event.preventDefault();
@@ -489,9 +451,8 @@ function fnFormatDetails ( oTable, nTr )
             var domTD = document.createElement('td');
             domTR.appendChild(domTD);
 
-            aLink = document.createElement('a');
-            strHost = "http://www." + strDomain;
-            aLink.href = strHost;
+            var aLink = document.createElement('a');
+            aLink.href = "http://www." + strDomain;
             aLink.addEventListener('click',
                 function (event) {
                     event.preventDefault();
@@ -510,9 +471,8 @@ function fnFormatDetails ( oTable, nTr )
             var domTD = document.createElement('td');
             domTR.appendChild(domTD);
 
-            aLink = document.createElement('a');
-            strHost = "http://webmail." + strDomain;
-            aLink.href = strHost;
+            var aLink = document.createElement('a');
+            aLink.href = "http://webmail." + strDomain;
             aLink.addEventListener('click',
                 function (event) {
                     event.preventDefault();
@@ -531,9 +491,8 @@ function fnFormatDetails ( oTable, nTr )
             var domTD = document.createElement('td');
             domTR.appendChild(domTD);
 
-            aLink = document.createElement('a');
-            strHost = "http://m." + strDomain;
-            aLink.href = strHost;
+            var aLink = document.createElement('a');
+            aLink.href = "http://m." + strDomain;
             aLink.addEventListener('click',
                 function (event) {
                     event.preventDefault();
@@ -598,10 +557,6 @@ $(document).ready(function () {
     });
     $("#typoamountdesc").val("Rigorous");
 
-    // init the accordion
-    $("#results").accordion();
-    $("#results").accordion("option", "heightStyle", "content");
-
     // init the progressbar
     $("#progressbar").progressbar({
         value: 0
@@ -633,7 +588,7 @@ $(document).ready(function () {
                     this.src = "images/minus.png";
                     oTable.fnOpen(nTr, fnFormatDetails(oTable, nTr), 'details');
                     /* Ensure that the new row is as wide as the table is now that it has the extra details column */
-                    newrow = $(this).closest("tr").next("tr").children("td");
+                    var newrow = $(this).closest("tr").next("tr").children("td");
                     newrow.attr("colspan", parseInt(newrow.attr("colspan")) + 1);
                 }
             });
@@ -641,7 +596,7 @@ $(document).ready(function () {
     });
 
     // init the data table
-    o2Table = $('#notregtabletable').dataTable({
+    $('#notregtabletable').dataTable({
         "iDisplayLength": 100,
         "aoColumnDefs": [
             { "bSortable": false, "aTargets": [0] }
@@ -682,7 +637,7 @@ $(document).ready(function () {
         $("#progressbar").progressbar("option", "value", 0);
         document.getElementById("progressbar").style.display = "block";
         // Reset the list of domains which didn't yield results 
-        domainsNoResults = new Array();
+        domainsNoResults = [];
         // Reset the table
         $('#resultstabletable').dataTable()._fnClearTable();
         // Reset the no results table
@@ -746,7 +701,8 @@ $(document).ready(function () {
         }
 
         //Do the AJAX post
-        $.post($("#typogulator").attr("action"), $("#typogulator").serialize(), function (data) {
+        var typogulator = $("#typogulator");
+        $.post(typogulator.attr("action"), typogulator.serialize(), function (data) {
 
             // max for the progress bar
             intPBarMax = data.length + 1; // we add one to factor in the first request
@@ -758,7 +714,7 @@ $(document).ready(function () {
             getMasterData();
 
             // now loop through and process them
-            for (key in data) {
+            for (var key in data) {
                 // the success function
                 loadDetails(data[key]);
             }
