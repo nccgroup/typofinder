@@ -646,9 +646,9 @@ $(document).ready(function () {
         "aoColumnDefs": [
             { "bSortable": false, "aTargets": [0] }
         ],
-        "aaSorting": [[1, 'asc']] 
-        
-        });
+        "aaSorting": [[1, 'asc']]
+
+    });
 
     // Hide the progressbar
     document.getElementById("progressbar").style.display = "none";
@@ -661,6 +661,13 @@ $(document).ready(function () {
 
     // Submit function processing
     $("#typogulator").submit(function () {
+
+        // Input validation
+        var strHost = document.getElementById('host').value;
+        if (strHost.indexOf('.') == -1) {
+            document.getElementById('host').value = document.getElementById('host').value + ".com";
+        }
+
         // Hide the form
         document.getElementById("typogulator").style.display = "none";
         // Hide the results table
