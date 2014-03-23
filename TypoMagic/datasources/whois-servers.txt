@@ -2,7 +2,7 @@
 ;Maintained by Nir Sofer
 ;This servers list if freely available for any use and without any restriction. 
 ;For more information: http://www.nirsoft.net/whois_servers_list.html
-;Last updated on 04/07/2013
+;Last updated on 09/03/2014
 ac whois.nic.ac
 ae whois.aeda.net.ae
 aero whois.aero
@@ -33,7 +33,7 @@ cc whois.nic.cc
 cd whois.nic.cd
 ch whois.nic.ch 
 ck whois.nic.ck
-cl nic.cl
+cl whois.nic.cl
 cn whois.cnnic.net.cn
 cn.com whois.centralnic.com
 co whois.nic.co
@@ -72,6 +72,7 @@ hn whois2.afilias-grs.net
 hr whois.dns.hr
 hu whois.nic.hu
 hu.com whois.centralnic.com
+id whois.pandi.or.id
 ie whois.domainregistry.ie
 il whois.isoc.org.il
 in whois.inregistry.net
@@ -158,6 +159,7 @@ ua whois.ua
 uk whois.nic.uk
 uk.com whois.centralnic.com
 uk.net whois.centralnic.com
+ac.uk whois.ja.net
 gov.uk whois.ja.net
 us whois.nic.us
 us.com whois.centralnic.com

@@ -20,7 +20,7 @@ from publicsuffix import PublicSuffixList
 
 #Seed the whois server map with special cases that aren't in our whois-servers.txt list nor returned by iana
 #Based on http://www.nirsoft.net/whois-servers.txt
-tld_to_whois = {".ac.uk": "whois.ja.net"}
+tld_to_whois = dict()
 
 with open("datasources/whois-servers.txt", "r") as whois_servers:
     for line in whois_servers:
