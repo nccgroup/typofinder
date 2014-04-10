@@ -16,6 +16,8 @@
 
 import socket
 import codecs
+import re
+
 from publicsuffix import PublicSuffixList
 
 #Seed the whois server map with special cases that aren't in our whois-servers.txt list nor returned by iana
@@ -103,11 +105,23 @@ def _recursivewhois(sServer, sDomain):
     result = _dowhois(sServer,sDomain)
 
     try:
-        for sLine in result.split('\n'):
-            if "Whois Server:" in sLine:
-                sServer = sLine.lstrip(' ')[14:]
-                return _recursivewhois(sServer, sDomain)
+        next_whois_server = extract_field("Whois Server", result)
+        if next_whois_server and next_whois_server != sServer:
+            return _recursivewhois(next_whois_server, sDomain)
     except:
         pass
 
     return result.lstrip()
+
+def extract_field(field_name, whois_blob):
+    result = list()
+
+    regex = field_name + r":\s?(.+)\n"
+    match_list = re.finditer(regex, whois_blob, flags=re.IGNORECASE)
+    if match_list:
+        for match in match_list:
+            value = match.group(1).strip()
+            if value:
+                result.append(value)
+
+    return ", ".join(result)
