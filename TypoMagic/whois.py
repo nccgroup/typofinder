@@ -156,14 +156,17 @@ def _extract_field(whois_blob, *args):
     regex = field_name + r":(?: |\t)*(.+)\n"
 
     match_list = re.finditer(regex, whois_blob, flags=re.IGNORECASE)
-    if match_list:
-        for match in match_list:
-            if match.group(1):
-                value = match.group(1).strip()
-                if value and value != "null":
-                    result.append(value)
 
-    return ", ".join(result)
+    for match in match_list:
+        if match.group(1):
+            value = match.group(1).strip()
+            if value and value != "null":
+                result.append(value)
+
+    if not result:
+        return None
+    else:
+        return ", ".join(result)
 
 
 def _date_parse(date_string):
