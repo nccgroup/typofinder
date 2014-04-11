@@ -8,10 +8,11 @@
 # Based on RFC3912
 # 
 # Developed by Matt Summers, matt dot summers at nccgroup dot com
+#          and Stephen Tomkinson
 #
 # http://www.github.com/nccgroup/typofinder
 #
-# Released under AGPL see LICENSE for more information#
+# Released under AGPL see LICENSE for more information
 #
 
 import socket
@@ -19,6 +20,9 @@ import codecs
 import re
 
 from publicsuffix import PublicSuffixList
+import datetime
+import pprint
+
 
 #Seed the whois server map with special cases that aren't in our whois-servers.txt list nor returned by iana
 #Based on http://www.nirsoft.net/whois-servers.txt
@@ -125,6 +129,12 @@ def _recursivewhois(sServer, sDomain):
     return result.lstrip()
 
 def extract_field(whois_blob, *args):
+    """
+    Extract from the given WHOIS result blob the value that is associated with the given field name.
+
+    @param whois_blob The whois data to search for the value
+    @param *args One or more field names (interpreted as regexes) that the requested value may be referred to as.
+    """
     result = list()
 
     if len(args) == 1:
@@ -146,7 +156,91 @@ def extract_field(whois_blob, *args):
         for match in match_list:
             if match.group(1):
                 value = match.group(1).strip()
-                if value:
+                if value and value != "null":
                     result.append(value)
 
     return ", ".join(result)
+
+def date_parse(date_string):
+    """
+    Date parser which attempts to work with a range of date formats.
+
+    @param date_string The string representing a date or date/time.
+    @return A datetime object if one could be parsed, or None
+    """
+    if not date_string:
+        return None
+    date_string = date_string.replace('T', '')
+    date_string = date_string.replace(' ', '')
+    date_string = date_string.replace('.', '-')
+    date_string = date_string.rstrip('Z')
+
+    for format in ("%Y-%m-%d%H:%M:%S", "%Y-%m-%d%H:%M:%S%z", "%Y-%m-%d"):
+        try:
+            return datetime.datetime.strptime(date_string, format)
+        except ValueError:
+            #Attempt the next format
+            continue
+    return None
+
+contact_types = {"registrant": "Registrant(?: Contact)?",
+                 "tech": "Tech(?:nical)?(?: Contact)?",
+                 "admin" : "Admin(?:istrative)?(?: Contact)?"}
+
+contact_fields = {"name": "(?:Name)?",
+                  "organization": "Organization",
+                  "street": "Street",
+                  "city": "City",
+                  "state": "State/Province",
+                  "country": "Country",
+                  "post_code": "Postal ?Code",
+                  "email": "E-?mail",
+                  "phone": "Phone",
+                  "phone_ext": "Phone Ext",
+                  "fax": "Fax",
+                  "fax_ext": "Fax Ext"}
+
+registrar_fields = {"name": "Registrar(?: Name)?",
+                    "url": "Registrar URL",
+                    "abuse_email": "Abuse Contact Email",
+                    "abuse_phone": "Abuse Contact Phone",
+                    "iana_id": "Registrar IANA ID"}
+
+date_fields = {"created": ("Creation Date", "created", "Registered"),
+               "updated": ("Last Modified", "Updated Date"),
+               "expires": ("Expiration Date", "Expiry Date", "renewal date", "Expires")}
+
+def parse(whois_str):
+    """
+    Parses the given whois result string in an attempt to extract common fields.
+
+    @param whois_str The raw WHOIS result
+    @return A dictionary of dictionaries containing the parsed data.
+    """
+    result_dict = {}
+
+    for type in contact_types.keys():
+        person_dict = dict()
+
+        for field in contact_fields.keys():
+            person_dict[field] = extract_field(whois_str, contact_types[type] + " " + contact_fields[field])
+
+        result_dict[type] = person_dict
+
+    registrar_dict = dict()
+    for field in registrar_fields.keys():
+        registrar_dict[field] = extract_field(whois_str, registrar_fields[field])
+
+    result_dict['registrar'] = registrar_dict
+
+    result_dict['reseller'] = {'name': extract_field(whois_str, "Reseller")}
+
+    dates_dict = {}
+    for field in date_fields.keys():
+        date_str = extract_field(whois_str, *date_fields[field])
+        if date_str:
+            dates_dict[field] = date_parse(date_str)
+
+    result_dict['date'] = dates_dict
+
+    return result_dict
