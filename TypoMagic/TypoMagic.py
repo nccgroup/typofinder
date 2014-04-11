@@ -28,7 +28,7 @@ import typogen
 import hostinfo
 from objtypo import objtypo
 import safebrowsing
-from whois import ourwhois
+from whois import whois
 
 print ("[i] Running on : " + sys.platform)
 if sys.platform.startswith('linux'):
@@ -353,7 +353,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header("Content-type", "text/html")
                 self.end_headers()
-                self.output(ourwhois(strDomain))
+                self.output(whois(strDomain))
                 
             else:
                 self.send_error(404, '[!] File Not Found: %s' % self.path)

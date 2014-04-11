@@ -22,22 +22,23 @@ import re
 from publicsuffix import PublicSuffixList
 import datetime
 import pprint
-
+import sys
 
 #Seed the whois server map with special cases that aren't in our whois-servers.txt list nor returned by iana
 #Based on http://www.nirsoft.net/whois-servers.txt
-tld_to_whois = dict()
+_tld_to_whois = dict()
 
 with open("datasources/whois-servers.txt", "r") as whois_servers:
     for line in whois_servers:
         if line.startswith(';'):
             continue
         parts = line.split(' ')
-        tld_to_whois['.' + parts[0].strip()] = parts[1].strip()
+        _tld_to_whois['.' + parts[0].strip()] = parts[1].strip()
 
-psl = PublicSuffixList(input_file=codecs.open("datasources/effective_tld_names.dat", "r", "utf8"))
+_psl = PublicSuffixList(input_file=codecs.open("datasources/effective_tld_names.dat", "r", "utf8"))
 
-def _dowhois(sServer, sDomain):
+
+def _whois_lookup(sServer, sDomain):
     """
     Perform the network connection to the Whois Server and query for the given domain.
 
@@ -74,42 +75,44 @@ def _dowhois(sServer, sDomain):
 
     return response
 
-def ourwhois(sDomain):
+
+def whois(sDomain):
     """
     Entry point for this package, which fetches whois data from the appropriate server.
 
     @param sDomain: The domain to query whois for.
     @return: The whois result.
     """
-    sDomain = psl.get_public_suffix(sDomain)
+    sDomain = _psl.get_public_suffix(sDomain)
 
     sLDot = sDomain.find(".")
     tld = sDomain[sLDot:]
 
-    if tld in tld_to_whois:
-        sServer = tld_to_whois[tld]
+    if tld in _tld_to_whois:
+        sServer = _tld_to_whois[tld]
     else:
         sServer = "whois.iana.org"
 
         try:
-            for sLine in _dowhois(sServer,tld).split('\n'):
+            for sLine in _whois_lookup(sServer, tld).split('\n'):
                 if "refer:" in sLine or "whois:" in sLine:
                     sServer = sLine[6:].lstrip()
-                    tld_to_whois[tld] = sServer
+                    _tld_to_whois[tld] = sServer
                     break
         except:
             pass
 
-    result = _recursivewhois(sServer, sDomain)
+    result = _recursive_whois(sServer, sDomain)
     #Special case to handle the fuzzy matching at the ICANN whois server
     if 'To single out one record, look it up with "xxx", where xxx is one of the' in result:
-        all_domain_records = _dowhois(sServer, '=' + sDomain)
-        next_whois_server = extract_field(all_domain_records, "Whois Server").split(', ')[-1]
-        return _recursivewhois(next_whois_server, sDomain)
+        all_domain_records = _whois_lookup(sServer, '=' + sDomain)
+        next_whois_server = _extract_field(all_domain_records, "Whois Server").split(', ')[-1]
+        return _recursive_whois(next_whois_server, sDomain)
     else:
         return result
 
-def _recursivewhois(sServer, sDomain):
+
+def _recursive_whois(sServer, sDomain):
     """
     A recursive whois function which will follow the "Whois Server:" referals.
 
@@ -117,18 +120,19 @@ def _recursivewhois(sServer, sDomain):
     @param sDomain: The domain to query for.
     @return: The whois result string.
     """
-    result = _dowhois(sServer,sDomain)
+    result = _whois_lookup(sServer, sDomain)
 
     try:
-        next_whois_server = extract_field(result, "Whois Server")
+        next_whois_server = _extract_field(result, "Whois Server")
         if next_whois_server and next_whois_server != sServer:
-            return _recursivewhois(next_whois_server, sDomain)
+            return _recursive_whois(next_whois_server, sDomain)
     except:
         pass
 
     return result.lstrip()
 
-def extract_field(whois_blob, *args):
+
+def _extract_field(whois_blob, *args):
     """
     Extract from the given WHOIS result blob the value that is associated with the given field name.
 
@@ -161,13 +165,17 @@ def extract_field(whois_blob, *args):
 
     return ", ".join(result)
 
-def date_parse(date_string):
+
+def _date_parse(date_string):
     """
     Date parser which attempts to work with a range of date formats.
 
     @param date_string The string representing a date or date/time.
     @return A datetime object if one could be parsed, or None
     """
+
+    print ("***** " + date_string)
+
     if not date_string:
         return None
     date_string = date_string.replace('T', '')
@@ -185,7 +193,7 @@ def date_parse(date_string):
 
 contact_types = {"registrant": "Registrant(?: Contact)?",
                  "tech": "Tech(?:nical)?(?: Contact)?",
-                 "admin" : "Admin(?:istrative)?(?: Contact)?"}
+                 "admin": "Admin(?:istrative)?(?: Contact)?"}
 
 contact_fields = {"name": "(?:Name)?",
                   "organization": "Organization",
@@ -210,6 +218,7 @@ date_fields = {"created": ("Creation Date", "created", "Registered"),
                "updated": ("Last Modified", "Updated Date"),
                "expires": ("Expiration Date", "Expiry Date", "renewal date", "Expires")}
 
+
 def parse(whois_str):
     """
     Parses the given whois result string in an attempt to extract common fields.
@@ -223,23 +232,23 @@ def parse(whois_str):
         person_dict = dict()
 
         for field in contact_fields.keys():
-            person_dict[field] = extract_field(whois_str, contact_types[type] + " " + contact_fields[field])
+            person_dict[field] = _extract_field(whois_str, contact_types[type] + " " + contact_fields[field])
 
         result_dict[type] = person_dict
 
     registrar_dict = dict()
     for field in registrar_fields.keys():
-        registrar_dict[field] = extract_field(whois_str, registrar_fields[field])
+        registrar_dict[field] = _extract_field(whois_str, registrar_fields[field])
 
     result_dict['registrar'] = registrar_dict
 
-    result_dict['reseller'] = {'name': extract_field(whois_str, "Reseller")}
+    result_dict['reseller'] = {'name': _extract_field(whois_str, "Reseller")}
 
     dates_dict = {}
     for field in date_fields.keys():
-        date_str = extract_field(whois_str, *date_fields[field])
+        date_str = _extract_field(whois_str, *date_fields[field])
         if date_str:
-            dates_dict[field] = date_parse(date_str)
+            dates_dict[field] = _date_parse(date_str)
 
     result_dict['date'] = dates_dict
 
