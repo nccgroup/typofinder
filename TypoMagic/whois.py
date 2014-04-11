@@ -41,7 +41,6 @@ def _dowhois(sServer, sDomain):
     @param sDomain: The domain to query for.
     @return: The whois result string.
     """
-    #print ("Whois: " + sDomain + " @ " + sServer)
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((sServer, 43))
@@ -53,7 +52,12 @@ def _dowhois(sServer, sDomain):
     response = ''
         
     while len(response) < 10000:
-        block = s.recv(1000).decode()
+        bytes = s.recv(1000)
+        try:
+            block = bytes.decode("utf-8")
+        except:
+            block = bytes.decode("iso-8859-1")
+
         if block == '':
             break
         response = response + block
@@ -92,7 +96,14 @@ def ourwhois(sDomain):
         except:
             pass
 
-    return _recursivewhois(sServer, sDomain)
+    result = _recursivewhois(sServer, sDomain)
+    #Special case to handle the fuzzy matching at the ICANN whois server
+    if 'To single out one record, look it up with "xxx", where xxx is one of the' in result:
+        all_domain_records = _dowhois(sServer, '=' + sDomain)
+        next_whois_server = extract_field(all_domain_records, "Whois Server").split(', ')[-1]
+        return _recursivewhois(next_whois_server, sDomain)
+    else:
+        return result
 
 def _recursivewhois(sServer, sDomain):
     """
@@ -105,7 +116,7 @@ def _recursivewhois(sServer, sDomain):
     result = _dowhois(sServer,sDomain)
 
     try:
-        next_whois_server = extract_field("Whois Server", result)
+        next_whois_server = extract_field(result, "Whois Server")
         if next_whois_server and next_whois_server != sServer:
             return _recursivewhois(next_whois_server, sDomain)
     except:
@@ -113,15 +124,29 @@ def _recursivewhois(sServer, sDomain):
 
     return result.lstrip()
 
-def extract_field(field_name, whois_blob):
+def extract_field(whois_blob, *args):
     result = list()
 
-    regex = field_name + r":\s?(.+)\n"
+    if len(args) == 1:
+        field_name = args[0]
+    else:
+        field_name = "(?:"
+
+        field_list = list()
+        for arg in args:
+            field_list.append("(?:" + arg + ")")
+
+        field_name += "|".join(field_list)
+        field_name += ")"
+
+    regex = field_name + r":(?: |\t)*(.+)\n"
+
     match_list = re.finditer(regex, whois_blob, flags=re.IGNORECASE)
     if match_list:
         for match in match_list:
-            value = match.group(1).strip()
-            if value:
-                result.append(value)
+            if match.group(1):
+                value = match.group(1).strip()
+                if value:
+                    result.append(value)
 
     return ", ".join(result)
