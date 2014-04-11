@@ -183,13 +183,33 @@ def _date_parse(date_string):
     date_string = date_string.replace('.', '-')
     date_string = date_string.rstrip('Z')
 
+    #Handle timezones ourselves on python 2.X because the native datetime won't parse them
+    tz_match = None
+    if sys.version_info < (3,0) and len(date_string) == 23:
+        tz_string = date_string[18:23]
+        tz_match = re.match(r"(\+|-)(\d{2})(\d{2})", tz_string)
+        if tz_match:
+            date_string = date_string[:18]
+
+    result = None
+
     for format in ("%Y-%m-%d%H:%M:%S", "%Y-%m-%d%H:%M:%S%z", "%Y-%m-%d"):
         try:
-            return datetime.datetime.strptime(date_string, format)
+            result = datetime.datetime.strptime(date_string, format)
+            break
         except ValueError:
             #Attempt the next format
             continue
-    return None
+
+    if result and tz_match:
+        #Manipulate the datetime into UTC if we don't have timezone support
+        delta = datetime.timedelta(hours=int(tz_match.group(2)), minutes=int(tz_match.group(3)))
+        if tz_match.group(1) == '-':
+            result += delta
+        else:
+            result -= delta
+
+    return result
 
 contact_types = {"registrant": "Registrant(?: Contact)?",
                  "tech": "Tech(?:nical)?(?: Contact)?",
