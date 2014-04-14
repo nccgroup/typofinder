@@ -26,6 +26,7 @@ import sys
 
 #Seed the whois server map with special cases that aren't in our whois-servers.txt list nor returned by iana
 #Based on http://www.nirsoft.net/whois-servers.txt
+FIELD_SEPERATOR = ', '
 _tld_to_whois = dict()
 
 with open("datasources/whois-servers.txt", "r") as whois_servers:
@@ -153,7 +154,7 @@ def _extract_field(whois_blob, *args):
         field_name += "|".join(field_list)
         field_name += ")"
 
-    regex = field_name + r":(?: |\t)*(.+)\n"
+    regex = field_name + r"\.*:(?: |\t)*(.+)\n"
 
     match_list = re.finditer(regex, whois_blob, flags=re.IGNORECASE)
 
@@ -166,7 +167,7 @@ def _extract_field(whois_blob, *args):
     if not result:
         return None
     else:
-        return ", ".join(result)
+        return FIELD_SEPERATOR.join(result)
 
 
 def _date_parse(date_string):
@@ -181,22 +182,22 @@ def _date_parse(date_string):
 
     if not date_string:
         return None
-    date_string = date_string.replace('T', '')
+    date_string = date_string.rstrip('.')
+    date_string = re.sub('(\d)T(\d)', '\g<1>\g<2>', date_string)
     date_string = date_string.replace(' ', '')
     date_string = date_string.replace('.', '-')
     date_string = date_string.rstrip('Z')
 
     #Handle timezones ourselves on python 2.X because the native datetime won't parse them
     tz_match = None
-    if sys.version_info < (3,0) and len(date_string) == 23:
-        tz_string = date_string[18:23]
-        tz_match = re.match(r"(\+|-)(\d{2})(\d{2})", tz_string)
+    if sys.version_info < (3,0):
+        tz_match = re.match(r"(.*)(\+|-)(\d{2}):?(\d{2})$", date_string)
         if tz_match:
-            date_string = date_string[:18]
+            date_string = tz_match.group(1)
 
     result = None
 
-    for format in ("%Y-%m-%d%H:%M:%S", "%Y-%m-%d%H:%M:%S%z", "%Y-%m-%d"):
+    for format in ("%Y-%m-%d%H:%M:%S", "%Y-%m-%d%H:%M:%S%z", "%Y-%m-%d", "%d-%b-%Y", "%a%b%d%H:%M:%S%Z%Y", "%d-%b-%Y", "%Y-%d-%m"):
         try:
             result = datetime.datetime.strptime(date_string, format)
             break
@@ -206,8 +207,8 @@ def _date_parse(date_string):
 
     if result and tz_match:
         #Manipulate the datetime into UTC if we don't have timezone support
-        delta = datetime.timedelta(hours=int(tz_match.group(2)), minutes=int(tz_match.group(3)))
-        if tz_match.group(1) == '-':
+        delta = datetime.timedelta(hours=int(tz_match.group(3)), minutes=int(tz_match.group(4)))
+        if tz_match.group(2) == '-':
             result += delta
         else:
             result -= delta
@@ -220,26 +221,26 @@ contact_types = {"registrant": "Registrant(?: Contact)?",
 
 contact_fields = {"name": "(?:Name)?",
                   "organization": "Organization",
-                  "street": "Street",
+                  "street": "(?:(?:Street)|(?:Address ?1))",
                   "city": "City",
                   "state": "State/Province",
                   "country": "Country",
                   "post_code": "Postal ?Code",
                   "email": "E-?mail",
-                  "phone": "Phone",
+                  "phone": "Phone(?: Number)",
                   "phone_ext": "Phone Ext",
-                  "fax": "Fax",
+                  "fax": "Fax(?: Number)",
                   "fax_ext": "Fax Ext"}
 
 registrar_fields = {"name": "Registrar(?: Name)?",
-                    "url": "Registrar URL",
+                    "url": "Registrar (?:(?:URL)|(?:Homepage))",
                     "abuse_email": "Abuse Contact Email",
                     "abuse_phone": "Abuse Contact Phone",
                     "iana_id": "Registrar IANA ID"}
 
-date_fields = {"created": ("Creation Date", "created", "Registered"),
-               "updated": ("Last Modified", "Updated Date"),
-               "expires": ("Expiration Date", "Expiry Date", "renewal date", "Expires")}
+date_fields = {"created": ("Creation Date", "created", "Registered(?: on)?", "Created(?: on)?", "Registration Date"),
+               "updated": ("Last Modified", "Updated Date", "(?:last )?updated?(?: on)?"),
+               "expires": ("Expiration Date", "Expiry Date", "renewal date", "Expires(?: on)?", "Expire Date")}
 
 
 def parse(whois_str):
@@ -271,7 +272,10 @@ def parse(whois_str):
     for field in date_fields.keys():
         date_str = _extract_field(whois_str, *date_fields[field])
         if date_str:
+            date_str = date_str.split(FIELD_SEPERATOR)[0]
             dates_dict[field] = _date_parse(date_str)
+        else:
+            dates_dict[field] = None
 
     result_dict['date'] = dates_dict
 
