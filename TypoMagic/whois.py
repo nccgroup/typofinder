@@ -27,6 +27,8 @@ import sys
 #Seed the whois server map with special cases that aren't in our whois-servers.txt list nor returned by iana
 #Based on http://www.nirsoft.net/whois-servers.txt
 FIELD_SEPERATOR = ', '
+RATE_LIMITTED_RESPONSES = ("WHOIS LIMIT EXCEEDED", "Too many simulataneous connections from your host", "Please try again later.", "You have been banned for abuse.")
+
 _tld_to_whois = dict()
 
 with open("datasources/whois-servers.txt", "r") as whois_servers:
@@ -49,8 +51,12 @@ def _whois_lookup(sServer, sDomain):
     """
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.settimeout(20)
-    s.connect((sServer, 43))
+    s.settimeout(5)
+    try:
+        s.connect((sServer, 43))
+    except socket.timeout:
+        return "Timeout connecting to " + sServer
+
     try:
         query = str(codecs.encode(sDomain, "idna"), "ascii") + '\r\n'
     except:
@@ -114,6 +120,7 @@ def whois(sDomain):
             pass
 
     result = _recursive_whois(sServer, sDomain)
+
     #Special case to handle the fuzzy matching at the ICANN whois server
     if 'To single out one record, look it up with "xxx", where xxx is one of the' in result:
         all_domain_records = _whois_lookup(sServer, '=' + sDomain)
@@ -137,12 +144,16 @@ def _recursive_whois(sServer, sDomain):
     """
     result = _whois_lookup(sServer, sDomain)
 
-    try:
-        next_whois_server = _extract_field(result, "Whois Server")
-        if next_whois_server and next_whois_server != sServer:
-            return _recursive_whois(next_whois_server, sDomain)
-    except:
-        pass
+    next_whois_server = _extract_field(result, "Whois Server")
+    if next_whois_server and next_whois_server != sServer:
+        return _recursive_whois(next_whois_server, sDomain)
+
+    for error_message in RATE_LIMITTED_RESPONSES:
+        if error_message in result:
+            return "Rate limited by " + sServer
+
+    if result.strip() == '':
+        return "Empty response from " + sServer
 
     return result.lstrip()
 
