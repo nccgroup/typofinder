@@ -76,8 +76,13 @@ def _whois_lookup(sServer, sDomain):
     except socket.error:
         pass
     finally:
-        s.shutdown(socket.SHUT_RDWR)
-        s.close()
+        try:
+            s.shutdown(socket.SHUT_RDWR)
+        except socket.error:
+            #Not much more we can do here
+            pass
+        finally:
+            s.close()
 
     return response
 
