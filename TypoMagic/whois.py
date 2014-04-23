@@ -49,30 +49,35 @@ def _whois_lookup(sServer, sDomain):
     """
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.settimeout(20)
     s.connect((sServer, 43))
     try:
         query = str(codecs.encode(sDomain, "idna"), "ascii") + '\r\n'
     except:
+        #Assumes an encoding error, just send the raw string instead.
         query = sDomain + '\r\n'
-    s.send(query.encode())
-    response = ''
-        
-    while len(response) < 10000:
-        bytes = s.recv(1000)
-        try:
-            block = bytes.decode("utf-8")
-        except:
-            block = bytes.decode("iso-8859-1")
 
-        if block == '':
-            break
-        response = response + block
-        
+    response = ''
+
     try:
-        s.shutdown()
-        s.close()
-    except:
+        s.send(query.encode())
+
+        while len(response) < 10000:
+            bytes = s.recv(1000)
+            try:
+                block = bytes.decode("utf-8")
+            except:
+                #If it's not UTF-8, the second most popular encoding appears to be iso-8859-1
+                block = bytes.decode("iso-8859-1")
+
+            if block == '':
+                break
+            response = response + block
+    except socket.error:
         pass
+    finally:
+        s.shutdown(socket.SHUT_RDWR)
+        s.close()
 
     return response
 
@@ -107,8 +112,12 @@ def whois(sDomain):
     #Special case to handle the fuzzy matching at the ICANN whois server
     if 'To single out one record, look it up with "xxx", where xxx is one of the' in result:
         all_domain_records = _whois_lookup(sServer, '=' + sDomain)
-        next_whois_server = _extract_field(all_domain_records, "Whois Server").split(', ')[-1]
-        return _recursive_whois(next_whois_server, sDomain)
+        all_whois_servers = _extract_field(all_domain_records, "Whois Server")
+        if all_whois_servers != None:
+            next_whois_server = all_whois_servers.split(', ')[-1]
+            return _recursive_whois(next_whois_server, sDomain)
+        else:
+            return result
     else:
         return result
 
@@ -178,8 +187,6 @@ def _date_parse(date_string):
     @return A datetime object if one could be parsed, or None
     """
 
-    print ("***** " + date_string)
-
     if not date_string:
         return None
     date_string = date_string.rstrip('.')
@@ -197,7 +204,7 @@ def _date_parse(date_string):
 
     result = None
 
-    for format in ("%Y-%m-%d%H:%M:%S", "%Y-%m-%d%H:%M:%S%z", "%Y-%m-%d", "%d-%b-%Y", "%a%b%d%H:%M:%S%Z%Y", "%d-%b-%Y", "%Y-%d-%m"):
+    for format in ("%Y-%m-%d%H:%M:%S", "%Y-%m-%d%H:%M:%S%z", "%Y-%m-%d", "%d-%b-%Y", "%a%b%d%H:%M:%S%Z%Y", "%Y-%d-%m"):
         try:
             result = datetime.datetime.strptime(date_string, format)
             break
@@ -227,9 +234,9 @@ contact_fields = {"name": "(?:Name)?",
                   "country": "Country",
                   "post_code": "Postal ?Code",
                   "email": "E-?mail",
-                  "phone": "Phone(?: Number)",
+                  "phone": "Phone(?: Number)?",
                   "phone_ext": "Phone Ext",
-                  "fax": "Fax(?: Number)",
+                  "fax": "Fax(?: Number)?",
                   "fax_ext": "Fax Ext"}
 
 registrar_fields = {"name": "Registrar(?: Name)?",
