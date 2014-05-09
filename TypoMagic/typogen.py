@@ -268,7 +268,11 @@ class typogen(object):
                 if idx > -1:
                     for replacement_subsequence in _homoglyphs_confusables[homoglyph_subsequence]:
                         newhostname = strHost[:idx] + replacement_subsequence + strHost[idx + len(homoglyph_subsequence):]
-                        result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
+                        try:
+                            result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
+                        except UnicodeError:
+                            #This can be caused by domain parts which are too long for IDNA encoding, so just skip it
+                            pass
                     idx += len(homoglyph_subsequence)
                 else:
                     break
@@ -287,7 +291,11 @@ class typogen(object):
             if char in homoglyphs:
                 for replacement_char in homoglyphs[char]:
                     newhostname = strHost[:idx] + replacement_char + strHost[idx + 1:]
-                    result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
+                    try:
+                        result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
+                    except UnicodeError:
+                        #This can be caused by domain parts which are too long for IDNA encoding, so just skip it
+                        pass
 
         return result
 
