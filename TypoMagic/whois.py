@@ -27,7 +27,14 @@ import sys
 #Seed the whois server map with special cases that aren't in our whois-servers.txt list nor returned by iana
 #Based on http://www.nirsoft.net/whois-servers.txt
 FIELD_SEPERATOR = ', '
-RATE_LIMITTED_RESPONSES = ("WHOIS LIMIT EXCEEDED", "Too many simulataneous connections from your host", "Please try again later.", "You have been banned for abuse.")
+RATE_LIMITTED_RESPONSES = ("WHOIS LIMIT EXCEEDED",
+                           "Too many simulataneous connections from your host",
+                           "Please try again later.",
+                           "You have been banned for abuse.",
+                           "has exceeded the established limit",
+                           "WHOIS LIMI",
+                           "Still in grace period, wait",
+                           "Permission denied.")
 
 _tld_to_whois = dict()
 
@@ -56,6 +63,8 @@ def _whois_lookup(sServer, sDomain):
         s.connect((sServer, 43))
     except socket.timeout:
         return "Timeout connecting to " + sServer
+    except socket.error:
+        return "Unable to connect to " + sServer
 
     try:
         query = str(codecs.encode(sDomain, "idna"), "ascii") + '\r\n'
@@ -238,21 +247,21 @@ def _date_parse(date_string):
 
     return result
 
-contact_types = {"registrant": "Registrant(?: Contact)?",
+contact_types = {"registrant": "Registrant|Owner(?: Contact)?",
                  "tech": "Tech(?:nical)?(?: Contact)?",
                  "admin": "Admin(?:istrative)?(?: Contact)?"}
 
 contact_fields = {"name": "(?:Name)?",
-                  "organization": "Organization",
-                  "street": "(?:(?:Street)|(?:Address ?1))",
+                  "organization": "Organi[sz]ation",
+                  "street": "(?:(?:Street)|(?:Add?ress ?)1?)",
                   "city": "City",
-                  "state": "State/Province",
-                  "country": "Country",
-                  "post_code": "Postal ?Code",
+                  "state": "State(?:/Province)?",
+                  "country": "Country(?:/Economy)?",
+                  "post_code": "Postal ?Code|zip",
                   "email": "E-?mail",
-                  "phone": "Phone(?: Number)?",
+                  "phone": "(?:tele)?phone(?: Number)?",
                   "phone_ext": "Phone Ext",
-                  "fax": "Fax(?: Number)?",
+                  "fax": "(?:Fax|Facsimile)[ -]?(?:Number|No)?",
                   "fax_ext": "Fax Ext"}
 
 registrar_fields = {"name": "Registrar(?: Name)?",
@@ -261,8 +270,8 @@ registrar_fields = {"name": "Registrar(?: Name)?",
                     "abuse_phone": "Abuse Contact Phone",
                     "iana_id": "Registrar IANA ID"}
 
-date_fields = {"created": ("Creation Date", "created", "Registered(?: on)?", "Created(?: on)?", "Registration Date"),
-               "updated": ("Last Modified", "Updated Date", "(?:last )?updated?(?: on)?"),
+date_fields = {"created": ("Creation Date", "(?:Date )?created(?: on)?", "Registered(?: on)?", "Registration Date"),
+               "updated": ("(?:Last )?Modified", "Updated Date", "(?:last )?updated?(?: on)?"),
                "expires": ("Expiration Date", "Expiry Date", "renewal date", "Expires(?: on)?", "Expire Date")}
 
 
@@ -279,7 +288,7 @@ def parse(whois_str):
         person_dict = dict()
 
         for field in contact_fields.keys():
-            person_dict[field] = _extract_field(whois_str, contact_types[type] + " " + contact_fields[field])
+            person_dict[field] = _extract_field(whois_str, contact_types[type] + "(?: |-)" + contact_fields[field])
 
         result_dict[type] = person_dict
 
