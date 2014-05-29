@@ -229,7 +229,7 @@ def _date_parse(date_string):
 
     result = None
 
-    for format in ("%Y-%m-%d%H:%M:%S", "%Y-%m-%d%H:%M:%S%z", "%Y-%m-%d", "%d-%b-%Y", "%a%b%d%H:%M:%S%Z%Y", "%Y-%d-%m"):
+    for format in ("%Y-%m-%d%H:%M:%S", "%Y-%m-%d%H:%M:%S%z", "%Y-%m-%d", "%d-%b-%Y", "%a%b%d%H:%M:%S%Z%Y", "%Y-%d-%m", "%Y-%m-%d%H:%M:%S-%f", "%d-%b-%Y%H:%M:%S%Z"):
         try:
             result = datetime.datetime.strptime(date_string, format)
             break
@@ -247,7 +247,7 @@ def _date_parse(date_string):
 
     return result
 
-contact_types = {"registrant": "Registrant|Owner(?: Contact)?",
+contact_types = {"registrant": "(?:Registrant|Owner)(?: Contact)?",
                  "tech": "Tech(?:nical)?(?: Contact)?",
                  "admin": "Admin(?:istrative)?(?: Contact)?"}
 
