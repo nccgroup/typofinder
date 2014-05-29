@@ -154,7 +154,7 @@ def _recursive_whois(sServer, sDomain):
     result = _whois_lookup(sServer, sDomain)
 
     next_whois_server = _extract_field(result, "Whois Server")
-    if next_whois_server and next_whois_server != sServer:
+    if next_whois_server and next_whois_server != sServer and not next_whois_server.startswith("http"):
         return _recursive_whois(next_whois_server, sDomain)
 
     for error_message in RATE_LIMITTED_RESPONSES:
