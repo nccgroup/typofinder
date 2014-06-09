@@ -20,6 +20,8 @@ class typogen(object):
     """generate typo"""
     psl = PublicSuffixList(input_file=codecs.open("datasources/effective_tld_names.dat", "r", "utf8"))
 
+    alexa_top = {}
+
     def __init__(self):
         #Load up the list of TLDs
         self.lstTlds = list()
@@ -30,7 +32,14 @@ class typogen(object):
                     self.lstTlds.append(line.rstrip().lower())
         print("Loading confusables...", end=" ", flush=True)
         self.loadconfusables()
+        print("Loading Alexa data...", end=" ", flush=True)
+        with open(r'datasources\top-1m.csv') as top1m:
+            for line in top1m:
+                parts = line.rstrip().split(',', 1)
+                if len(parts) == 2:
+                    self.alexa_top[parts[1]] = int(parts[0])
         print("Done.")
+
 
     @staticmethod
     def loadkeyb(strCountry):
@@ -258,7 +267,7 @@ class typogen(object):
     def generate_homoglyph_confusables_typos(strHost):
         # swap characters to similar looking characters, based on Unicode's confusables.txt
 
-        result = list()
+        results = list()
         global _homoglyphs_confusables
         #Replace each homoglyph subsequence in the strHost with each replacement subsequence associated with the homoglyph subsequence
         for homoglyph_subsequence in _homoglyphs_confusables:
@@ -267,13 +276,28 @@ class typogen(object):
                 idx = strHost.find(homoglyph_subsequence, idx)
                 if idx > -1:
                     for replacement_subsequence in _homoglyphs_confusables[homoglyph_subsequence]:
+                        #Add with just one change
                         newhostname = strHost[:idx] + replacement_subsequence + strHost[idx + len(homoglyph_subsequence):]
-                        result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
+                        try:
+                            results.append(str(codecs.encode(newhostname, "idna"), "ascii"))
+                        except UnicodeError:
+                            #This can be caused by domain parts which are too long for IDNA encoding, so just skip it
+                            pass
+
+                        #Add with all occurrences changed
+                        newhostname = strHost.replace(homoglyph_subsequence, replacement_subsequence)
+                        try:
+                            if newhostname not in results:
+                                results.append(str(codecs.encode(newhostname, "idna"), "ascii"))
+                        except UnicodeError:
+                            #This can be caused by domain parts which are too long for IDNA encoding, so just skip it
+                            pass
+
                     idx += len(homoglyph_subsequence)
                 else:
                     break
 
-        return result
+        return results
 
     @staticmethod
     def generate_additional_homoglyph_typos(strHost):
@@ -287,7 +311,11 @@ class typogen(object):
             if char in homoglyphs:
                 for replacement_char in homoglyphs[char]:
                     newhostname = strHost[:idx] + replacement_char + strHost[idx + 1:]
-                    result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
+                    try:
+                        result.append(str(codecs.encode(newhostname, "idna"), "ascii"))
+                    except UnicodeError:
+                        #This can be caused by domain parts which are too long for IDNA encoding, so just skip it
+                        pass
 
         return result
 
@@ -341,7 +369,8 @@ class typogen(object):
             result.append(strHost[:idx] + strHost[idx+1:idx+2] + strHost[idx:idx+1] + strHost[idx+2:])
         return result
 
-    def generatetyposv2(self, strHost, strCountry, bTypos, iTypoIntensity, bTLDS, bBitFlip, bHomoglyphs, bDoppelganger):
+    def generatetyposv2(self, strHost, strCountry="gb", bTypos=True, iTypoIntensity=100, bTLDS=False, bBitFlip=True,
+                        bHomoglyphs=True, bDoppelganger=True, bOnlyAlexa=False, bNeverAlexa=False):
         """
         generate the typos
 
@@ -351,6 +380,10 @@ class typogen(object):
         @param iTypoIntensity A percentage of how intense the typo generation should be.
         @param bTLDS Flag to indicate that the TLDs should be swapped
         @param bBitFlip Flag to indicate that the hostname should be bitflipped
+        @param bHomoglyphs Flag to indicate that homoglyphs should be generated
+        @param bDoppelganger Flag to indicate that domain doppleganers should be generated
+        @param bOnlyAlexa Flag to indicate that only results which appear in the Alexa top 1m domains should be returned
+        @param bNeverAlexa Flag to indicate that results which are in the Alexa top 1m domains should not be returned
         """
 
         # result list of typos
@@ -391,16 +424,19 @@ class typogen(object):
             lstTypos += self.generate_extra_dot_doppelgangers(strHost)
 
         uniqueTypos = set(lstTypos)
-
-        # Add the original domain 
-        try:
-            uniqueTypos.add(strHost)
-        except KeyError:
-            pass
-
         # Remove any invalid typos
         for typo in copy.copy(uniqueTypos):
             if not self.is_domain_valid(typo):
                 uniqueTypos.remove(typo)
+            elif bOnlyAlexa and typo not in self.alexa_top:
+                uniqueTypos.remove(typo)
+            elif bNeverAlexa and typo in self.alexa_top:
+                uniqueTypos.remove(typo)
+
+        # Add the original domain for comparison purposes and to ensure we have at least one result
+        try:
+            uniqueTypos.add(strHost)
+        except KeyError:
+            pass
 
         return sorted([codecs.decode(asciiHost.encode(), "idna") for asciiHost in uniqueTypos])

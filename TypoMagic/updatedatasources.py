@@ -1,6 +1,7 @@
 import urllib.request
 import os
 import gzip
+from zipfile import ZipFile
 
 def ungzip(in_file, out_file):
     with gzip.open(in_file) as in_data:
@@ -8,11 +9,21 @@ def ungzip(in_file, out_file):
             out_file.write(in_data.read())
     os.remove(in_file)
 
+def unzip(in_file, inner_file, out_dir):
+    with ZipFile(in_file) as in_data:
+        in_data.extract(inner_file, out_dir)
+    os.remove(in_file)
+
 try:
     os.makedirs("datasources")
 except OSError:
     #It probably already exists, carry on
     pass
+print('.', end='', flush=True)
+
+
+urllib.request.urlretrieve("http://s3.amazonaws.com/alexa-static/top-1m.csv.zip", "datasources/top-1m.csv.zip")
+unzip("datasources/top-1m.csv.zip", "top-1m.csv", "datasources/")
 print('.', end='', flush=True)
 
 urllib.request.urlretrieve("http://www.nirsoft.net/whois-servers.txt", "datasources/whois-servers.txt")
@@ -36,4 +47,5 @@ print('.', end='', flush=True)
 
 urllib.request.urlretrieve("http://geolite.maxmind.com/download/geoip/database/GeoIPv6.dat.gz", "datasources/GeoIPv6.dat.gz")
 ungzip("datasources/GeoIPv6.dat.gz", "datasources/GeoIPv6.dat")
+
 print(' Done')

@@ -265,7 +265,7 @@ function fillDetails(data) {
     var strTBLm = "";
     if (data.mv4.length > 0) {
         for (intCount = 0; intCount < data.mv4.length; intCount++) {
-            strTBLm = strTBLm + "IPv4 " + data.mv4[intCount];
+            strTBLm = strTBLm + "IPv4: " + data.mv4[intCount];
             strTBLm = geoIPImageIPv4(data.mv4[intCount], strTBLm);
         }
     }
