@@ -214,6 +214,16 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 bBitFlip = 'bitflip' in post_data
                 bHomoglyphs = 'homoglyph' in post_data
                 bDoppelganger = 'doppelganger' in post_data
+                bOnlyAlexa = False
+                bNeverAlexa = False
+
+                if post_data["alexafilter"]:
+                    if post_data["alexafilter"][0] == "neveralexa":
+                        bNeverAlexa = True
+                    elif post_data["alexafilter"][0] == "onlyalexa":
+                        bOnlyAlexa = True
+
+
 
                 # stupid user
                 if not bTypos and not bTLD and not bBitFlip and not bHomoglyphs and not bDoppelganger:
@@ -225,7 +235,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 # domain name validation
                 if _typogen.is_domain_valid(strHost):
                     print("[i] Processing typos for " + strHost) 
-                    lstTypos = _typogen.generatetyposv2(strHost, "gb", bTypos, iTypoIntensity, bTLD, bBitFlip, bHomoglyphs, bDoppelganger)
+                    lstTypos = _typogen.generatetyposv2(strHost, "gb", bTypos, iTypoIntensity, bTLD, bBitFlip, bHomoglyphs, bDoppelganger, bOnlyAlexa, bNeverAlexa)
                     if lstTypos is not None:
                         self.output(json.dumps([strTypoHost for strTypoHost in lstTypos]))
                     else:
