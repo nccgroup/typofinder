@@ -38,7 +38,6 @@ function getCookies() {
     try {
         document.getElementById('host').value = getCookie("typofinder-domain");
     } catch (err) {
-
     }
 
     document.getElementById('typos').checked = isCookieSet("typofinder-typos");
@@ -63,6 +62,34 @@ function getCookies() {
 
     document.getElementById('doppelganger').checked = isCookieSet("typofinder-doppelganger");
     document.getElementById('noreg').checked = isCookieSet("typofinder-noreg");
+
+    try {
+        var sValue = getCookie("typofinder-charsetamount");
+        if(sValue != "" && getCookie("typofinder-charsetamountdesc") != "" ){
+            document.getElementById('charsetamountdesc').value = getCookie("typofinder-charsetamountdesc");
+            $("#charsetslider").slider('value', sValue);
+        } else {
+            $("#charsetslider").slider('value', 100);
+            document.getElementById('charsetamountdesc').value = "      All";
+        }
+    } catch (err) {
+        console.log("error");
+        $("#charsetslider").slider('value', 100);
+        document.getElementById('charsetamountdesc').value = "      All";
+    }
+
+    try {
+    if (getCookie("typofinder-allresults")== "true"){
+        document.getElementById("allresults").selected = isCookieSet("typofinder-allresults")
+    } else if (getCookie("typofinder-onlyalexa")== "true"){
+        document.getElementById("onlyalexa").selected = isCookieSet("typofinder-onlyalexa")
+    } else if (getCookie("typofinder-neveralexa")== "true"){
+        document.getElementById("neveralexa").selected = isCookieSet("typofinder-neveralexa")
+    }
+    } catch(err) {
+        console.log("error");
+        document.getElementById("allresults").selected = isCookieSet("typofinder-allresults")
+    }
 }
 
 // -------------------------------------
@@ -719,6 +746,28 @@ $(document).ready(function () {
             setCookie("typofinder-noreg", document.getElementById('noreg').checked, 365);
         } catch (err) {
             setCookie("typofinder-noreg", false, 365);
+        }
+
+        try {
+            setCookie("typofinder-charsetamount", $('#charsetslider').slider("option", "value"), 365);
+        } catch (err) {
+            setCookie("typofinder-charsetamount", 100, 365);
+            setCookie("typofinder-charsetamountdesc", "      All", 365);
+        }
+
+        try {
+            setCookie("typofinder-charsetamountdesc", document.getElementById('charsetamountdesc').value, 365);
+        } catch (err) {
+            setCookie("typofinder-charsetamount", 100, 365);
+            setCookie("typofinder-charsetamountdesc", "      All", 365);
+        }
+
+        try {
+                setCookie("typofinder-allresults", document.getElementById('allresults').selected, 365);
+                setCookie("typofinder-onlyalexa", document.getElementById('onlyalexa').selected, 365);
+                setCookie("typofinder-neveralexa", document.getElementById('neveralexa').selected, 365);
+        } catch (err) {
+            setCookie("typofinder-allresults", document.getElementById('allresults'), true, 365);
         }
 
         //Do the AJAX post
