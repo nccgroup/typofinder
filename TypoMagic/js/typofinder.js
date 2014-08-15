@@ -545,7 +545,7 @@ $(document).ready(function () {
         slide: function (event, ui) {
             $("#typoamount").val(ui.value);
             if (ui.value < 50) {
-                $("#typoamountdesc").val("Quick");
+                $("#typoamountdesc").val("   Quick");
             }
             else if (ui.value < 100) {
                 $("#typoamountdesc").val("Balanced");
@@ -556,6 +556,27 @@ $(document).ready(function () {
         }
     });
     $("#typoamountdesc").val("Rigorous");
+
+    // init the other slider
+    $("#charsetslider").slider({
+        value: 100,
+        min: 0,
+        max: 100,
+        step: 50,
+        slide: function (event, ui) {
+            $("#charsetamount").val(ui.value);
+            if (ui.value < 50) {
+                $("#charsetamountdesc").val("    ASCII");
+            }
+            else if (ui.value < 100) {
+                $("#charsetamountdesc").val("  rfc3491");
+            }
+            else {
+                $("#charsetamountdesc").val("      All");
+            }
+        }
+    });
+    $("#charsetamountdesc").val("      All");
 
     // init the progressbar
     $("#progressbar").progressbar({

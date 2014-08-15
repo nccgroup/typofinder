@@ -211,6 +211,10 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 except:
                     iTypoIntensity = 100
 
+                try:
+                    icharsetamount = int(post_data ['charsetamount'][0])
+                except:
+                    icharsetamount = 100
                 bBitFlip = 'bitflip' in post_data
                 bHomoglyphs = 'homoglyph' in post_data
                 bDoppelganger = 'doppelganger' in post_data
@@ -235,7 +239,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 # domain name validation
                 if _typogen.is_domain_valid(strHost):
                     print("[i] Processing typos for " + strHost) 
-                    lstTypos = _typogen.generatetyposv2(strHost, "gb", bTypos, iTypoIntensity, bTLD, bBitFlip, bHomoglyphs, bDoppelganger, bOnlyAlexa, bNeverAlexa)
+                    lstTypos = _typogen.generatetyposv2(strHost, "gb", bTypos, iTypoIntensity, bTLD, bBitFlip, bHomoglyphs, bDoppelganger, bOnlyAlexa, bNeverAlexa, icharsetamount)
                     if lstTypos is not None:
                         self.output(json.dumps([strTypoHost for strTypoHost in lstTypos]))
                     else:
