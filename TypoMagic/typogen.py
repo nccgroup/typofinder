@@ -34,7 +34,7 @@ class typogen(object):
         print("Loading confusables...", end=" ", flush=True)
         self.loadconfusables()
         print("Loading Alexa data...", end=" ", flush=True)
-        with open(r'datasources\top-1m.csv') as top1m:
+        with open(r'datasources/top-1m.csv') as top1m:
             for line in top1m:
                 parts = line.rstrip().split(',', 1)
                 if len(parts) == 2:
