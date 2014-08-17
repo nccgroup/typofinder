@@ -44,16 +44,30 @@ Released under AGPL by <a href="http://www.nccgroup.com/">NCC Group</a> - source
 <form id="typogulator" method="post" action="./typov2.ncc">
     Supply the domain you wish to typo check and press enter<br />
     <input id="host" name="host" type="search" size="75" results="5"/><input type="submit" value="Search" style="margin:2"/><br />
-    <input id=typos type="checkbox" name="typos" value="typos" checked /><label for="typos">Generate typos (</label><input type="text" id="typoamountdesc" style="border:0; color:#a7062a; font-weight:bold; width: 5.2em;"/>)&nbsp;
+    <input id=typos type="checkbox" name="typos" value="typos" checked /><label for="typos">Generate typos (</label>
+    <input type="text" id="typoamountdesc" readonly="readonly" style="border:0; color:#a7062a; font-weight:bold; width: 5.2em;"/>)&nbsp;
     <input id="typoamount" type="text" name="typoamount" hidden=""/>
     <div id="slider" style="width: 100px; display: inline-block"></div>
     &nbsp;&nbsp;
     <input id="tld" type="checkbox" name="tld" value="tld" checked /><label for="tld">Swap TLD with global TLDs</label><br/>
     <input id="bitflip" type="checkbox" name="bitflip" value="bitflip" checked /><label for="bitflip">Bitflip each character</label>
     <input id="homoglyph" type="checkbox" name="homoglyph" value="homoglyph" checked /><label for="homoglyph">Swap characters with homoglyphs</label>
-    <input id="doppelganger" type="checkbox" name="doppelganger" value="doppelganger" checked /><label for="doppelganger">Try common subdomain doppelgangers</label>
     <br />
-    <input id="noreg" type="checkbox" name="nonreg" value="nonreg"/><label for="nonreg">Show unregistered typo domains</label>
+    <input id="doppelganger" type="checkbox" name="doppelganger" value="doppelganger" checked /><label for="doppelganger">Try common subdomain doppelgangers</label>
+    <input id="noreg" type="checkbox" name="noreg" value="noreg"/><label for="noreg">Show unregistered typo domains</label>
+    <br />
+    <label for="charsetamount">Character set</label>
+    (<input type="text" id="charsetamountdesc" readonly="readonly" style="border:0; color:#a7062a; font-weight:bold; width: 5.2em;"/>)&nbsp;
+    <input id="charsetamount" type="text" name="charsetamount" hidden=""/>
+    <div id="charsetslider" style="width: 100px; display: inline-block"></div>
+    &nbsp;&nbsp;
+    <label for="alexafilter" > Alexa filter </label>
+<select required id="alexafilter" name="alexafilter" >
+    <option id="allresults" value="allresults">All sites</option>
+    <option id="onlyalexa" value="onlyalexa">Only include top 1 million sites </option>
+    <option id="neveralexa" value="neveralexa">Exclude top 1 million sites </option>
+</select>
+
 <br />
 </form>
 </div>

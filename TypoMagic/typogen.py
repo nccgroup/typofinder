@@ -13,6 +13,7 @@
 import re
 import copy
 import codecs
+import stringprep
 from publicsuffix import PublicSuffixList
 
 
@@ -369,8 +370,38 @@ class typogen(object):
             result.append(strHost[:idx] + strHost[idx+1:idx+2] + strHost[idx:idx+1] + strHost[idx+2:])
         return result
 
+    @staticmethod
+    def is_valid_rfc3491(domainname):
+        """
+        Checks if the given domain would pass processing by nameprep unscathed.
+
+        :param domainname: The unicode string of the domain name.
+        :return: True if the unicode is valid (i.e. only uses Unicode 3.2 code points)
+        """
+        valid_rfc3491 = True
+        for char in domainname:
+            if stringprep.in_table_a1(char):
+                valid_rfc3491 = False
+                break
+
+        return valid_rfc3491
+
+    @staticmethod
+    def is_ascii(domainname):
+        return str(codecs.encode(domainname, "idna"), "ascii") == domainname
+
+    @staticmethod
+    def is_in_charset(domainname, icharsetamount):
+        if icharsetamount==100:
+            return True
+        elif icharsetamount==50:
+            return typogen.is_valid_rfc3491(domainname)
+        elif icharsetamount==0:
+            return typogen.is_ascii(domainname)
+
+
     def generatetyposv2(self, strHost, strCountry="gb", bTypos=True, iTypoIntensity=100, bTLDS=False, bBitFlip=True,
-                        bHomoglyphs=True, bDoppelganger=True, bOnlyAlexa=False, bNeverAlexa=False):
+                        bHomoglyphs=True, bDoppelganger=True, bOnlyAlexa=False, bNeverAlexa=False, icharsetamount=100):
         """
         generate the typos
 
@@ -439,4 +470,9 @@ class typogen(object):
         except KeyError:
             pass
 
-        return sorted([codecs.decode(asciiHost.encode(), "idna") for asciiHost in uniqueTypos])
+        unicode_typos = sorted([codecs.decode(asciiHost.encode(), "idna") for asciiHost in uniqueTypos])
+        for typo in copy.copy(unicode_typos):
+            if not typogen.is_in_charset(typo, icharsetamount):
+                unicode_typos.remove(typo)
+
+        return unicode_typos
