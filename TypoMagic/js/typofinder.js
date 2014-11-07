@@ -613,6 +613,7 @@ $(document).ready(function () {
     // init the data table
     oTable = $('#resultstabletable').dataTable({
         "iDisplayLength": 100,
+        "lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "All"] ],
         "columnDefs": [
             { "orderable": false, "targets": 0 }
         ],
@@ -646,6 +647,7 @@ $(document).ready(function () {
     // init the data table
     $('#notregtabletable').dataTable({
         "iDisplayLength": 100,
+        "lengthMenu": [ [25, 50, 100, -1], [25, 50, 100, "All"] ],
         "ordering": false
     });
 
