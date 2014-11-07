@@ -14,3 +14,15 @@ pre {
  white-space: -o-pre-wrap;    /* Opera 7 */
  word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
+
+table.dataTable tr.odd { background-color: #a7062a; color: white; }
+table.dataTable tr.even { background-color: white; color: black; }
+
+table.dataTable tr.odd td.sorting_1 { background-color: #850421; color: white; }
+table.dataTable tr.odd td.sorting_2 { background-color: #850421; color: white;  }
+table.dataTable tr.odd td.sorting_3 { background-color: #850421; color: white;  }
+table.dataTable tr.even td.sorting_1 { background-color: #CCCCCC; color: black;  }
+table.dataTable tr.even td.sorting_2 { background-color: #CCCCCC; color: black; }
+table.dataTable tr.even td.sorting_3 { background-color: #CCCCCC; color: black; ; }
+
+

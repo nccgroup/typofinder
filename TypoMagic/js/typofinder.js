@@ -613,10 +613,10 @@ $(document).ready(function () {
     // init the data table
     oTable = $('#resultstabletable').dataTable({
         "iDisplayLength": 100,
-        "aoColumnDefs": [
-            { "bSortable": false, "aTargets": [0] }
+        "columnDefs": [
+            { "orderable": false, "targets": 0 }
         ],
-        "aaSorting": [[1, 'asc']],
+        "order": [ 1, 'asc' ],
         "fnCreatedRow": function (nRow, aData, iDataIndex) {
             $('td:first', nRow).html('<img src="images/add.png">');
 
@@ -646,11 +646,7 @@ $(document).ready(function () {
     // init the data table
     $('#notregtabletable').dataTable({
         "iDisplayLength": 100,
-        "aoColumnDefs": [
-            { "bSortable": false, "aTargets": [0] }
-        ],
-        "aaSorting": [[1, 'asc']]
-
+        "ordering": false
     });
 
     // Hide the progressbar
