@@ -441,6 +441,7 @@ function fnFormatDetails ( oTable, nTr )
         // sOut += '<h5>Links (be careful!):</h5>';
         var domH5 = document.createElement('h5');
         domH5.innerText = "Links (be careful!)";
+		domH5.textContent = "Links (be careful!)";
         domOut.appendChild(domH5);
 
         // sOut += '<table cellpadding="5" cellspacing="0" border="0">';
@@ -467,6 +468,7 @@ function fnFormatDetails ( oTable, nTr )
                 },
             false);
             aLink.innerText = strDomain;
+			aLink.textContent = strDomain;
 
             domTD.appendChild(aLink);
         }
@@ -487,7 +489,8 @@ function fnFormatDetails ( oTable, nTr )
                 },
             false);
             aLink.innerText = "www." + strDomain;
-
+			aLink.textContent = "www." + strDomain;
+			
             domTD.appendChild(aLink);
         }
         if (aData[5] != "")
@@ -507,7 +510,8 @@ function fnFormatDetails ( oTable, nTr )
                 },
             false);
             aLink.innerText = "webmail." + strDomain;
-
+			aLink.textContent = "webmail." + strDomain;
+			
             domTD.appendChild(aLink);
         }
         if (aData[6] != "")
@@ -527,7 +531,8 @@ function fnFormatDetails ( oTable, nTr )
                 },
             false);
             aLink.innerText = "m." + strDomain;
-
+			aLink.textContent = "m." + strDomain;
+			
             domTD.appendChild(aLink);
         }
         
@@ -538,11 +543,13 @@ function fnFormatDetails ( oTable, nTr )
     //Whois
     var domH5Whois = document.createElement('h5');
     domH5Whois.innerText = "WHOIS Data:";
+	domH5Whois.textContent = "WHOIS Data:";
     domOut.appendChild(domH5Whois);
 
     var domPre = document.createElement('pre');
     domPre.setAttribute('class', 'whois');
     domPre.innerText = "Loading...\r\n\r\n";
+	domPre.textContent = "Loading...\r\n\r\n";
     domOut.appendChild(domPre);
 
     $.ajax({
