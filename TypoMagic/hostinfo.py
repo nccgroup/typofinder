@@ -12,6 +12,8 @@
 
 import dns.resolver
 import pygeoip
+from dns.rdtypes.IN.A import A
+
 
 
 class hostinfo(object):
@@ -19,6 +21,9 @@ class hostinfo(object):
 
     A_type = dns.rdatatype.from_text('A')
     AAAA_type = dns.rdatatype.from_text('AAAA')
+    NS_type = dns.rdatatype.from_text('NS')
+
+    NAME_CLASH = A(1, 1, "127.0.53.53")
 
     def __init__(self):
         self._resolver = dns.resolver.Resolver()
@@ -37,7 +42,11 @@ class hostinfo(object):
                 domainname = dns.name.from_text(sHostname, origin=dns.name.root)
 
             dnsAnswers = self._resolver.query(domainname, rdatatype)
-            return dnsAnswers
+
+            if self.NAME_CLASH in dnsAnswers.rrset:
+                raise dns.resolver.NXDOMAIN #Fake NX record for name clashes
+            else:
+                return dnsAnswers
         except dns.exception.Timeout:
             return None
         except dns.resolver.NoAnswer:
@@ -69,6 +78,9 @@ class hostinfo(object):
             return self.do_query(None, sHostname, dns.rdatatype.from_text('MX'))
         except dns.resolver.NXDOMAIN:   #Special case, return None rather than throwing NXDOMAIN (TODO figure out why!)
             return None
+
+    def getNS(self, sHostname):
+        return self.do_query(None, sHostname, self.NS_type)
 
     def getIPv4(self, sHostname):
         return self.do_query(None, sHostname, self.A_type)

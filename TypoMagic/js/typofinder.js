@@ -330,6 +330,8 @@ function fillDetails(data) {
         strDomain = data.strDomain;
     }
 
+     strDomain += " " + data.tags;
+
     // Add the results row to the table
     $('#resultstabletable').dataTable().fnAddData(
                                                 [

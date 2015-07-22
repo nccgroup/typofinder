@@ -23,6 +23,7 @@ from socketserver import ThreadingMixIn
 import json
 
 import dns.resolver
+from parked_tagger import check_for_parked
 
 import typogen
 import hostinfo
@@ -128,6 +129,11 @@ def handleHostAJAX(sDomain):
         #Shortcut - If the domain query results in an NXDOMAIN, don't bother looking for subdomains.
         return typo
 
+    nameservers = _hostinfo.getNS(sDomain)
+    if nameservers:
+        for nameserver in nameservers:
+            typo.nameservers.append(str(nameserver.target).strip(".").lower())
+
     # MX
     mxRecords = _hostinfo.getMX(sDomain)
     if mxRecords:
@@ -165,6 +171,8 @@ def handleHostAJAX(sDomain):
     resolve_webmail(sDomain, typo)
 
     resolve_m(sDomain, typo)
+
+    check_for_parked(typo)
 
     return typo
 
@@ -226,8 +234,6 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                         bNeverAlexa = True
                     elif post_data["alexafilter"][0] == "onlyalexa":
                         bOnlyAlexa = True
-
-
 
                 # stupid user
                 if not bTypos and not bTLD and not bBitFlip and not bHomoglyphs and not bDoppelganger:
