@@ -176,6 +176,24 @@ def handleHostAJAX(sDomain):
 
     return typo
 
+# light weight version to get basic domain information
+def handleHostAJAXLight(sDomain):
+    typo = objtypo()
+    
+    typo.strDomain = sDomain
+    
+    try:
+        nameservers = _hostinfo.getNS(sDomain)
+        typo.nameservers = nameservers.response.authority
+        print("[i] AUTHORITY " + sDomain + nameservers.response.authority) 
+    except dns.resolver.NXDOMAIN:
+        print("[i] NXDOMAIN " + sDomain) 
+        typo.nameservers = "NXDOMAIN"
+    except:
+        print("[i] Other error" + str(e))
+        typo.nameservers = "ERROR"
+             
+    return typo
 
 class MyHandler(http.server.BaseHTTPRequestHandler):
 
@@ -272,7 +290,21 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 self.send_header("Content-type", "application/json")
                 self.end_headers()
                 self.output(json.dumps(objFoo.reprJSON()))
+            
                 
+            # v2.1 lightweight AJAX API - get basic information for a domain      
+            elif self.path.endswith("entitylight.ncc"):
+                length = int(self.headers['Content-Length'])
+                post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
+                strHost = str(post_data['host'])[2:-2]
+
+                objFoo = handleHostAJAXLight(strHost)
+
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+                self.output(json.dumps(objFoo.reprJSON()))    
+
         except:
             print(sys.exc_info())
             traceback.print_exc(file=sys.stdout)

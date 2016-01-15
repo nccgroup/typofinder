@@ -30,6 +30,7 @@ class objtypo:
     aMX = []
     aMXIPv4 = dict()
     aMXIPv6 = dict()
+    nameservers = ""
 
     def __init__(self):
         self.strDomain = ""
@@ -48,7 +49,7 @@ class objtypo:
         self.aMX = []
         self.aMXIPv4 = dict()
         self.aMXIPv6 = dict()
-        self.nameservers = []
+        self.nameservers = ""
         self.tags = []
 
     # http://stackoverflow.com/questions/5160077/encoding-nested-python-object-in-json
