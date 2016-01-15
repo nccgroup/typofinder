@@ -25,7 +25,9 @@ if __name__ == '__main__':
         parser.add_argument('-d', '--domain', help='domain to analyze', required=False, type=str, default='nccgroup.com')
         parser.add_argument('-s', '--server',   help='server to use', required=False, type=str, default='https://labs.nccgroup.trust')
         parser.add_argument('-v', '--verbose',   help='verbose output', required=False, dest='verbose', action='store_true')
+        parser.add_argument('-e', '--errors',   help='show errors in non verbose mode', required=False, dest='errors', action='store_true')
         parser.set_defaults(verbose=False);
+        parser.set_defaults(errors=False);
         args = parser.parse_args()
 
         requests.packages.urllib3.disable_warnings()
@@ -68,6 +70,8 @@ if __name__ == '__main__':
                 else:
                     if strDEntityJSON['bError'] is False:
                         print("[i] " + strDEntityJSON['strDomain'] + " has nameservers")                           
+                    elif args.errors is True:
+                        print("[i] " + strDEntityJSON['strDomain'] + " generated an error - " + strDEntityJSON['strError'])                           
 
             except simplejson.scanner.JSONDecodeError:
                 print("[!] JSON decode error")
