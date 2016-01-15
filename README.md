@@ -39,12 +39,18 @@ Features
 * Homoglyph attack identification
 * Whois
  
-Dependencies
+Dependencies - server
 -------------
 * Python (3.3)
 * dnspython3 (1.11.1)
 * pygeoip (0.3.1)
 * publicsuffix (1.0.5)
+
+Dependencies - client
+-------------
+* Python (3.3)
+* simplejson
+* requests
 
 What it does
 -------------
