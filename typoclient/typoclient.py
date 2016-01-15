@@ -25,12 +25,12 @@ if __name__ == '__main__':
     requests.packages.urllib3.disable_warnings()
     
     strURLTypos  = args.server + "/typofinder/typov2.ncc"
-    strURLEntity = args.server +  "/typofinder/entity.ncc"
+    strURLEntity = args.server +  "/typofinder/entitylight.ncc"
 
     strHTTPHdrs      = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain'}
     strTypoRequest   = "host="+args.domain+"&typos=typos&typoamount=1&tld=tld&bitflip=bitflip&homoglyph=homoglyph&doppelganger=doppelganger&charsetamount=&alexafilter=neveralexa"
     strEntityRequest = "host="
-
+    
     arrTypoResp = requests.post(strURLTypos, data=strTypoRequest, headers=strHTTPHdrs, verify=False)
 
     if arrTypoResp.text.startswith("[!]"):
@@ -50,14 +50,18 @@ if __name__ == '__main__':
             try:
                 strDEntityJSON = arrDomainResp.json()
             
-                print("[i] " + strDEntityJSON['strDomain'] + " - " + strDEntityJSON['nameservers'])
+                print("[i] " + strDEntityJSON['strDomain'])
+                if strDEntityJSON['bError'] is False:
+                    for server in strDEntityJSON['nameservers']:
+                        print ("[i]    --- " + server);
+                else:
+                        print ("[!]    --- " + strDEntityJSON['strError'])
 
             except simplejson.scanner.JSONDecodeError:
                 print("[!] JSON decode error")
 
         except ConnectionAbortedError:
             print("[!] Connected abort for " + print(strTDomain.encode('cp437', 'replace')))
-            pass
 
-
-
+        except ConnectionError:
+            print("[!] Connected error for " + print(strTDomain.encode('cp437', 'replace')))
