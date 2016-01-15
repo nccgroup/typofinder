@@ -52,8 +52,10 @@ if __name__ == '__main__':
         parser.add_argument('-s', '--server',   help='server to use', required=False, type=str, default='https://labs.nccgroup.trust')
         parser.add_argument('-v', '--verbose',   help='verbose output', required=False, dest='verbose', action='store_true')
         parser.add_argument('-e', '--errors',   help='show errors in non verbose mode', required=False, dest='errors', action='store_true')
+        parser.add_argument('-l', '--listdomains',   help='list the domains and exist', required=False, dest='domainsonly', action='store_true')
         parser.set_defaults(verbose=False);
         parser.set_defaults(errors=False);
+        parser.set_defaults(domainsonly=False);
         args = parser.parse_args()
 
         requests.packages.urllib3.disable_warnings()
@@ -74,6 +76,11 @@ if __name__ == '__main__':
 
         strTypoJSON = arrTypoResp.json()
 
+        if args.domainsonly is True:
+            for strTDomain in strTypoJSON:
+                print(strTDomain)
+            sys.exit(0)      
+
         print("[i] Total typo domains to check " + str(len(strTypoJSON)))
 
         print("[i] Checking typo domains list for active domains....")
@@ -86,19 +93,19 @@ if __name__ == '__main__':
             except ConnectionAbortedError:
                 intDepth = intDepth + 1
                 if intDepth > 4:
-                    print("[!] Connection abort whilst checking " + strDomain)
+                    print("[!] Connection abort whilst checking " + print(strDomain))
                 else:
                     tryDomain(strURLEntity,dataFoo,strHTTPHdrs, intDepth)
             except ConnectionError:
                 intDepth = intDepth + 1
                 if intDepth > 4:
-                    print("[!] Connection error whilst checking " + strDomain)
+                    print("[!] Connection error whilst checking " + print(strDomain))
                 else:
                     tryDomain(strURLEntity,dataFoo,strHTTPHdrs, intDepth)
             except requests.exceptions.ConnectionError:
                 intDepth = intDepth + 1
                 if intDepth > 4:
-                    print("[!] Connection error whilst checking " + strDomain)
+                    print("[!] Connection error whilst checking " + print(strDomain))
                 else:
                     tryDomain(strURLEntity,dataFoo,strHTTPHdrs, intDepth)
 
