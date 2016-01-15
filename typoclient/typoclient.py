@@ -49,43 +49,55 @@ if __name__ == '__main__':
         strTypoJSON = arrTypoResp.json()
 
         print("[i] Checking typo domains list for active domains....")
+        strDomain = ""
         for strTDomain in strTypoJSON:
         
             dataFoo = strEntityRequest+strTDomain
-           
-            arrDomainResp = requests.post(strURLEntity, data=dataFoo, headers=strHTTPHdrs, verify=False)
+            try:           
+                arrDomainResp = requests.post(strURLEntity, data=dataFoo, headers=strHTTPHdrs, verify=False)
 
-            if arrDomainResp.status_code != requests.codes.ok:
-                print("[!] Recieved error from web service please try again later")
-                sys.exit(0)
+                if arrDomainResp.status_code != requests.codes.ok:
+                    print("[!] Recieved error from web service please try again later")
+                    sys.exit(0)
 
-            try:
-                strDEntityJSON = arrDomainResp.json()
-            
-                if args.verbose is True:
-                    print("[i] " + strDEntityJSON['strDomain'])
-                    if strDEntityJSON['bError'] is False:
-                        for server in strDEntityJSON['nameservers']:
-                            print ("[i]    --- " + server);
+                try:
+                    strDEntityJSON = arrDomainResp.json()
+                    strDomain = strDEntityJSON['strDomain']
+
+                    if args.verbose is True:
+                        print("[i] " + strDEntityJSON['strDomain'])
+                        if strDEntityJSON['bError'] is False:
+                            for server in strDEntityJSON['nameservers']:
+                                print ("[i]    --- " + server);
+                        else:
+                                print ("[!]    --- " + strDEntityJSON['strError'])
                     else:
-                            print ("[!]    --- " + strDEntityJSON['strError'])
-                else:
-                    if strDEntityJSON['bError'] is False:
-                        print("[i] " + strDEntityJSON['strDomain'] + " is active")                           
-                    elif args.errors is True:
-                        print("[i] " + strDEntityJSON['strDomain'] + " generated an error - " + strDEntityJSON['strError'])                           
+                        if strDEntityJSON['bError'] is False:
+                            print("[i] " + strDEntityJSON['strDomain'] + " is active")                           
+                        elif args.errors is True:
+                            print("[i] " + strDEntityJSON['strDomain'] + " generated an error - " + strDEntityJSON['strError'])                           
 
-            except simplejson.scanner.JSONDecodeError:
-                print("[!] JSON decode error")
+                except simplejson.scanner.JSONDecodeError:
+                    print("[!] JSON decode error")
+            except ConnectionAbortedError:
+                print("[!] Connection abort whilst checking " + strDomain)
+            except ConnectionError:
+                print("[!] Connection error whilst checking " + strDomain)
+            except requests.exceptions.ConnectionError:
+                print("[!] Connection error whilst checking " + strDomain)
+
 
     except ConnectionAbortedError:
         print("[!] Connection abort")
+        pass
 
     except ConnectionError:
         print("[!] Connection error")
+        pass
     
     except requests.exceptions.ConnectionError:
         print("[!] Connection error")
+        pass
 
     except KeyboardInterrupt:
         pass
