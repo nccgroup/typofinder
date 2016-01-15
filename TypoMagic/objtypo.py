@@ -57,4 +57,4 @@ class objtypo:
         return dict(strDomain=self.strDomain, strHost=self.strHost, bMX=self.bMX, bTypo=self.bTypo, IPv4Addresses=self.IPv4Address,
                     IPv6Addresses=self.IPV6Address, SafeBrowsing = self.SafeBrowsing, wwwv4 = self.wwwv4, wwwv6 = self.wwwv6,
                     mv4 = self.mv4, mv6 = self.mv6, webmailv4 = self.webmailv4, webmailv6 = self.webmailv6, aMX = self.aMX,
-                    aMXIPv4 = self.aMXIPv4, aMXIPv6 = self.aMXIPv6, tags = self.tags)
+                    aMXIPv4 = self.aMXIPv4, aMXIPv6 = self.aMXIPv6, tags = self.tags, nameservers = self.nameservers)
