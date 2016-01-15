@@ -32,7 +32,7 @@ if __name__ == '__main__':
         strURLEntity = args.server +  "/typofinder/entitylight.ncc"
 
         strHTTPHdrs      = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain'}
-        strTypoRequest   = "host="+args.domain+"&typos=typos&typoamount=1&tld=tld&bitflip=bitflip&homoglyph=homoglyph&doppelganger=doppelganger&charsetamount=&alexafilter=neveralexa"
+        strTypoRequest   = "host="+args.domain+"&typos=typos&typoamount=100&tld=tld&bitflip=bitflip&homoglyph=homoglyph&doppelganger=doppelganger&charsetamount=50&alexafilter=neveralexa"
         strEntityRequest = "host="
     
         arrTypoResp = requests.post(strURLTypos, data=strTypoRequest, headers=strHTTPHdrs, verify=False)
