@@ -187,11 +187,16 @@ def handleHostAJAXLight(sDomain, iTimeouts, iTimeoutsMax):
     try:
         typo.nameservers = _hostinfo.getNSServers(sDomain)
     except dns.resolver.NXDOMAIN:
-        print("[i] NXDOMAIN " + sDomain)
         typo.bError = True
         typo.strError = "NXDOMAIN"
     except dns.resolver.Timeout:
-        print("[i] Timeout") 
+        if iTimeouts > iTimeoutsMax:
+            typo.bError = True
+            typo.strError = "TIMEOUT"
+        else:
+            iTimeouts=iTimeouts+1   
+            typo = handleHostAJAXLight(sDomain,iTimeouts,iTimeoutsMax)
+    except dns.resolver.NoAnswer:
         if iTimeouts > iTimeoutsMax:
             typo.bError = True
             typo.strError = "TIMEOUT"

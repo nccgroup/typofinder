@@ -86,7 +86,6 @@ class hostinfo(object):
         return None
 
     def getNSServers(self, sHostname):
-        print("here " + sHostname)
         nameservers = self._resolver.query(sHostname,'NS')
         ns = []
         for rdata in nameservers:
