@@ -18,6 +18,8 @@ import simplejson
 
 if __name__ == '__main__':
 
+    print("[i] NCC Group DNS typo domain command line client - https://labs.nccgroup.trust");
+
     try:
         parser = argparse.ArgumentParser()
         parser.add_argument('-d', '--domain', help='domain to analyze', required=False, type=str, default='nccgroup.com')
@@ -67,10 +69,13 @@ if __name__ == '__main__':
                 print("[!] JSON decode error")
 
     except ConnectionAbortedError:
-        print("[!] Connection abort for " + print(strTDomain.encode('cp437', 'replace')))
+        print("[!] Connection abort")
 
     except ConnectionError:
-        print("[!] Connection error for " + print(strTDomain.encode('cp437', 'replace')))
+        print("[!] Connection error")
+    
+    except requests.exceptions.ConnectionError:
+        print("[!] Connection error")
 
     except KeyboardInterrupt:
         pass
