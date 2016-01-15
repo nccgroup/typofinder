@@ -46,6 +46,17 @@ def tryDomain(strURLEntity,dataFoo,strHTTPHdrs, intDepth):
 if __name__ == '__main__':
 
     print("[i] NCC Group DNS typo domain command line client - https://labs.nccgroup.trust");
+
+    # this is filth
+    if sys.platform == 'win32':
+        print("[i]   NOTE: on Microsoft Windows this needs win-unicode-console and be run as so:");
+        print("[i]            python.exe -m run typoclient\typoclient.py <options>");
+        print("");
+        try:
+            import win_unicode_console
+        except:
+            sys.exit(-1)
+
     try:
         parser = argparse.ArgumentParser()
         parser.add_argument('-d', '--domain', help='domain to analyze', required=False, type=str, default='nccgroup.com')
