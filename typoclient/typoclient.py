@@ -36,9 +36,10 @@ if __name__ == '__main__':
         strURLEntity = args.server +  "/typofinder/entitylight.ncc"
 
         strHTTPHdrs      = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain'}
-        strTypoRequest   = "host="+args.domain+"&typos=typos&typoamount=100&tld=tld&bitflip=bitflip&homoglyph=homoglyph&doppelganger=doppelganger&charsetamount=50&alexafilter=neveralexa"
+        strTypoRequest   = "host="+args.domain+"&typos=typos&typoamount=100&tld=tld&bitflip=bitflip&homoglyph=homoglyph&doppelganger=doppelganger&charsetamount=100&alexafilter=neveralexa"
         strEntityRequest = "host="
     
+        print("[i] Getting typo domains list....")
         arrTypoResp = requests.post(strURLTypos, data=strTypoRequest, headers=strHTTPHdrs, verify=False)
 
         if arrTypoResp.text.startswith("[!]"):
@@ -47,6 +48,7 @@ if __name__ == '__main__':
 
         strTypoJSON = arrTypoResp.json()
 
+        print("[i] Checking typo domains list for active domains....")
         for strTDomain in strTypoJSON:
         
             dataFoo = strEntityRequest+strTDomain
@@ -69,7 +71,7 @@ if __name__ == '__main__':
                             print ("[!]    --- " + strDEntityJSON['strError'])
                 else:
                     if strDEntityJSON['bError'] is False:
-                        print("[i] " + strDEntityJSON['strDomain'] + " has nameservers")                           
+                        print("[i] " + strDEntityJSON['strDomain'] + " is active")                           
                     elif args.errors is True:
                         print("[i] " + strDEntityJSON['strDomain'] + " generated an error - " + strDEntityJSON['strError'])                           
 
