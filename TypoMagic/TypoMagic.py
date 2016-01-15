@@ -176,23 +176,34 @@ def handleHostAJAX(sDomain):
 
     return typo
 
+
+
+
 # light weight version to get basic domain information
-def handleHostAJAXLight(sDomain):
+def handleHostAJAXLight(sDomain, iTimeouts, iTimeoutsMax):
     typo = objtypo()
-    
     typo.strDomain = sDomain
-    
+
     try:
-        nameservers = _hostinfo.getNS(sDomain)
-        typo.nameservers = nameservers.response.authority
-        print("[i] AUTHORITY " + sDomain + nameservers.response.authority) 
+        typo.nameservers = _hostinfo.getNSServers(sDomain)
     except dns.resolver.NXDOMAIN:
-        print("[i] NXDOMAIN " + sDomain) 
-        typo.nameservers = "NXDOMAIN"
+        print("[i] NXDOMAIN " + sDomain)
+        typo.bError = True
+        typo.strError = "NXDOMAIN"
+    except dns.resolver.Timeout:
+        print("[i] Timeout") 
+        if iTimeouts > iTimeoutsMax:
+            typo.bError = True
+            typo.strError = "TIMEOUT"
+        else:
+            iTimeouts=iTimeouts+1   
+            typo = handleHostAJAXLight(sDomain,iTimeouts,iTimeoutsMax)
     except:
-        print("[i] Other error" + str(e))
-        typo.nameservers = "ERROR"
-             
+        type, value, traceback = sys.exc_info()
+        typo.bError = True
+        typo.strError = "OTHER"
+        print("[i] Other error" + str(type) + " - " + str(value))
+                     
     return typo
 
 class MyHandler(http.server.BaseHTTPRequestHandler):
@@ -298,7 +309,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
                 post_data = urllib.parse.parse_qs(self.rfile.read(length).decode('utf-8'))
                 strHost = str(post_data['host'])[2:-2]
 
-                objFoo = handleHostAJAXLight(strHost)
+                objFoo = handleHostAJAXLight(strHost,0,3)
 
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")

@@ -82,6 +82,19 @@ class hostinfo(object):
     def getNS(self, sHostname):
         return self.do_query(None, sHostname, self.NS_type)
 
+    def getSOA(self, sHostname):
+        return None
+
+    def getNSServers(self, sHostname):
+        print("here " + sHostname)
+        nameservers = self._resolver.query(sHostname,'NS')
+        ns = []
+        for rdata in nameservers:
+            server = str(rdata)
+            ns.append(server)
+
+        return ns
+
     def getIPv4(self, sHostname):
         return self.do_query(None, sHostname, self.A_type)
 
