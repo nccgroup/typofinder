@@ -51,6 +51,10 @@ if __name__ == '__main__':
            
             arrDomainResp = requests.post(strURLEntity, data=dataFoo, headers=strHTTPHdrs, verify=False)
 
+            if arrDomainResp.status_code != requests.codes.ok:
+                print("[!] Recieved error from web service please try again later")
+                sys.exit(0)
+
             try:
                 strDEntityJSON = arrDomainResp.json()
             
@@ -78,6 +82,9 @@ if __name__ == '__main__':
         print("[!] Connection error")
 
     except KeyboardInterrupt:
+        pass
+
+    except SystemExit:
         pass
 
     except:
