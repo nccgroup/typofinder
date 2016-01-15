@@ -49,12 +49,11 @@ if __name__ == '__main__':
 
     # this is filth
     if sys.platform == 'win32':
-        print("[i]   NOTE: on Microsoft Windows this needs win-unicode-console and be run as so:");
-        print("[i]            python.exe -m run typoclient\typoclient.py <options>");
-        print("");
         try:
             import win_unicode_console
+            win_unicode_console.enable()
         except:
+            print("[!] NOTE: on Microsoft Windows this needs win-unicode-console installed");
             sys.exit(-1)
 
     try:
