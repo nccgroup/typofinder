@@ -132,7 +132,7 @@ if __name__ == '__main__':
         parser.add_argument('-v', '--verbose',   help='verbose output', required=False, dest='verbose', action='store_true')
         parser.add_argument('-o', '--onlyactive',   help='only active domain verbose output', required=False, dest='onlyactive', action='store_true')
         parser.add_argument('-e', '--errors',   help='show errors in non verbose mode', required=False, dest='errors', action='store_true')
-        parser.add_argument('-l', '--listdomains',   help='list the domains and exist', required=False, dest='domainsonly', action='store_true')
+        parser.add_argument('-l', '--listdomains',   help='list the domains and exit', required=False, dest='domainsonly', action='store_true')
         parser.add_argument('-n', '--nobanners',   help='display only data', required=False, dest='nobanners', action='store_true')
         parser.add_argument('-m', '--makesecure',   help='enable SSL/TLS verification', required=False, dest='enablesecurity', action='store_true')
         parser.add_argument('-i', '--information',   help='detailed DNS records for the domain', required=False, dest='information', action='store_true')
@@ -191,8 +191,7 @@ if __name__ == '__main__':
         elif args.charset == 2:
             args.charset = 50
         elif args.charset == 3:
-            args.typos = 100
-
+            args.charset = 100
 
 
         strHTTPHdrs      = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain'}
