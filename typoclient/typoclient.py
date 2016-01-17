@@ -15,6 +15,9 @@ import codecs
 import argparse
 import requests
 import simplejson
+from argformatter import smartformatter
+
+
 
 def printPretty(strDEntityJSON,strDEntityInfoJSON):
     if args.verbose is True:
@@ -121,8 +124,9 @@ def tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth):
 
 if __name__ == '__main__':
 
+
     try:
-        parser = argparse.ArgumentParser()
+        parser = argparse.ArgumentParser(formatter_class=smartformatter)
         parser.add_argument('-d', '--domain', help='domain to analyze', required=True, type=str)
         parser.add_argument('-s', '--server',   help='server to use', required=False, type=str, default='https://labs.nccgroup.trust')
         parser.add_argument('-v', '--verbose',   help='verbose output', required=False, dest='verbose', action='store_true')
@@ -130,8 +134,17 @@ if __name__ == '__main__':
         parser.add_argument('-e', '--errors',   help='show errors in non verbose mode', required=False, dest='errors', action='store_true')
         parser.add_argument('-l', '--listdomains',   help='list the domains and exist', required=False, dest='domainsonly', action='store_true')
         parser.add_argument('-n', '--nobanners',   help='display only data', required=False, dest='nobanners', action='store_true')
-        parser.add_argument('-c', '--certchecks',   help='enable SSL/TLS verification', required=False, dest='enablesecurity', action='store_true')
+        parser.add_argument('-m', '--makesecure',   help='enable SSL/TLS verification', required=False, dest='enablesecurity', action='store_true')
         parser.add_argument('-i', '--information',   help='detailed DNS records for the domain', required=False, dest='information', action='store_true')
+        parser.add_argument('-c', '--charset',   help="R|char set complexity on a scale of 1 to 3\n"
+                                                      "1 = ASCII\n" 
+                                                      "2 = RFC3491\n"
+                                                      "3 = All (default)\n"
+                                                      , type=int, required=False, dest='charset', choices=[1,2,3], default=3)
+        parser.add_argument('-t', '--typos',   help="R|degree to which to generate typos on a scale of 1 to 3\n"
+                                                     "1 = quick\n"
+                                                     "2 = balanced\n"
+                                                     "3 = rigorous (default)\n", type=int, required=False, dest='typos', choices=[1,2,3], default=3)
         parser.add_argument('-p', '--pretty',   help='pretty output', required=False, dest='pretty', action='store_true')
         parser.set_defaults(verbose=False)
         parser.set_defaults(errors=False)
@@ -166,8 +179,24 @@ if __name__ == '__main__':
         strURLEntity = args.server +  "/typofinder/entitylight.ncc"
         strURLEntityDetail = args.server +  "/typofinder/entity.ncc"
 
+        if args.typos == 1:
+            args.typos = 0
+        elif args.typos == 2:
+            args.typos = 50
+        elif args.typos == 3:
+            args.typos = 100
+
+        if args.charset == 1:
+            args.charset = 0
+        elif args.charset == 2:
+            args.charset = 50
+        elif args.charset == 3:
+            args.typos = 100
+
+
+
         strHTTPHdrs      = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain'}
-        strTypoRequest   = "host="+args.domain+"&typos=typos&typoamount=100&tld=tld&bitflip=bitflip&homoglyph=homoglyph&doppelganger=doppelganger&charsetamount=100&alexafilter=neveralexa"
+        strTypoRequest   = "host="+args.domain+"&typos=typos&typoamount=" + str(args.typos) + "tld=tld&bitflip=bitflip&homoglyph=homoglyph&doppelganger=doppelganger&charsetamount=" + str(args.charset) + "&alexafilter=neveralexa"
         strEntityRequest = "host="
     
         if args.nobanners is False or args.pretty is True:
@@ -214,6 +243,7 @@ if __name__ == '__main__':
                     print("[!] Connection error whilst checking " + print(strDomain))
                 else:
                     tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
+
             except requests.exceptions.ConnectionError:
                 intDepth = intDepth + 1
                 if intDepth > 4:
@@ -236,6 +266,6 @@ if __name__ == '__main__':
     except (KeyboardInterrupt, BrokenPipeError, SystemExit):
         pass
 
-    except:
-        type, value, traceback = sys.exc_info()
-        print("[i] Other error - " + str(type) + " - " + str(value))
+    #except:
+    #    type, value, traceback = sys.exc_info()
+    #    print("[i] Other error - " + str(type) + " - " + str(value))
