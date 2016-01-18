@@ -182,7 +182,7 @@ if __name__ == '__main__':
         if args.typos == 1:
             args.typos = 0
         elif args.typos == 2:
-            args.typos = 50
+            args.typos = 49
         elif args.typos == 3:
             args.typos = 100
 
@@ -195,7 +195,7 @@ if __name__ == '__main__':
 
 
         strHTTPHdrs      = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain'}
-        strTypoRequest   = "host="+args.domain+"&typos=typos&typoamount=" + str(args.typos) + "tld=tld&bitflip=bitflip&homoglyph=homoglyph&doppelganger=doppelganger&charsetamount=" + str(args.charset) + "&alexafilter=neveralexa"
+        strTypoRequest   = "host="+args.domain+"&typos=typos&typoamount=" + str(args.typos) + "&tld=tld&bitflip=bitflip&homoglyph=homoglyph&doppelganger=doppelganger&charsetamount=" + str(args.charset) + "&alexafilter=neveralexa"
         strEntityRequest = "host="
     
         if args.nobanners is False or args.pretty is True:
@@ -209,13 +209,15 @@ if __name__ == '__main__':
 
         strTypoJSON = arrTypoResp.json()
 
+        if args.nobanners is False:
+            print("[i] Total typo domains to check " + str(len(strTypoJSON)))
+
         if args.domainsonly is True:
             for strTDomain in strTypoJSON:
                 print(strTDomain)
             sys.exit(0)      
 
-        if args.nobanners is False:
-            print("[i] Total typo domains to check " + str(len(strTypoJSON)))
+        
 
         if args.nobanners is False:
             print("[i] Checking typo domains list for active domains....")
