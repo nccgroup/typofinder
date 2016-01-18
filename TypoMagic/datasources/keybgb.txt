@@ -3,6 +3,7 @@ q,2
 q,w
 q,a
 q,s
+a,e
 a,q
 a,w
 a,s
@@ -36,6 +37,7 @@ e,r
 e,f
 e,d
 e,s
+e,a
 d,s
 d,e
 d,r
