@@ -182,7 +182,7 @@ if __name__ == '__main__':
         if args.typos == 1:
             args.typos = 0
         elif args.typos == 2:
-            args.typos = 49
+            args.typos = 50
         elif args.typos == 3:
             args.typos = 100
 
