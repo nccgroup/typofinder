@@ -122,6 +122,8 @@ m,j
 m,k
 i,u
 i,o
+i,l
+i,1
 o,k
 i,j
 k,j
@@ -130,6 +132,7 @@ k,i
 k,o
 k,l
 k,m
+o,0
 o,i
 o,9
 o,0
@@ -140,5 +143,10 @@ l,k
 l,i
 l,o
 l,p
+l,1
+l,i
 p,o
 p,l
+1,i
+1,l
+0,o
