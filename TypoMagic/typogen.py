@@ -377,6 +377,15 @@ class typogen(object):
         
         return result
         
+    @staticmethod
+    def generate_swap_key_tlds(no_suffix):
+    
+        result = list()
+        result.append(no_suffix + ".cm")
+        result.append(no_suffix + ".co")           
+        result.append(no_suffix + ".uk")
+    
+        return result
         
     @staticmethod
     def generate_miskeyed_addition_typos(strHost, strCountry):
@@ -488,16 +497,22 @@ class typogen(object):
             lstTypos += self.generate_ings_and_plurals(strHost)
             lstTypos += self.generate_replace_i_l_1_o_0(strHost)
             lstTypos += self.generate_ings_and_plurals_then_replace_i_l_1_o_0(strHost)
-            
-            #Balanced:
+
+            # Balanced:
             if iTypoIntensity > 0:
                 lstTypos += self.generate_miskeyed_typos(strHost, strCountry)
                 lstTypos += self.generate_miskeyed_sequence_typos(strHost, strCountry)
-            #Rigorous:
+            
+            # Rigorous phase:
             if iTypoIntensity > 50:
                 lstTypos += self.generate_transposed_character_typos(strHost)
                 lstTypos += self.generate_miskeyed_addition_typos(strHost, strCountry)
-                
+                lstInterim = list()
+                for sDomain in lstTypos:
+                    strDomain = sDomain.split(".",1)[0]
+                    lstInterim += self.generate_swap_key_tlds(strDomain)
+                lstTypos += lstInterim
+       
         if bTLDS:
             public_suffix = self.psl.get_public_suffix(strHost)
             no_suffix = public_suffix[:public_suffix.find('.')] + '.'
