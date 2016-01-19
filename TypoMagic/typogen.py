@@ -321,6 +321,32 @@ class typogen(object):
         return result
 
     @staticmethod
+    def generate_ings_and_plurals(strHost):
+        # add ing and plural s to the end of the domain based on what we do during phishing exercises
+        
+        result = list()
+        result.append(strHost + "ing")
+        result.append(strHost + "s")
+        return result
+
+    @staticmethod
+    def replace_i_l_1_o_0(strHost):
+        # add ing and plural s to the end of the domain based on what we do during phishing exercises
+        
+        result = list()
+        result.append(strHost.replace('i','1')) # i for 1
+        result.append(strHost.replace('i','l')) # i for l
+        result.append(strHost.replace('l','i')) # l for i
+        result.append(strHost.replace('l','1')) # l for 1
+        result.append(strHost.replace('1','l')) # 1 for l
+        result.append(strHost.replace('1','i')) # 1 for i
+        result.append(strHost.replace('o','0')) # o for 0
+        result.append(strHost.replace('0','o')) # 0 for o
+                        
+        return result
+        
+        
+    @staticmethod
     def generate_miskeyed_addition_typos(strHost, strCountry):
         # add a surrounding key either side of each character
 
@@ -427,6 +453,9 @@ class typogen(object):
             #Quick:
             lstTypos += self.generate_missing_character_typos(strHost)
             lstTypos += self.generate_duplicate_character_typos(strHost)
+            lstTypos += self.generate_ings_and_plurals(strHost)
+            lstTypos += self.replace_i_l_1_o_0(strHost)
+            
             #Balanced:
             if iTypoIntensity > 0:
                 lstTypos += self.generate_miskeyed_typos(strHost, strCountry)
@@ -435,7 +464,6 @@ class typogen(object):
             if iTypoIntensity > 50:
                 lstTypos += self.generate_transposed_character_typos(strHost)
                 lstTypos += self.generate_miskeyed_addition_typos(strHost, strCountry)
-
         if bTLDS:
             public_suffix = self.psl.get_public_suffix(strHost)
             no_suffix = public_suffix[:public_suffix.find('.')] + '.'
