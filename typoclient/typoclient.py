@@ -179,13 +179,15 @@ if __name__ == '__main__':
         strURLEntity = args.server +  "/typofinder/entitylight.ncc"
         strURLEntityDetail = args.server +  "/typofinder/entity.ncc"
 
+        # do not change these unless server side is updated
         if args.typos == 1:
-            args.typos = 0
+            args.typos = 1
         elif args.typos == 2:
             args.typos = 50
         elif args.typos == 3:
             args.typos = 100
 
+        # do not change these unless server side is updated
         if args.charset == 1:
             args.charset = 0
         elif args.charset == 2:
