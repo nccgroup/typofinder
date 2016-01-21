@@ -52,6 +52,7 @@ Dependencies - client
 * simplejson
 * requests
 * BeautifulSoup (4)
+* html5lib
 
 What it does
 -------------
