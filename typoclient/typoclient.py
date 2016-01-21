@@ -207,6 +207,9 @@ if __name__ == '__main__':
             print("[!] you can't specify information without verbose")
             sys.exit(-1)
 
+        if args.pretty is True and args.gettitle is True:
+            print("[!] you can't get web page titles with pretty printing")
+            sys.exit(-1)
 
         # this is filth
         if sys.platform == 'win32':
