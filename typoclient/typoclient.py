@@ -114,6 +114,9 @@ def printNotPretty(strDEntityJSON,strDEntityInfoJSON):
                     for server in strDEntityInfoJSON['IPv6Addresses']:
                         print (",AAAA:" + server,end="");
 
+                if args.gettitle is True:
+                    print(getWebTitle(strDEntityJSON['strDomain']),end="")
+
             print("");
 
         elif args.verbose is True and args.onlyactive is False:
