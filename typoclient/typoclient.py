@@ -127,7 +127,11 @@ if __name__ == '__main__':
 
     try:
         parser = argparse.ArgumentParser(formatter_class=smartformatter)
-        parser.add_argument('-d', '--domain', help='domain to analyze', required=True, type=str)
+        
+        group = parser.add_mutually_exclusive_group(required=True)
+        group.add_argument('-d', '--domain', help='domain to analyze', type=str)
+        group.add_argument('-b', '--bulkfile',   help='bulk import domains to analyze from this file', required=False, type=str)
+
         parser.add_argument('-s', '--server',   help='server to use', required=False, type=str, default='https://labs.nccgroup.trust')
         parser.add_argument('-v', '--verbose',   help='verbose output', required=False, dest='verbose', action='store_true')
         parser.add_argument('-o', '--onlyactive',   help='only active domain verbose output', required=False, dest='onlyactive', action='store_true')
@@ -181,9 +185,9 @@ if __name__ == '__main__':
 
         # do not change these unless server side is updated
         if args.typos == 1:
-            args.typos = 1
+            args.typos = 0
         elif args.typos == 2:
-            args.typos = 50
+            args.typos = 1
         elif args.typos == 3:
             args.typos = 100
 
@@ -195,64 +199,87 @@ if __name__ == '__main__':
         elif args.charset == 3:
             args.charset = 100
 
+        lstSrcDomains = list()
+        
+        # bulk or not
+        if args.bulkfile and len(args.bulkfile) > 0:
+            if args.nobanners is False or args.pretty is True:
+                print("[i] Doing bulk analysis..")
+                
+            try:
+                for line in open(args.bulkfile):
+                    if args.nobanners is False or args.pretty is True:
+                        print("[i] Adding " + line.rstrip('\n') + " for analysis")
+                    lstSrcDomains.append(line.rstrip('\n'))
+            except:                               
+                type, value, traceback = sys.exc_info()
+                print("[!] Error processing bulk import " + args.bulkfile + " - " + str(type) + " - " + str(value))
+                sys.exit(-1)
 
-        strHTTPHdrs      = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain'}
-        strTypoRequest   = "host="+args.domain+"&typos=typos&typoamount=" + str(args.typos) + "&tld=tld&bitflip=bitflip&homoglyph=homoglyph&doppelganger=doppelganger&charsetamount=" + str(args.charset) + "&alexafilter=neveralexa"
-        strEntityRequest = "host="
+
+        else:
+            if args.nobanners is False or args.pretty is True:
+                print("[i] Doing single domain analysis..")                           
+            lstSrcDomains.append(args.domain)
+        
+        for doitDomain in lstSrcDomains:
+            strHTTPHdrs      = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain'}
+            strTypoRequest   = "host="+doitDomain+"&typos=typos&typoamount=" + str(args.typos) + "&tld=tld&bitflip=bitflip&homoglyph=homoglyph&doppelganger=doppelganger&charsetamount=" + str(args.charset) + "&alexafilter=neveralexa"
+            strEntityRequest = "host="
     
-        if args.nobanners is False or args.pretty is True:
-            print("[i] Getting typo domains list....")
+            if args.nobanners is False or args.pretty is True:
+                print("[i] Getting typo domains list for " + doitDomain + "....")
         
-        arrTypoResp = requests.post(strURLTypos, data=strTypoRequest, headers=strHTTPHdrs, verify=args.certchecks)
+            arrTypoResp = requests.post(strURLTypos, data=strTypoRequest, headers=strHTTPHdrs, verify=args.certchecks)
 
-        if arrTypoResp.text.startswith("[!]"):
-            print(arrTypoRest.text)
-            sys.exit(0)
+            if arrTypoResp.text.startswith("[!]"):
+                print(arrTypoRest.text)
+                sys.exit(0)
 
-        strTypoJSON = arrTypoResp.json()
+            strTypoJSON = arrTypoResp.json()
 
-        if args.nobanners is False:
-            print("[i] Total typo domains to check " + str(len(strTypoJSON)))
+            if args.nobanners is False:
+                print("[i] Total typo domains to check for " + doitDomain + " are " + str(len(strTypoJSON)))
 
-        if args.domainsonly is True:
+            if args.domainsonly is True:
+                for strTDomain in strTypoJSON:
+                    print(strTDomain)
+                sys.exit(0)      
+
+        
+
+            if args.nobanners is False:
+                print("[i] Checking typo domains list for " + doitDomain + " for active domains....")
+
+            strDomain = ""
             for strTDomain in strTypoJSON:
-                print(strTDomain)
-            sys.exit(0)      
-
-        
-
-        if args.nobanners is False:
-            print("[i] Checking typo domains list for active domains....")
-
-        strDomain = ""
-        for strTDomain in strTypoJSON:
-            intDepth = 0
-            dataFoo = strEntityRequest+strTDomain
-            try:           
-                tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
-
-            except UnicodeDecodeError:
-                pass
-
-            except ConnectionAbortedError:
-                intDepth = intDepth + 1
-                if intDepth > 4:
-                    print("[!] Connection abort whilst checking " + print(strDomain))
-                else:
-                    tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
-            except ConnectionError:
-                intDepth = intDepth + 1
-                if intDepth > 4:
-                    print("[!] Connection error whilst checking " + print(strDomain))
-                else:
+                intDepth = 0
+                dataFoo = strEntityRequest+strTDomain
+                try:           
                     tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
 
-            except requests.exceptions.ConnectionError:
-                intDepth = intDepth + 1
-                if intDepth > 4:
-                    print("[!] Connection error whilst checking " + print(strDomain))
-                else:
-                    tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
+                except UnicodeDecodeError:
+                    pass
+
+                except ConnectionAbortedError:
+                    intDepth = intDepth + 1
+                    if intDepth > 4:
+                        print("[!] Connection abort whilst checking " + print(strDomain))
+                    else:
+                        tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
+                except ConnectionError:
+                    intDepth = intDepth + 1
+                    if intDepth > 4:
+                        print("[!] Connection error whilst checking " + print(strDomain))
+                    else:
+                        tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
+
+                except requests.exceptions.ConnectionError:
+                    intDepth = intDepth + 1
+                    if intDepth > 4:
+                        print("[!] Connection error whilst checking " + print(strDomain))
+                    else:
+                        tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
 
     except ConnectionAbortedError:
         print("[!] Connection abort getting list of domains")
@@ -269,6 +296,6 @@ if __name__ == '__main__':
     except (KeyboardInterrupt, BrokenPipeError, SystemExit):
         pass
 
-    #except:
-    #    type, value, traceback = sys.exc_info()
-    #    print("[i] Other error - " + str(type) + " - " + str(value))
+    except:
+        type, value, traceback = sys.exc_info()
+        print("[i] Other error - " + str(type) + " - " + str(value))
