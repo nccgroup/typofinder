@@ -15,9 +15,41 @@ import codecs
 import argparse
 import requests
 import simplejson
+import urllib.request
 from argformatter import smartformatter
+from bs4 import BeautifulSoup
 
 
+def getWebTitle(strDomain):
+    
+    arrProtos = ['https','http']
+    arrSites = ['www','m']
+    
+    strRes=""
+    arrTmp = []
+    for strProto in arrProtos:
+        for strSite in arrSites:
+
+            try:
+                #print(strProto+"://" + strSite + "." + strDomain)
+                soup = BeautifulSoup(urllib.request.urlopen(strProto+"://" + strSite + "." + strDomain + "/"), "html.parser")
+                #print(strProto + " - " + strSite + " - " + soup.title.string)
+                arrTmp.append(",")
+                arrTmp.append(strProto)
+                arrTmp.append(":")
+                arrTmp.append(strSite)
+                arrTmp.append(":")
+                if soup.title.string:
+                    arrTmp.append(soup.title.string.replace(",",""))
+                else:
+                    arrTmp.append("nontitle")
+            except:
+                type, value, traceback = sys.exc_info()
+                #print("[i] Get title error - " + str(type) + " - " + str(value))
+                pass
+
+    strRes = ''.join(arrTmp).replace("\n","")
+    return strRes
 
 def printPretty(strDEntityJSON,strDEntityInfoJSON):
     if args.verbose is True:
@@ -88,7 +120,10 @@ def printNotPretty(strDEntityJSON,strDEntityInfoJSON):
             print (strDEntityJSON['strDomain']+",notactive," + strDEntityJSON['strError'])
     else:
         if strDEntityJSON['bError'] is False:
-            print(strDEntityJSON['strDomain'] + ",active")                           
+            print(strDEntityJSON['strDomain'] + ",active",end="")
+            if args.gettitle is True:
+                print(getWebTitle(strDEntityJSON['strDomain']),end="")
+            print("");
         elif args.errors is True:
             print(strDEntityJSON['strDomain'] + ",notactive,"+strDEntityJSON['strError'])                           
 
@@ -150,6 +185,7 @@ if __name__ == '__main__':
                                                      "2 = balanced\n"
                                                      "3 = rigorous (default)\n", type=int, required=False, dest='typos', choices=[1,2,3], default=3)
         parser.add_argument('-p', '--pretty',   help='pretty output', required=False, dest='pretty', action='store_true')
+        parser.add_argument('-g', '--gettitle', help='get webpage title if possible', required=False, dest='gettitle', action='store_true')
         parser.set_defaults(verbose=False)
         parser.set_defaults(errors=False)
         parser.set_defaults(domainsonly=False)
@@ -158,6 +194,7 @@ if __name__ == '__main__':
         parser.set_defaults(onlyactive=False)
         parser.set_defaults(information=False)
         parser.set_defaults(pretty=False)
+        parser.set_defaults(gettitle=False)
         args = parser.parse_args()
 
         if args.nobanners is False:
