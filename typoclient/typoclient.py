@@ -310,6 +310,9 @@ if __name__ == '__main__':
                 except UnicodeDecodeError:
                     pass
 
+                except UnicodeEncodeError:
+                    pass
+
                 except ConnectionAbortedError:
                     intDepth = intDepth + 1
                     if intDepth > 4:
