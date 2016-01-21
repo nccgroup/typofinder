@@ -115,7 +115,10 @@ def printNotPretty(strDEntityJSON,strDEntityInfoJSON):
                         print (",AAAA:" + server,end="");
 
                 if args.gettitle is True:
-                    print(getWebTitle(strDEntityJSON['strDomain']),end="")
+                    try:
+                        print(getWebTitle(strDEntityJSON['strDomain']),end="")
+                    except:
+                        pass
 
             print("");
 
@@ -125,7 +128,10 @@ def printNotPretty(strDEntityJSON,strDEntityInfoJSON):
         if strDEntityJSON['bError'] is False:
             print(strDEntityJSON['strDomain'] + ",active",end="")
             if args.gettitle is True:
-                print(getWebTitle(strDEntityJSON['strDomain']),end="")
+                try:
+                    print(getWebTitle(strDEntityJSON['strDomain']),end="")
+                except:
+                    pass
             print("");
         elif args.errors is True:
             print(strDEntityJSON['strDomain'] + ",notactive,"+strDEntityJSON['strError'])                           
