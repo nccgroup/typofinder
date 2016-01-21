@@ -51,6 +51,7 @@ Dependencies - client
 * Python (3.3)
 * simplejson
 * requests
+* BeautifulSoup (4)
 
 What it does
 -------------
