@@ -32,14 +32,14 @@ def getWebTitle(strDomain):
 
             try:
                 #print(strProto+"://" + strSite + "." + strDomain)
-                soup = BeautifulSoup(urllib.request.urlopen(strProto+"://" + strSite + "." + strDomain + "/"), "html.parser")
+                soup = BeautifulSoup(urllib.request.urlopen(strProto+"://" + strSite + "." + strDomain + "/"), "html5lib")
                 #print(strProto + " - " + strSite + " - " + soup.title.string)
                 arrTmp.append(",")
                 arrTmp.append(strProto)
                 arrTmp.append(":")
                 arrTmp.append(strSite)
                 arrTmp.append(":")
-                if soup.title.string:
+                if soup and soup.title and soup.title.string:
                     arrTmp.append(soup.title.string.replace(",",""))
                 else:
                     arrTmp.append("nontitle")
