@@ -1,3 +1,14 @@
+#
+# Discover how old a domain is
+# 
+# Released as open source by NCC Group Plc - http://www.nccgroup.com/
+# 
+# Developed by Ollie Whitehouse, ollie dot whitehouse at nccgroup dot trust
+#
+# http://www.github.com/nccgroup/typofinder
+#
+# Released under AGPL see LICENSE for more information#
+#
 
 import argparse
 from whois import whois
