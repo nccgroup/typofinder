@@ -28,8 +28,8 @@ class hostinfo(object):
     def __init__(self):
         self._resolver = dns.resolver.Resolver()
         self._resolver.Timeout = 2.0
-        self._resolver.lifetime = 2.0
-        self._resolver.cache = dns.resolver.LRUCache()
+        self._resolver.lifetime = 6.0
+        #self._resolver.cache = dns.resolver.LRUCache()
         self._resolver.search = list() #Ensure no search suffixes
         self._gi = pygeoip.GeoIP('datasources/GeoIP.dat')
         self._giv6 = pygeoip.GeoIP('datasources/GeoIPv6.dat')
