@@ -141,7 +141,7 @@ def tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth):
     arrDomainResp = requests.post(strURLEntity, data=dataFoo, headers=strHTTPHdrs, verify=args.certchecks)
 
     if arrDomainResp.status_code != requests.codes.ok:
-        print("[!] Recieved error from web service during getting basic details")
+        print("[!] Recieved error from web service during getting basic details " + arrDomainResp.status_code) 
         return
        
     try:
@@ -313,40 +313,46 @@ if __name__ == '__main__':
                 except UnicodeEncodeError:
                     pass
 
-                except ConnectionAbortedError:
-                    intDepth = intDepth + 1
-                    if intDepth > 4:
-                        print("[!] Connection abort whilst checking " + print(strDomain))
-                    else:
-                        tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
-                except ConnectionError:
-                    intDepth = intDepth + 1
-                    if intDepth > 4:
-                        print("[!] Connection error whilst checking " + print(strDomain))
-                    else:
-                        tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
+                #except ConnectionAbortedError:
+                #    intDepth = intDepth + 1
+                #    if intDepth > 4:
+                #        print("[!] Connection abort whilst checking " + print(strDomain))
+                #    else:
+                #        tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
+                
+                #except ConnectionError:
+                #    intDepth = intDepth + 1
+                #    if intDepth > 4:
+                #        print("[!] Connection error whilst checking " + print(strDomain))
+                #    else:
+                #        tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
 
                 except requests.exceptions.ConnectionError:
-                    intDepth = intDepth + 1
-                    if intDepth > 4:
-                        print("[!] Connection error whilst checking " + print(strDomain))
-                    else:
-                        tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
+                    pass
+                #    intDepth = intDepth + 1
+                #    if intDepth > 4:
+                #        print("[!] Connection error whilst checking " + print(strDomain))
+                #    else:
+                #        tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth)
+
+                except ConnectionError:
+                    pass
+
+                except:
+                    type, value, traceback = sys.exc_info() 
+                    print("[i] Other error - " + str(type) + " - " + str(value))
 
     except ConnectionAbortedError:
-        print("[!] Connection abort getting list of domains")
         pass
 
     except ConnectionError:
-        print("[!] Connection error getting list of domains")
         pass
-    
+
     except requests.exceptions.ConnectionError:
-        print("[!] Connection error getting list of domains")
         pass
 
     except (KeyboardInterrupt, BrokenPipeError, SystemExit):
-        pass
+        sys.exit(0)
 
     except:
         type, value, traceback = sys.exc_info()
