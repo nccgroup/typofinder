@@ -141,7 +141,7 @@ def tryDomain(strURLEntity,strURLEntityDetail,dataFoo,strHTTPHdrs, intDepth):
     arrDomainResp = requests.post(strURLEntity, data=dataFoo, headers=strHTTPHdrs, verify=args.certchecks)
 
     if arrDomainResp.status_code != requests.codes.ok:
-        print("[!] Recieved error from web service during getting basic details " + arrDomainResp.status_code) 
+        print("[!] Recieved error from web service during getting basic details - " + str(arrDomainResp.status_code)) 
         return
        
     try:
