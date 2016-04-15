@@ -195,6 +195,7 @@ if __name__ == '__main__':
                                                      "3 = rigorous (default)\n", type=int, required=False, dest='typos', choices=[1,2,3], default=3)
         parser.add_argument('-p', '--pretty',   help='pretty output', required=False, dest='pretty', action='store_true')
         parser.add_argument('-g', '--gettitle', help='get webpage title if possible', required=False, dest='gettitle', action='store_true')
+        parser.add_argument('-w', '--write', help='write list of domains to file', required=False, dest='write', action='store_true')
         parser.set_defaults(verbose=False)
         parser.set_defaults(errors=False)
         parser.set_defaults(domainsonly=False)
@@ -204,6 +205,7 @@ if __name__ == '__main__':
         parser.set_defaults(information=False)
         parser.set_defaults(pretty=False)
         parser.set_defaults(gettitle=False)
+        parser.set_defaults(write=False)
         args = parser.parse_args()
 
         if args.nobanners is False:
@@ -217,6 +219,7 @@ if __name__ == '__main__':
             print("[!] you can't get web page titles with pretty printing")
             sys.exit(-1)
 
+            
         # this is filth
         if sys.platform == 'win32':
             try:
@@ -271,6 +274,8 @@ if __name__ == '__main__':
                 print("[i] Doing single domain analysis..")                           
             lstSrcDomains.append(args.domain)
         
+           
+        
         for doitDomain in lstSrcDomains:
             strHTTPHdrs      = {'Content-type': 'application/x-www-form-urlencoded; charset=UTF-8', 'Accept': 'text/plain'}
             strTypoRequest   = "host="+doitDomain+"&typos=typos&typoamount=" + str(args.typos) + "&tld=tld&bitflip=bitflip&homoglyph=homoglyph&doppelganger=doppelganger&charsetamount=" + str(args.charset) + "&alexafilter=neveralexa"
@@ -291,8 +296,16 @@ if __name__ == '__main__':
                 print("[i] Total typo domains to check for " + doitDomain + " are " + str(len(strTypoJSON)))
 
             if args.domainsonly is True:
+                if args.write is True:
+                    target = open(doitDomain+".txt", 'wb')
+                    
                 for strTDomain in strTypoJSON:
-                    print(strTDomain)
+                    if args.write is True:
+                        strOut = str(strTDomain).encode('utf8')
+                        target.write(strOut)
+                        target.write(bytes("\n",'UTF-8'))
+                    else:
+                        print(strTDomain)
                 sys.exit(0)      
 
         
