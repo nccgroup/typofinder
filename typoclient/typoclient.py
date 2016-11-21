@@ -287,7 +287,7 @@ if __name__ == '__main__':
             arrTypoResp = requests.post(strURLTypos, data=strTypoRequest, headers=strHTTPHdrs, verify=args.certchecks)
 
             if arrTypoResp.text.startswith("[!]"):
-                print(arrTypoRest.text)
+                print(arrTypoResp.text)
                 sys.exit(0)
 
             strTypoJSON = arrTypoResp.json()
