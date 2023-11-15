@@ -14,11 +14,6 @@ https://github.com/nccgroup/typofinder
 
 Released under AGPL see LICENSE for more information
 
-Want to give it a go?
--------------
-You can buy a Software-as-a-Service version which more features here:
-* https://cyberstore.nccgroup.com/our-services/service-details/10/domain-intelligence
-
 Development Wiki
 -------------
 Some rough notes around the v2 architecture:
