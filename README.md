@@ -16,7 +16,7 @@ Released under AGPL see LICENSE for more information
 
 Development Wiki
 -------------
-Some rough notes around the v2 architecture:
+Some rough notes on the v2 architecture:
 * https://github.com/nccgroup/typofinder/wiki
 
 Features
@@ -30,7 +30,7 @@ Features
 * A keyboard map template system (currently UK supplied)
 * Geographic IP to flag
 * Google safe browsing integration
-* Bit flipping / squatting - http://dinaburg.org/bitsquatting.html
+* Bit flipping/squatting - http://dinaburg.org/bitsquatting.html
 * Homoglyph attack identification
 * Whois
  
@@ -54,10 +54,10 @@ What it does
 * remove characters from the supplied domain
 * duplicate characters in the supplied domain
 * replace characters with adjacent keyboard characters depending on keyboard map supplied
-* swap the global TLD for each of the current valid TLDs list at - http://data.iana.org/TLD/tlds-alpha-by-domain.txt
+* swap the global TLD for each of the current valid TLDs lists at - http://data.iana.org/TLD/tlds-alpha-by-domain.txt
 * flip bits in the legit domain to detect the bitsquatting attacks
 * swaps characters with similar looking characters to find homoglyph attacks
-* checks web sites against Google's Safe Browsing API<sup>1</sup>
+* checks websites against Google's Safe Browsing API<sup>1</sup>
 
 Usage
 -------------
@@ -81,7 +81,7 @@ https://developers.google.com/safe-browsing/
 If you have a Google Safe Browsing API you can enter this at the command line e.g.
 python TypoMagic.py -k <API>
 
-Alternately you can place you API in the KEY parameter in TypoMagic.py.
+Alternately you can place your API in the KEY parameter in TypoMagic.py.
 
 <sup>1</sup> Google works to provide the most accurate and up-to-date phishing and malware information.
 However, it cannot guarantee that its information is comprehensive and error-free: some risky sites may not be
